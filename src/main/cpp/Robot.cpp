@@ -11,7 +11,11 @@ void Robot::AutonomousInit() {}
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {}
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+  controls.process();
+  drive.process();
+  drive.sendDebugInfo();
+}
 
 void Robot::DisabledInit() {}
 void Robot::DisabledPeriodic() {}

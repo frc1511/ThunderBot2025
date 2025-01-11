@@ -6,6 +6,10 @@
 
 #include <frc/TimedRobot.h>
 
+#include "Drive/Drive.h"
+
+#include "Controls.h"
+
 class Robot : public frc::TimedRobot {
  public:
   Robot();
@@ -25,4 +29,7 @@ class Robot : public frc::TimedRobot {
 
   void SimulationInit() override;
   void SimulationPeriodic() override;
+private:
+  Drive drive;
+  Controls controls {&drive};
 };
