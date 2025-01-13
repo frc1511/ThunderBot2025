@@ -1,5 +1,5 @@
 #pragma once
-// Last Update: 1/9/2025 - 9:44 PM
+// Last Update: 1/12/2025 - 1:31 PM
 // https://wiki.penfieldrobotics.com/wiki/index.php?title=2025:Robot_IO_Map
 
 
@@ -14,20 +14,21 @@
 */
 #define CAN_DO_NOT_USE 1
 
-#define CAN_SWERVE_DRIVE_FR 2
-#define CAN_SWERVE_DRIVE_FL 3
-#define CAN_SWERVE_DRIVE_BR 4
-#define CAN_SWERVE_DRIVE_BL 5
+#define CAN_SWERVE_DRIVE_FL 1
+#define CAN_SWERVE_ROTATION_FL 2
+#define CAN_SWERVE_CANCODER_FL 3
 
-#define CAN_SWERVE_ROTATION_FR 6
-#define CAN_SWERVE_ROTATION_FL 7
+#define CAN_SWERVE_DRIVE_FR 4
+#define CAN_SWERVE_ROTATION_FR 5
+#define CAN_SWERVE_CANCODER_FR 6
+
+#define CAN_SWERVE_DRIVE_BR 7
 #define CAN_SWERVE_ROTATION_BR 8
-#define CAN_SWERVE_ROTATION_BL 9
+#define CAN_SWERVE_CANCODER_BR 9
 
-#define CAN_SWERVE_CANCODER_FR 10
-#define CAN_SWERVE_CANCODER_FL 11
-#define CAN_SWERVE_CANCODER_BR 12
-#define CAN_SWERVE_CANCODER_BL 13
+#define CAN_SWERVE_DRIVE_BL 10
+#define CAN_SWERVE_ROTATION_BL 11
+#define CAN_SWERVE_CANCODER_BL 12
 
 #define CAN_PIGEON 14
 #define CAN_SHOOTER_INTAKE 15

@@ -5,7 +5,11 @@
 #include "Robot.h"
 
 Robot::Robot() {}
-void Robot::RobotPeriodic() {}
+void Robot::RobotPeriodic() {
+  // AddPeriodic([&] {
+  //   drive.sendDebugInfo();
+  // }, 20_ms);
+}
 
 void Robot::AutonomousInit() {}
 void Robot::AutonomousPeriodic() {}
@@ -14,7 +18,6 @@ void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
   controls.process();
   drive.process();
-  drive.sendDebugInfo();
 }
 
 void Robot::DisabledInit() {}

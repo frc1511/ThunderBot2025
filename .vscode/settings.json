@@ -94,5 +94,9 @@
     "typeinfo": "cpp",
     "valarray": "cpp",
     "variant": "cpp"
-  }
+  },
+  "cSpell.words": [
+    "Odometry",
+    "sooo"
+  ]
 }

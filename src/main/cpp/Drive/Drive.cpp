@@ -45,6 +45,7 @@ void Drive::driveFromPercents(double xPct, double yPct, double rotPct, unsigned 
     units::meters_per_second_t xVel    = xPct * DRIVE_PREFERENCES.DRIVE_MANUAL_MAX_VEL;
     units::meters_per_second_t yVel    = yPct * DRIVE_PREFERENCES.DRIVE_MANUAL_MAX_VEL;
     units::radians_per_second_t rotVel = rotPct * DRIVE_PREFERENCES.DRIVE_MANUAL_MAX_ANG_VEL;
+    printf("EXEC | X: %lf, Y: %lf, OMEGA:%lf\n", xVel.value(), yVel.value(), rotVel.value());
 
     // Pass the velocities to the velocity control function.
     driveWithVelocities(xVel, yVel, rotVel, flags);

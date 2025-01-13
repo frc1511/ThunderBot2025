@@ -12,13 +12,15 @@ struct PID_t
     double Kp = 0;
     double Ki = 0;
     double Kd = 0;
+    double Kv = 0;
+    double Ks = 0;
     double Kff = 0;
     double Kizone = 0;
     units::angular_velocity::degrees_per_second_t MaxVel = 0_deg_per_s;
     units::angular_acceleration::degrees_per_second_squared_t MaxAccel = 0_deg_per_s_sq;
     void clear() 
     {
-        Kp = Ki = Kd = Kff = Kizone = 0;
+        Kp = Ki = Kd = Kff = Kizone = Kv = Ks = 0;
         MaxVel = 0_deg_per_s;
         MaxAccel = 0_deg_per_s_sq;
     }
@@ -36,9 +38,9 @@ struct DrivePreferences {
     units::radians_per_second_t DRIVE_AUTO_MAX_ANG_VEL = 6.28_rad_per_s;
     units::radians_per_second_squared_t DRIVE_AUTO_MAX_ANG_ACCEL = 3.14_rad_per_s_sq;
 
-    units::meters_per_second_t DRIVE_MANUAL_MAX_VEL = 5_mps;
-    units::degrees_per_second_t DRIVE_MANUAL_MAX_ANG_VEL = 540_deg_per_s;
-    units::radians_per_second_squared_t DRIVE_MANUAL_MAX_ANG_ACCEL = 9.42_rad_per_s_sq;
+    units::meters_per_second_t DRIVE_MANUAL_MAX_VEL = 2.5_mps;
+    units::degrees_per_second_t DRIVE_MANUAL_MAX_ANG_VEL = 240_deg_per_s; // 540
+    units::radians_per_second_squared_t DRIVE_MANUAL_MAX_ANG_ACCEL = 4.5_rad_per_s_sq; // 9.42
 
     DrivePreferences()
     {
@@ -49,21 +51,19 @@ struct DrivePreferences {
         PID_THETA.Kd = 0.1;
     }
 };
-
 static const DrivePreferences DRIVE_PREFERENCES;
 
 struct PreferencesDriveMotor
 {
     PID_t PID;
     units::current::ampere_t MAX_AMPERAGE = 40_A;
-    double METERS_TO_TURNS = 1;
+    double METERS_TO_TURNS = 16.6474609375;
     double TURNS_TO_METERS = (1 / (METERS_TO_TURNS));
 };
 
 struct PreferencesTurnMotor
 {
-    PID_t PID_TURN;
-    PID_t PID_NEWTURN;
+    PID_t PID;
 
     units::current::ampere_t MAX_AMPERAGE = 30_A;
     double TURN_RADIAN_TO_ENCODER_FACTOR = 2.03362658302;
@@ -76,13 +76,20 @@ struct PreferencesSwerve
     units::second_t DRIVE_RAMP_TIME = 0.3_s;
     PreferencesSwerve()
     {
-        DRIVE_MOTOR.PID.Kp = 0.00001;
+        DRIVE_MOTOR.PID.Kp = 0.1;
+        DRIVE_MOTOR.PID.Kv = 0.124;
         DRIVE_MOTOR.PID.Kff = 0.000187;
 
-        TURN_MOTOR.PID_TURN.Kp = 0.1;
-
-        TURN_MOTOR.PID_NEWTURN.Kp = 0.0001;
-        TURN_MOTOR.PID_NEWTURN.Kd = 10;
+        TURN_MOTOR.PID.Kp = 100;
+        TURN_MOTOR.PID.Kd = 0.1;
+        TURN_MOTOR.PID.Ks = 0.1;
+        TURN_MOTOR.PID.Kv = 2.33;
     }
 };
 static PreferencesSwerve SWERVE_PREFERENCE;
+
+struct PreferencesControls
+{
+    double AXIS_DEADZONE = .1;
+};
+static PreferencesControls CONTROLS_PREFERENCE;

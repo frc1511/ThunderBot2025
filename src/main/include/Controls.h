@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Drive/Drive.h"
-#include <frc/PS4Controller.h>
+#include <frc/GenericHID.h>
 
 class Controls
 {
@@ -12,5 +12,5 @@ public:
 private:
     Drive* drive;
 
-    frc::PS4Controller driveController {0};
+    frc::GenericHID driveController {0};
 };

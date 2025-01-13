@@ -7,7 +7,8 @@ SwerveModule::SwerveModule(int driveID, int turningID, int canCoderID, units::de
   turningMotor(turningID),
   canCoder(canCoderID),
   turnRequest(ctre::phoenix6::controls::PositionVoltage{0_tr}.WithSlot(0)),
-  driveRequest(ctre::phoenix6::controls::VelocityVoltage{(units::turns_per_second_t)0}.WithSlot(0))
+  driveRequest(ctre::phoenix6::controls::VelocityVoltage{(units::turns_per_second_t)0}.WithSlot(0)),
+  absEncoderOffset(offset)
 {
 
 }
@@ -16,19 +17,37 @@ void SwerveModule::doPersistentConfiguration()
 {
     // Turning Motor
     ctre::phoenix6::configs::Slot0Configs turningPIDConfig {};
-    turningPIDConfig.kP = SWERVE_PREFERENCE.TURN_MOTOR.PID_TURN.Kp;
-    turningPIDConfig.kI = SWERVE_PREFERENCE.TURN_MOTOR.PID_TURN.Ki;
-    turningPIDConfig.kD = SWERVE_PREFERENCE.TURN_MOTOR.PID_TURN.Kd;
+    turningPIDConfig.kP = SWERVE_PREFERENCE.TURN_MOTOR.PID.Kp;
+    turningPIDConfig.kI = SWERVE_PREFERENCE.TURN_MOTOR.PID.Ki;
+    turningPIDConfig.kD = SWERVE_PREFERENCE.TURN_MOTOR.PID.Kd;
+    turningPIDConfig.kV = SWERVE_PREFERENCE.TURN_MOTOR.PID.Kv;
+    turningPIDConfig.kS = SWERVE_PREFERENCE.TURN_MOTOR.PID.Ks;
 
     turningMotor.GetConfigurator().Apply(turningPIDConfig);
+
+    ctre::phoenix6::configs::CurrentLimitsConfigs turningCurrentLimit {};
+    turningCurrentLimit.WithSupplyCurrentLimit(SWERVE_PREFERENCE.TURN_MOTOR.MAX_AMPERAGE);
+    turningCurrentLimit.WithSupplyCurrentLimitEnable(true);
+    turningCurrentLimit.WithStatorCurrentLimit(SWERVE_PREFERENCE.TURN_MOTOR.MAX_AMPERAGE);
+    turningCurrentLimit.WithStatorCurrentLimitEnable(true);
+    turningMotor.GetConfigurator().Apply(turningCurrentLimit);
 
     // Drive Motor
     ctre::phoenix6::configs::Slot0Configs drivePIDConfig {};
     drivePIDConfig.kP = SWERVE_PREFERENCE.DRIVE_MOTOR.PID.Kp;
     drivePIDConfig.kI = SWERVE_PREFERENCE.DRIVE_MOTOR.PID.Ki;
     drivePIDConfig.kD = SWERVE_PREFERENCE.DRIVE_MOTOR.PID.Kd;
+    drivePIDConfig.kV = SWERVE_PREFERENCE.DRIVE_MOTOR.PID.Kv;
+    drivePIDConfig.kS = SWERVE_PREFERENCE.DRIVE_MOTOR.PID.Ks;
 
-    turningMotor.GetConfigurator().Apply(drivePIDConfig);
+    driveMotor.GetConfigurator().Apply(drivePIDConfig);
+
+    ctre::phoenix6::configs::CurrentLimitsConfigs driveCurrentLimit {};
+    driveCurrentLimit.WithSupplyCurrentLimit(SWERVE_PREFERENCE.DRIVE_MOTOR.MAX_AMPERAGE);
+    driveCurrentLimit.WithSupplyCurrentLimitEnable(true);
+    driveCurrentLimit.WithStatorCurrentLimit(SWERVE_PREFERENCE.DRIVE_MOTOR.MAX_AMPERAGE);
+    driveCurrentLimit.WithStatorCurrentLimitEnable(true);
+    driveMotor.GetConfigurator().Apply(driveCurrentLimit);
 }
 
 void SwerveModule::setState(frc::SwerveModuleState state)
@@ -53,11 +72,11 @@ void SwerveModule::setState(frc::SwerveModuleState state)
      * Only handle turning when the robot is actually driving (Stops the modules
      * from snapping back to 0 when the robot comes to a stop).
      */
+    // Rotate the swerve module to the desired angle.
     if(units::math::abs(optimizedState.speed) > 0.01_mps) {
-        // Rotate the swerve module to the desired angle.
         setTurningMotor(optimizedState.angle.Radians());
     }
-  
+    
     // Set the drive motor's velocity.
     setDriveMotor(optimizedState.speed);
 }
@@ -90,8 +109,8 @@ void SwerveModule::setTurningMotor(units::radian_t angle)
 void SwerveModule::setDriveMotor(units::meters_per_second_t velocity)
 {
     const units::turns_per_second_t tps = units::turns_per_second_t(velocity.value() * SWERVE_PREFERENCE.DRIVE_MOTOR.METERS_TO_TURNS);
-
-    driveMotor.SetControl(driveRequest.WithVelocity(tps));
+    
+    driveMotor.SetControl(driveRequest.WithVelocity(tps).WithFeedForward(units::volt_t(SWERVE_PREFERENCE.DRIVE_MOTOR.PID.Kff)));
 }
 
 units::turn_t SwerveModule::getTurningMotorPosition()
@@ -124,7 +143,7 @@ units::radian_t SwerveModule::getRawCANcoderRotation()
 units::radian_t SwerveModule::getCANcoderRotation()
 {
     units::radian_t rawRotation = getRawCANcoderRotation();
-    return rawRotation + absEncoderOffset;
+    return rawRotation - absEncoderOffset;
 }
 
 units::meters_per_second_t SwerveModule::getDriveVelocity()
