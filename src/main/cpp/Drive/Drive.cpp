@@ -36,6 +36,10 @@ void Drive::doPersistentConfiguration()
     }
 }
 
+wpi::array<SwerveModule*,4>* Drive::getSwerveModules()
+{
+    return &swerveModules;
+}
 void Drive::driveFromPercents(double xPct, double yPct, double rotPct, unsigned flags)
 {
     /**
@@ -45,7 +49,6 @@ void Drive::driveFromPercents(double xPct, double yPct, double rotPct, unsigned 
     units::meters_per_second_t xVel    = xPct * DRIVE_PREFERENCES.DRIVE_MANUAL_MAX_VEL;
     units::meters_per_second_t yVel    = yPct * DRIVE_PREFERENCES.DRIVE_MANUAL_MAX_VEL;
     units::radians_per_second_t rotVel = rotPct * DRIVE_PREFERENCES.DRIVE_MANUAL_MAX_ANG_VEL;
-    printf("EXEC | X: %lf, Y: %lf, OMEGA:%lf\n", xVel.value(), yVel.value(), rotVel.value());
 
     // Pass the velocities to the velocity control function.
     driveWithVelocities(xVel, yVel, rotVel, flags);
@@ -101,6 +104,9 @@ void Drive::executeVelocityData()
 
 void Drive::setModuleStates(frc::ChassisSpeeds speeds)
 {
+
+    /// NOTE: If auto is 90_deg off swap X and Y in chassis speeds here, its swaped in controls.
+
     // Store velocities for feedback.
     chassisSpeeds = speeds;
 

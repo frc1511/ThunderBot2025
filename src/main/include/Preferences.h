@@ -69,7 +69,7 @@ struct PreferencesTurnMotor
     double TURN_RADIAN_TO_ENCODER_FACTOR = 2.03362658302;
 };
 
-struct PreferencesSwerve
+struct PreferencesSwerve 
 {
     PreferencesDriveMotor DRIVE_MOTOR;
     PreferencesTurnMotor TURN_MOTOR;
@@ -78,18 +78,17 @@ struct PreferencesSwerve
     {
         DRIVE_MOTOR.PID.Kp = 0.1;
         DRIVE_MOTOR.PID.Kv = 0.124;
-        DRIVE_MOTOR.PID.Kff = 0.000187;
+        DRIVE_MOTOR.PID.Kff = 0;
 
-        TURN_MOTOR.PID.Kp = 100;
-        TURN_MOTOR.PID.Kd = 0.1;
-        TURN_MOTOR.PID.Ks = 0.1;
-        TURN_MOTOR.PID.Kv = 2.33;
+        TURN_MOTOR.PID.Kp = 33;
+        TURN_MOTOR.PID.Ki = 0;
+        TURN_MOTOR.PID.Kd = 0;
     }
 };
 static PreferencesSwerve SWERVE_PREFERENCE;
 
 struct PreferencesControls
 {
-    double AXIS_DEADZONE = .1;
+    double AXIS_DEADZONE = .2;
 };
 static PreferencesControls CONTROLS_PREFERENCE;

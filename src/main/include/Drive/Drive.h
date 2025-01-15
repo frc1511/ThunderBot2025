@@ -39,6 +39,9 @@ public:
     void sendDebugInfo();
     void doPersistentConfiguration();
 
+    /// TODO: REMOVE
+    wpi::array<SwerveModule*, 4>* getSwerveModules();
+
 private:
     void executeVelocityData();
     void setModuleStates(frc::ChassisSpeeds speeds);
@@ -74,9 +77,9 @@ private:
 
     wpi::array<frc::Translation2d, 4> locations {
         frc::Translation2d(-DRIVE_PREFERENCES.ROBOT_WIDTH/2, +DRIVE_PREFERENCES.ROBOT_LENGTH/2), // Front left.
+        frc::Translation2d(+DRIVE_PREFERENCES.ROBOT_WIDTH/2, +DRIVE_PREFERENCES.ROBOT_LENGTH/2), // Front right.
         frc::Translation2d(-DRIVE_PREFERENCES.ROBOT_WIDTH/2, -DRIVE_PREFERENCES.ROBOT_LENGTH/2), // Back left.
         frc::Translation2d(+DRIVE_PREFERENCES.ROBOT_WIDTH/2, -DRIVE_PREFERENCES.ROBOT_LENGTH/2), // Back right.
-        frc::Translation2d(+DRIVE_PREFERENCES.ROBOT_WIDTH/2, +DRIVE_PREFERENCES.ROBOT_LENGTH/2), // Front right.
     };
     /**
      * The helper class that it used to convert chassis speeds into swerve
@@ -91,10 +94,10 @@ private:
 
     // The swerve modules on the robot.
     wpi::array<SwerveModule*, 4> swerveModules { // ENCODER OFFSETS: 1/12/2025 ALPHA BOT
-        new SwerveModule(CAN_SWERVE_DRIVE_FL, CAN_SWERVE_ROTATION_FL, CAN_SWERVE_CANCODER_FL, -90_deg),
-        new SwerveModule(CAN_SWERVE_DRIVE_BL, CAN_SWERVE_ROTATION_BL, CAN_SWERVE_CANCODER_BL, -90_deg),
-        new SwerveModule(CAN_SWERVE_DRIVE_BR, CAN_SWERVE_ROTATION_BR, CAN_SWERVE_CANCODER_BR, -90_deg),
-        new SwerveModule(CAN_SWERVE_DRIVE_FR, CAN_SWERVE_ROTATION_FR, CAN_SWERVE_CANCODER_FR, -90_deg),
+        new SwerveModule(CAN_SWERVE_DRIVE_FL, CAN_SWERVE_ROTATION_FL, CAN_SWERVE_CANCODER_FL, 0_deg),
+        new SwerveModule(CAN_SWERVE_DRIVE_BL, CAN_SWERVE_ROTATION_BL, CAN_SWERVE_CANCODER_BL, 0_deg),
+        new SwerveModule(CAN_SWERVE_DRIVE_FR, CAN_SWERVE_ROTATION_FR, CAN_SWERVE_CANCODER_FR, 0_deg),
+        new SwerveModule(CAN_SWERVE_DRIVE_BR, CAN_SWERVE_ROTATION_BR, CAN_SWERVE_CANCODER_BR, 0_deg),
     };
     
 };

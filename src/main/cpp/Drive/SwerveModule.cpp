@@ -73,7 +73,8 @@ void SwerveModule::setState(frc::SwerveModuleState state)
      * from snapping back to 0 when the robot comes to a stop).
      */
     // Rotate the swerve module to the desired angle.
-    if(units::math::abs(optimizedState.speed) > 0.01_mps) {
+    
+    if (units::math::abs(optimizedState.speed) > 0.01_mps) {
         setTurningMotor(optimizedState.angle.Radians());
     }
     
@@ -110,7 +111,7 @@ void SwerveModule::setDriveMotor(units::meters_per_second_t velocity)
 {
     const units::turns_per_second_t tps = units::turns_per_second_t(velocity.value() * SWERVE_PREFERENCE.DRIVE_MOTOR.METERS_TO_TURNS);
     
-    driveMotor.SetControl(driveRequest.WithVelocity(tps).WithFeedForward(units::volt_t(SWERVE_PREFERENCE.DRIVE_MOTOR.PID.Kff)));
+    driveMotor.SetControl(driveRequest.WithVelocity(tps));
 }
 
 units::turn_t SwerveModule::getTurningMotorPosition()
