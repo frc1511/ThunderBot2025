@@ -16,13 +16,16 @@ void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
   drive.doPersistentConfiguration();
+  drive.resetToMode();
 }
 void Robot::TeleopPeriodic() {
   controls.process();
   drive.process();
 }
 
-void Robot::DisabledInit() {}
+void Robot::DisabledInit() {
+  drive.resetToMode();
+}
 void Robot::DisabledPeriodic() {}
 
 void Robot::TestInit() {}

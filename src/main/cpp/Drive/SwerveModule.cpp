@@ -32,6 +32,11 @@ void SwerveModule::doPersistentConfiguration()
     turningCurrentLimit.WithStatorCurrentLimitEnable(true);
     turningMotor.GetConfigurator().Apply(turningCurrentLimit);
 
+    ctre::phoenix6::configs::ClosedLoopRampsConfigs ramp {};
+    ramp.WithVoltageClosedLoopRampPeriod(SWERVE_PREFERENCE.DRIVE_RAMP_TIME);
+
+    driveMotor.GetConfigurator().Apply(ramp);
+
     // Drive Motor
     ctre::phoenix6::configs::Slot0Configs drivePIDConfig {};
     drivePIDConfig.kP = SWERVE_PREFERENCE.DRIVE_MOTOR.PID.Kp;
@@ -112,6 +117,13 @@ void SwerveModule::setDriveMotor(units::meters_per_second_t velocity)
     const units::turns_per_second_t tps = units::turns_per_second_t(velocity.value() * SWERVE_PREFERENCE.DRIVE_MOTOR.METERS_TO_TURNS);
     
     driveMotor.SetControl(driveRequest.WithVelocity(tps));
+}
+
+void SwerveModule::stop() {
+    turningMotor.Set(0.0);
+    driveMotor.Set(0.0);
+
+    zeroDriveEncoder();
 }
 
 units::turn_t SwerveModule::getTurningMotorPosition()

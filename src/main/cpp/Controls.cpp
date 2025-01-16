@@ -4,8 +4,9 @@ Controls::Controls(Drive* drive_)
 : drive(drive_)
 {}
 
-void Controls::process()
-{
+#define SPEED_REDUCTION 1
+
+void Controls::process() {
     double xPercent = driveController.GetLeftX();
     if (fabs(xPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
         xPercent = 0;
@@ -19,20 +20,26 @@ void Controls::process()
     bool lockY = driveController.GetR2ButtonPressed();
     bool lockRot = driveController.GetR3ButtonPressed();
     bool persistentConfig = driveController.GetCircleButtonPressed();
+    bool resetIMU = driveController.GetTriangleButtonPressed();
+    bool brickMode = driveController.GetCrossButton();
     if (persistentConfig) {
         drive->doPersistentConfiguration();
     }
     unsigned flags = 0;
-    if (lockX) {
+    if (lockX)
         flags |= Drive::ControlFlag::LOCK_X;
-    }
-    if (lockY) {
+    if (lockY)
         flags |= Drive::ControlFlag::LOCK_Y; 
-    }
-    if (lockRot) {
+    if (lockRot)
         flags |= Drive::ControlFlag::LOCK_ROT;
-    }
-    
+    if (brickMode)
+        flags |= Drive::ControlFlag::BRICK;
+
+    flags |= Drive::ControlFlag::FIELD_CENTRIC;
+
+    if (resetIMU)
+        drive->resetOdometry();
+
     // SWAP: 90_deg offset for drive
-    drive->driveFromPercents(yPercent * -1, xPercent * 1, rotPercent * -1, flags);
+    drive->driveFromPercents(yPercent * -SPEED_REDUCTION, xPercent * SPEED_REDUCTION, rotPercent * -SPEED_REDUCTION, flags);
 }

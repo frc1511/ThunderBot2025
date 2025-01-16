@@ -19,16 +19,18 @@ public:
     void doPersistentConfiguration();
     void setState(frc::SwerveModuleState state);
     void sendDebugInfo(std::size_t moduleIndex);
-private:
-
-    void setTurningMotor(units::radian_t angle);
-    void setDriveMotor(units::meters_per_second_t velocity);
+    
+    void zeroDriveEncoder();
 
     frc::SwerveModuleState getState();
 
     frc::SwerveModulePosition getPosition();
-    
-    void zeroDriveEncoder();
+
+    void stop();
+    void setTurningMotor(units::radian_t angle);
+private:
+
+    void setDriveMotor(units::meters_per_second_t velocity);
 
     units::radian_t getRawCANcoderRotation();
     units::radian_t getCANcoderRotation();
