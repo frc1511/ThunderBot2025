@@ -6,9 +6,11 @@
 
 Robot::Robot() {}
 void Robot::RobotPeriodic() {
-	for (Component* component : allComponents) {
-		component->sendFeedback();
-	}
+  // AddPeriodic([&] {
+  //  for (Component* component : allComponents) {
+	//  	component->sendFeedback();
+	//  }
+  // }, 20_ms);
 }
 
 void Robot::AutonomousInit() {
@@ -36,8 +38,11 @@ void Robot::DisabledPeriodic() {}
 
 void Robot::TestInit() {
     reset(Component::MatchMode::TEST);
+    drive.doPersistentConfiguration();
 }
 void Robot::TestPeriodic() {}
+  drive.resetToMode();
+}
 
 void Robot::SimulationInit() {}
 void Robot::SimulationPeriodic() {}

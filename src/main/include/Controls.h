@@ -1,9 +1,17 @@
 #pragma once
 
-#include <Basic/Component.h>
+#include <frc/PS4Controller.h>
+#include "Basic/Component.h"
+#include "Drive/Drive.h"
 
 class Controls : public Component {
   public:
-    Controls();
+    Controls(Drive* drive_);
     ~Controls();
+
+    void process();
+private:
+    Drive* drive;
+
+    frc::PS4Controller driveController {0};
 };

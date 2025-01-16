@@ -6,10 +6,10 @@
 
 #include <frc/TimedRobot.h>
 
-#include <Basic/Component.h>
-#include <Drive/Drive.h>
-#include <Controls.h>
-#include <Gamepiece.h>
+#include "Basic/Component.h"
+#include "Drive/Drive.h"
+#include "Controls.h"
+#include "Gamepiece.h"
 
 class Robot : public frc::TimedRobot {
   public:
@@ -35,9 +35,9 @@ class Robot : public frc::TimedRobot {
 	Component::MatchMode lastMode = Component::MatchMode::DISABLED;
 	Drive drive;
 	Gamepiece gamepiece;
-	Controls controls;
+	Controls controls {&drive};
 
 	std::vector<Component*> allComponents {
         &drive, &gamepiece, &controls
-    };
+   };
 };
