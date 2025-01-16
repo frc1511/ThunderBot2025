@@ -2,12 +2,12 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#include "Basic/Robot.h"
+#include "Robot.h"
 
 Robot::Robot() {}
 void Robot::RobotPeriodic() {
-	for (int index = 0; index < allComponents.size(), index++;) {
-		allComponents[index]->sendFeedback();
+	for (Component* component : allComponents) {
+		component->sendFeedback();
 	}
 }
 
@@ -15,8 +15,8 @@ void Robot::AutonomousInit() {
     reset(Component::MatchMode::AUTO);
 }
 void Robot::AutonomousPeriodic() {
-	for (int index = 0; index < allComponents.size(), index++;) {
-		allComponents[index]->autoProcess();
+	for (Component* component : allComponents) {
+		component->Process();
 	}
 }
 
@@ -24,8 +24,8 @@ void Robot::TeleopInit() {
     reset(Component::MatchMode::TELEOP);
 }
 void Robot::TeleopPeriodic() {
-	for (int index = 0; index < allComponents.size(), index++;) {
-		allComponents[index]->teleOpProcess();
+	for (Component* component : allComponents) {
+		component->Process();
 	}
 }
 
@@ -41,6 +41,14 @@ void Robot::TestPeriodic() {}
 
 void Robot::SimulationInit() {}
 void Robot::SimulationPeriodic() {}
+
+void Robot::reset(Component::MatchMode mode) {
+	for (Component* component : allComponents) {
+		component->callResetToMode(lastMode);
+	}
+
+	lastMode = mode;
+}
 
 #ifndef RUNNING_FRC_TESTS
 int main() {
