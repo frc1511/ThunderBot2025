@@ -8,6 +8,9 @@ class Robot;
 
 class Component {
   public:
+
+    virtual inline ~Component() = default; // Fixes a warning
+
     enum class MatchMode {
         DISABLED,
         AUTO,
@@ -37,7 +40,7 @@ class Component {
     /**
      * The periodic function. Should be employed for basic, TeleOperated and Autonomonous operations
      */
-    virtual inline void Process() {};
+    virtual inline void process() {};
   protected:
     MatchMode getMatchMode();
 

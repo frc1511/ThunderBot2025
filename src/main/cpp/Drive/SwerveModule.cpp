@@ -6,9 +6,9 @@ SwerveModule::SwerveModule(int driveID, int turningID, int canCoderID, units::de
 : driveMotor(driveID),
   turningMotor(turningID),
   canCoder(canCoderID),
+  absEncoderOffset(offset),
   turnRequest(ctre::phoenix6::controls::PositionVoltage{0_tr}.WithSlot(0)),
-  driveRequest(ctre::phoenix6::controls::VelocityVoltage{(units::turns_per_second_t)0}.WithSlot(0)),
-  absEncoderOffset(offset)
+  driveRequest(ctre::phoenix6::controls::VelocityVoltage{(units::turns_per_second_t)0}.WithSlot(0))
 {
 
 }

@@ -7,7 +7,6 @@
 class Controls : public Component {
   public:
     Controls(Drive* drive_);
-    ~Controls();
 
     void process();
 private:

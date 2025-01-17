@@ -18,7 +18,7 @@ void Robot::AutonomousInit() {
 }
 void Robot::AutonomousPeriodic() {
 	for (Component* component : allComponents) {
-		component->Process();
+		component->process();
 	}
 }
 
@@ -27,7 +27,7 @@ void Robot::TeleopInit() {
 }
 void Robot::TeleopPeriodic() {
 	for (Component* component : allComponents) {
-		component->Process();
+		component->process();
 	}
 }
 
@@ -38,11 +38,11 @@ void Robot::DisabledPeriodic() {}
 
 void Robot::TestInit() {
     reset(Component::MatchMode::TEST);
-    drive.doPersistentConfiguration();
+	for (Component* component : allComponents) {
+		component->doPersistantConfiguration();
+	}
 }
 void Robot::TestPeriodic() {}
-  drive.resetToMode();
-}
 
 void Robot::SimulationInit() {}
 void Robot::SimulationPeriodic() {}
