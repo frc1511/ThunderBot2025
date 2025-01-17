@@ -18,12 +18,16 @@
 #include <frc/controller/ProfiledPIDController.h>
 #include <frc/controller/HolonomicDriveController.h>
 
+#include <frc/smartdashboard/Field2d.h>
+
 #include <ctre/phoenix6/Pigeon2.hpp>
 
 #include "Basic/Component.h"
 #include "iomap.h"
 #include "preferences.h"
 #include "swerveModule.h"
+#include "Drive/CSVTrajectory.h"
+#include "Auto/Action.h"
 
 class Drive : public Component {
 public:
@@ -86,6 +90,15 @@ public:
      * Resets all drive PID controllers.
      */
     void resetPIDControllers();
+
+    /// MARK: Trajecory
+    
+    /**
+     * Runs a trajectory.
+     */
+    void runTrajectory(const CSVTrajectory* trajectory, const std::map<u_int32_t, Action*>& actionMap);
+
+    void setupInitialTrajectoryPosition(const CSVTrajectory* trajectory);
 
     /// TODO: REMOVE
     wpi::array<SwerveModule*, 4>* getSwerveModules();
@@ -178,18 +191,6 @@ private:
 
     bool imuCalibrated = false;
 
-    frc::Pose2d targetPose;
-
-    
-    // PID Controller for X and Y axis drivetrain movement.
-    frc::PIDController xPIDController { DRIVE_PREFERENCES.PID_XY.Kp, DRIVE_PREFERENCES.PID_XY.Ki, DRIVE_PREFERENCES.PID_XY.Kd },
-                       yPIDController { DRIVE_PREFERENCES.PID_XY.Kp, DRIVE_PREFERENCES.PID_XY.Ki, DRIVE_PREFERENCES.PID_XY.Kd };
-
-    // PID Controller for angular drivetrain movement.
-    frc::ProfiledPIDController<units::radians> trajectoryThetaPIDController {
-        DRIVE_PREFERENCES.PID_THETA.Kp, DRIVE_PREFERENCES.PID_THETA.Ki, DRIVE_PREFERENCES.PID_THETA.Ki,
-        frc::TrapezoidProfile<units::radians>::Constraints(DRIVE_PREFERENCES.DRIVE_AUTO_MAX_ANG_VEL, DRIVE_PREFERENCES.DRIVE_AUTO_MAX_ANG_ACCEL)
-    };
 
     // The drive controller that will handle the drivetrain movement.
     frc::HolonomicDriveController driveController;
@@ -209,4 +210,44 @@ private:
      * Updates the position and rotation of the drivetrain on the field.
      */
     void updateOdometry();
+
+
+    /// MARK: Trajectory
+
+
+    frc::Pose2d targetPose;
+
+    
+    // PID Controller for X and Y axis drivetrain movement.
+    frc::PIDController xPIDController { DRIVE_PREFERENCES.PID_XY.Kp, DRIVE_PREFERENCES.PID_XY.Ki, DRIVE_PREFERENCES.PID_XY.Kd },
+                       yPIDController { DRIVE_PREFERENCES.PID_XY.Kp, DRIVE_PREFERENCES.PID_XY.Ki, DRIVE_PREFERENCES.PID_XY.Kd };
+
+    // PID Controller for angular drivetrain movement.
+    frc::ProfiledPIDController<units::radians> trajectoryThetaPIDController {
+        DRIVE_PREFERENCES.PID_THETA.Kp, DRIVE_PREFERENCES.PID_THETA.Ki, DRIVE_PREFERENCES.PID_THETA.Ki,
+        frc::TrapezoidProfile<units::radians>::Constraints(DRIVE_PREFERENCES.DRIVE_AUTO_MAX_ANG_VEL, DRIVE_PREFERENCES.DRIVE_AUTO_MAX_ANG_ACCEL)
+    };
+
+    
+    // The trajectory that is currently being run.
+    const CSVTrajectory* trajectory = nullptr;
+
+    // The available actions.
+    const std::map<u_int32_t, Action*>* trajectoryActions = nullptr;
+
+    // Actions that are completed.
+    std::vector<u_int32_t> doneTrajectoryActions;
+
+    // The current action.
+    std::map<units::second_t, u_int32_t>::const_iterator trajectoryActionIter;
+
+    frc::Timer trajectoryTimer;
+
+    frc::Field2d feedbackField {};
+    
+    /**
+     * Executes the instructions for when the robot is running a trajectory.
+     */
+    void execTrajectory();
+
 };

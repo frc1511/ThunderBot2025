@@ -4,14 +4,15 @@
 
 #include "Robot.h"
 
-Robot::Robot() {}
-void Robot::RobotPeriodic() {
-  // AddPeriodic([&] {
-  //  for (Component* component : allComponents) {
-	//  	component->sendFeedback();
-	//  }
-  // }, 20_ms);
+void Robot::RobotInit() {
+	auto_.autoSelectorInit();
+	AddPeriodic([&] {
+		for (Component* component : allComponents) {
+			component->sendFeedback();
+		}
+	}, 20_ms);
 }
+void Robot::RobotPeriodic() {}
 
 void Robot::AutonomousInit() {
     reset(Component::MatchMode::AUTO);

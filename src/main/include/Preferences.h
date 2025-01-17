@@ -92,3 +92,11 @@ struct PreferencesControls
     double AXIS_DEADZONE = .2;
 };
 static PreferencesControls CONTROLS_PREFERENCE;
+
+
+struct PreferencesTrajectory
+{
+    units::meter_t FIELD_X = 17.55_m;
+    units::meter_t FIELD_Y = 8.05_m;
+};
+static PreferencesTrajectory TRAJECTORY_PREFERENCE;
