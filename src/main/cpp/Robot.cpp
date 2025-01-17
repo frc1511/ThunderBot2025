@@ -7,44 +7,56 @@
 Robot::Robot() {}
 void Robot::RobotPeriodic() {
   // AddPeriodic([&] {
-  //   drive.sendDebugInfo();
+  //  for (Component* component : allComponents) {
+	//  	component->sendFeedback();
+	//  }
   // }, 20_ms);
 }
 
-void Robot::AutonomousInit() {}
-void Robot::AutonomousPeriodic() {}
+void Robot::AutonomousInit() {
+    reset(Component::MatchMode::AUTO);
+}
+void Robot::AutonomousPeriodic() {
+	for (Component* component : allComponents) {
+		component->process();
+	}
+}
 
 void Robot::TeleopInit() {
-  drive.doPersistentConfiguration();
-  drive.resetToMode();
+    reset(Component::MatchMode::TELEOP);
 }
 void Robot::TeleopPeriodic() {
-  controls.process();
-  drive.process();
+	for (Component* component : allComponents) {
+		component->process();
+	}
 }
 
 void Robot::DisabledInit() {
-  drive.resetToMode();
+    reset(Component::MatchMode::DISABLED);
 }
 void Robot::DisabledPeriodic() {}
 
-void Robot::TestInit() {}
-void Robot::TestPeriodic() {
-  wpi::array<SwerveModule*,4>* swerveModules = drive.getSwerveModules();
-
-  frc::SwerveModuleState state {};
-  state.angle = frc::Rotation2d(30_deg);
-  state.speed = 0_mps;
-  for (SwerveModule* module : *swerveModules) {
-    module->setState(state);
-  }
+void Robot::TestInit() {
+    reset(Component::MatchMode::TEST);
+	for (Component* component : allComponents) {
+		component->doPersistantConfiguration();
+	}
 }
+void Robot::TestPeriodic() {}
 
 void Robot::SimulationInit() {}
 void Robot::SimulationPeriodic() {}
 
+void Robot::reset(Component::MatchMode mode) {
+	for (Component* component : allComponents) {
+		component->callResetToMode(lastMode);
+	}
+
+	lastMode = mode;
+}
+
 #ifndef RUNNING_FRC_TESTS
 int main() {
-  return frc::StartRobot<Robot>();
+    return frc::StartRobot<Robot>();
 }
 #endif

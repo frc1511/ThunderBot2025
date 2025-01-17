@@ -21,7 +21,7 @@ Drive::~Drive()
     }
 }
 
-void Drive::resetToMode(/*MatchMode mode*/) {
+void Drive::resetToMatchMode(MatchMode mode) {
     resetPIDControllers();
 
     driveMode = DriveMode::STOPPED;
@@ -37,18 +37,18 @@ void Drive::resetToMode(/*MatchMode mode*/) {
         module->stop();
     }
 
-    // if (mode == MatchMode::DISABLED) {
-    //     /**
-    //      * Coast all motors in disabled (good for transportation, however can
-    //      * lead to some runaway robots).
-    //      */
-    //     setIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    if (mode == MatchMode::DISABLED) {
+        /**
+         * Coast all motors in disabled (good for transportation, however can
+         * lead to some runaway robots).
+         */
+        //setIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 
-    //     trajectoryTimer.Stop();
-    // }
-    // else {
-    //     // Brake all motors when enabled to help counteract pushing.
-    //     setIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+        //trajectoryTimer.Stop();
+    }
+    else {
+        // Brake all motors when enabled to help counteract pushing.
+        //setIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 
         /**
          * Calibrate the IMU if not already calibrated. This will cause the
@@ -60,30 +60,30 @@ void Drive::resetToMode(/*MatchMode mode*/) {
         }
 
         // Reset the trajectory timer.
-    //     trajectoryTimer.Reset();
+        //trajectoryTimer.Reset();
 
-    //     if (mode == MatchMode::AUTO) {
-    //         trajectoryTimer.Start();
-    //     }
-    // }
+        if (mode == MatchMode::AUTO) {
+            //trajectoryTimer.Start();
+        }
+    }
 
-    // static bool wasAuto = false;
+    static bool wasAuto = false;
 
-    // // Going from Auto to Disabled to Teleop.
-    // if (wasAuto && mode == Mechanism::MatchMode::TELEOP) {
-    //     wasAuto = false;
-    //     frc::Pose2d currPose(getEstimatedPose());
-    //     resetOdometry(frc::Pose2d(currPose.X(), currPose.Y(), currPose.Rotation().Degrees() + 90_deg + (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed ? 180_deg : 0_deg)));
-    // }
-    // else {
-    //     // Check if going from Auto to Disabled.
-    //     wasAuto = getLastMode() == Mechanism::MatchMode::AUTO && mode == Mechanism::MatchMode::DISABLED;
+    // Going from Auto to Disabled to Teleop.
+    if (wasAuto && mode == Component::MatchMode::TELEOP) {
+        wasAuto = false;
+        frc::Pose2d currPose(getEstimatedPose());
+        resetOdometry(frc::Pose2d(currPose.X(), currPose.Y(), currPose.Rotation().Degrees() + 90_deg + (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed ? 180_deg : 0_deg)));
+    }
+    else {
+        // Check if going from Auto to Disabled.
+        wasAuto = getLastMode() == Component::MatchMode::AUTO && mode == Component::MatchMode::DISABLED;
 
-    //     // Doing something else.
-    //     if (!wasAuto && mode != Mechanism::MatchMode::DISABLED) {
-    //         // Stuff to reset normally.
-    //     }
-    // }
+        // Doing something else.
+        if (!wasAuto && mode != Component::MatchMode::DISABLED) {
+            // Stuff to reset normally.
+        }
+    }
 }
 
 void Drive::process()
@@ -215,7 +215,7 @@ void Drive::stop()
     }
 }
 
-void Drive::sendDebugInfo()
+void Drive::sendFeedback()
 {
     for (std::size_t i = 0; i < swerveModules.size(); i++) {
         swerveModules.at(i)->sendDebugInfo(i);

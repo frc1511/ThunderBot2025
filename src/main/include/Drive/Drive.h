@@ -20,18 +20,18 @@
 
 #include <ctre/phoenix6/Pigeon2.hpp>
 
+#include "Basic/Component.h"
 #include "iomap.h"
 #include "preferences.h"
 #include "swerveModule.h"
 
-class Drive {
+class Drive : public Component {
 public:
     Drive();
     ~Drive();
 
     void process();
-    /// TODO: RESET TO MODE
-    void resetToMode(/*MatchMode mode*/); 
+    void resetToMatchMode(MatchMode mode); 
 
     enum ControlFlag {
         NONE          = 0,
@@ -46,7 +46,7 @@ public:
     void driveFromPercents(double xPct, double yPct, double rotPct, unsigned flags);
     void driveWithVelocities(units::meters_per_second_t xVel, units::meters_per_second_t yVel, units::radians_per_second_t angVel, unsigned flags);
     
-    void sendDebugInfo();
+    void sendFeedback();
     void doPersistentConfiguration();
 
     /// MARK: Field Centric

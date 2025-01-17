@@ -11,14 +11,15 @@
 #include <ctre/phoenix6/TalonFX.hpp>
 #include <ctre/phoenix6/CANcoder.hpp>
 
+#include "Basic/Component.h"
 #include "Preferences.h"
 
-class SwerveModule {
+class SwerveModule : public Component {
 public:
     SwerveModule(int driveID, int turningID, int canCoderID, units::degree_t offset);
     void doPersistentConfiguration();
     void setState(frc::SwerveModuleState state);
-    void sendDebugInfo(std::size_t moduleIndex);
+    void sendDebugInfo(std::size_t moduleIndex); // Replaces sendFeedback();
     
     void zeroDriveEncoder();
 

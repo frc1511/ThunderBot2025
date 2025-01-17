@@ -6,30 +6,38 @@
 
 #include <frc/TimedRobot.h>
 
+#include "Basic/Component.h"
 #include "Drive/Drive.h"
-
 #include "Controls.h"
+#include "Gamepiece.h"
 
 class Robot : public frc::TimedRobot {
- public:
-  Robot();
-  void RobotPeriodic() override;
+  public:
+	Robot();
+	void RobotPeriodic() override;
 
-  void AutonomousInit() override;
-  void AutonomousPeriodic() override;
+	void AutonomousInit() override;
+	void AutonomousPeriodic() override;
 
-  void TeleopInit() override;
-  void TeleopPeriodic() override;
+	void TeleopInit() override;
+	void TeleopPeriodic() override;
 
-  void DisabledInit() override;
-  void DisabledPeriodic() override;
+	void DisabledInit() override;
+	void DisabledPeriodic() override;
 
-  void TestInit() override;
-  void TestPeriodic() override;
+	void TestInit() override;
+	void TestPeriodic() override;
 
-  void SimulationInit() override;
-  void SimulationPeriodic() override;
-private:
-  Drive drive;
-  Controls controls {&drive};
+	void SimulationInit() override;
+	void SimulationPeriodic() override;
+  private:
+	void reset(Component::MatchMode mode);
+	Component::MatchMode lastMode = Component::MatchMode::DISABLED;
+	Drive drive;
+	Gamepiece gamepiece;
+	Controls controls {&drive};
+
+	std::vector<Component*> allComponents {
+        &drive, &gamepiece, &controls
+   };
 };
