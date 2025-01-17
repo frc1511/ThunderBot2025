@@ -20,14 +20,18 @@
 
 #include <ctre/phoenix6/Pigeon2.hpp>
 
+#include <frc/smartdashboard/Field2d.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+
 #include "Basic/Component.h"
 #include "iomap.h"
 #include "preferences.h"
 #include "swerveModule.h"
+#include "Limelight.h"
 
 class Drive : public Component {
 public:
-    Drive();
+    Drive(Limelight* _limelight);
     ~Drive();
 
     void process();
@@ -86,6 +90,11 @@ public:
      * Resets all drive PID controllers.
      */
     void resetPIDControllers();
+
+    /**
+     * Gives the vision measurement from Limelight to the pose estimator
+     */
+    void addLimelightMeasurementToPoseEstimator();
 
     /// TODO: REMOVE
     wpi::array<SwerveModule*, 4>* getSwerveModules();
@@ -166,8 +175,8 @@ private:
         getRotation(),
         getModulePositions(),
         frc::Pose2d(),
-        { 0.1, 0.1, 0.1 }, // Standard deviations of model states.
-        { 0.9, 0.9, 0.9 } // Standard deviations of the vision measurements.
+        { 0.9, 0.9, 0.9 }, // Standard deviations of model states.
+        { 0.1, 0.1, 0.1 } // Standard deviations of the vision measurements.
     };
 
     // PID Controller for angular drivetrain movement.
@@ -209,4 +218,10 @@ private:
      * Updates the position and rotation of the drivetrain on the field.
      */
     void updateOdometry();
+
+    frc::Field2d m_field;
+
+    /// MARK: Limelight
+
+    Limelight* limelight;
 };
