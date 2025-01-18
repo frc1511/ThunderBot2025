@@ -1,5 +1,7 @@
 #include "Drive/Limelight.h"
 
+#include <frc/smartdashboard/SmartDashboard.h>
+
 Limelight::Limelight() {
 
 }
@@ -24,10 +26,6 @@ void Limelight::sendFeedback() {
 }
 
 LimelightHelpers::PoseEstimate Limelight::getEstimatedBotPose() {
-    if (allianceColor == frc::DriverStation::Alliance::kRed) {
-        LimelightHelpers::PoseEstimate limelightMeasurement = LimelightHelpers::getBotPoseEstimate_wpiRed("limelight");
-    } else {
-        LimelightHelpers::PoseEstimate limelightMeasurement = LimelightHelpers::getBotPoseEstimate_wpiBlue("limelight");
-    }
+    LimelightHelpers::PoseEstimate limelightMeasurement = LimelightHelpers::getBotPoseEstimate_wpiBlue();
     return limelightMeasurement;
 }
