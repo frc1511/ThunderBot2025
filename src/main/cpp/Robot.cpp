@@ -6,11 +6,7 @@
 
 Robot::Robot() {}
 void Robot::RobotPeriodic() {
-  // AddPeriodic([&] {
-  //  for (Component* component : allComponents) {
-	//  	component->sendFeedback();
-	//  }
-  // }, 20_ms);
+
 }
 
 void Robot::AutonomousInit() {
@@ -49,7 +45,7 @@ void Robot::SimulationPeriodic() {}
 
 void Robot::reset(Component::MatchMode mode) {
 	for (Component* component : allComponents) {
-		component->callResetToMode(lastMode);
+		component->resetToMatchMode(lastMode, mode);
 	}
 
 	lastMode = mode;
