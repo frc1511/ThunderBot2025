@@ -72,11 +72,16 @@ void Gamepiece::process() {
 
     motorSpeed = MotorSpeeds::kSTOPPED; // In case we make it through the below logic without getting a speed
 
-    // If we don't have a gamepiece, so intake
-    if ((currentGamepieceState == GamepieceStates::kNONE)) {
+    if ((currentGamepieceState == GamepieceStates::kNO_GP)) { // If we don't have a gamepiece, so intake or nothing
         switch (motorMode) {
         case MotorModes::kNONE: // If we aren't being told to move motors
             motorSpeed = MotorSpeeds::kSTOPPED; // Set speed to stop
+            // Uh Oh! These will only be false if we shot it out (or manually reset), so the gamepiece was removed without us shooting it
+            if (hadCoral) { // If we lost the coral
+                motorSpeed = MotorSpeeds::kCORAL; // Try to grab at the speed of coral
+            } else if (hadAlgae) { // If we lost the algae
+                motorSpeed = MotorSpeeds::kALGAE; // Try to grab at the speed of algae
+            }
             break;
         case MotorModes::kCORAL_INTAKE: // If we are told to intake coral
             motorSpeed = MotorSpeeds::kCORAL; // Set speed to coral
@@ -91,14 +96,25 @@ void Gamepiece::process() {
 
         runMotors(presetIntakeSpeeds[motorSpeed]);  // Run motors in at the speed ^
 
-    // If we have Coral
-    } else if (currentGamepieceState == GamepieceStates::kHAS_CORAL) {
+    } else if (currentGamepieceState == GamepieceStates::kHAS_CORAL | currentGamepieceState == GamepieceStates::kHAS_ALGAE) { // If we have Coral/Algae, so shoot or nothing
+        if (currentGamepieceState == GamepieceStates::kHAS_CORAL && !(hadCoral)) { // We have coral
+            hadCoral = true;
+        }
+        if (currentGamepieceState == GamepieceStates::kHAS_ALGAE && !(hadAlgae)) { // We have algae
+            hadAlgae = true;
+        }
         switch (motorMode) {
         case MotorModes::kNONE: // If we aren't being told to move motors
             motorSpeed = MotorSpeeds::kSTOPPED; // Set speed to stop
             break;
         case MotorModes::kSHOOT: // If we are told to shoot
-            motorSpeed = MotorSpeeds::kCORAL; // Set speed to coral
+            if (currentGamepieceState == GamepieceStates::kHAS_CORAL) { // If we have coral
+                motorSpeed = MotorSpeeds::kCORAL; // Set speed to coral
+                if (hadCoral) hadCoral = false; // We assume we no longer have coral because we're shooting it out
+            } else if (currentGamepieceState == GamepieceStates::kHAS_ALGAE) { // If we have algae
+                motorSpeed = MotorSpeeds::kALGAE; // Set speed to Algae
+                if (hadAlgae) hadAlgae = false; // We assume we no longer have algae because we're shooting it out
+            }
             break;
         default:
             motorSpeed = MotorSpeeds::kSTOPPED; // Set the motors to stop because we shouldn't be intaking
@@ -107,26 +123,16 @@ void Gamepiece::process() {
 
         runMotors(presetShooterSpeeds[motorSpeed]);  // Run motors out at the speed ^
 
-    // If we have Algae
-    } else if (currentGamepieceState == GamepieceStates::kHAS_ALGAE) {
-        switch (motorMode) {
-        case MotorModes::kNONE: // If we aren't being told to move motors
-            motorSpeed = MotorSpeeds::kSTOPPED; // Set speed to stop
-            break;
-        case MotorModes::kSHOOT: // If we are told to shoot
-            motorSpeed = MotorSpeeds::kALGAE; // Set speed to algae
-            break;
-        default:
-            motorSpeed = MotorSpeeds::kSTOPPED; // Set the motors to stop because we shouldn't be intaking
-            break;
-        }
-
-        runMotors(presetShooterSpeeds[motorSpeed]); // Run motors out at the speed ^
     }
 }
 
 void Gamepiece::setMotorMode(Gamepiece::MotorModes mode) {
     motorMode = mode;
+}
+
+void Gamepiece::resetHadGamepiece() {
+    hadCoral = false;
+    hadAlgae = false;
 }
 
 bool Gamepiece::coralRetroreflectiveTripped() {
@@ -148,7 +154,7 @@ void Gamepiece::runMotors(double speed) {
 }
 
 void Gamepiece::updateGamepieceState() {
-    currentGamepieceState = GamepieceStates::kNONE;
+    currentGamepieceState = GamepieceStates::kNO_GP;
     if (algaeRetroreflectiveTripped()) {
         currentGamepieceState = GamepieceStates::kHAS_ALGAE;
     } else if (coralRetroreflectiveTripped()) {

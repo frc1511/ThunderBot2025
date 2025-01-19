@@ -37,6 +37,11 @@ class Gamepiece : public Component {
      */
     void setMotorMode(Gamepiece::MotorModes mode);
 
+    /**
+     * Reset the had gamepiece states to false
+     */
+    void resetHadGamepiece();
+
   private:
     /**
      * Get calculated state (non-raw) of the Coral Retroreflective sensor
@@ -59,7 +64,7 @@ class Gamepiece : public Component {
     void runMotors(double speed);
 
     /**
-     * Set which gamepiece we have, if any
+     * Manually Set which gamepiece we have, if any
      */
     void updateGamepieceState();
 
@@ -72,7 +77,7 @@ class Gamepiece : public Component {
      * Possible states for the gamepiece (based on the sensors)
      */
     enum GamepieceStates {
-        kNONE,
+        kNO_GP,
         kHAS_CORAL,
         kHAS_ALGAE
     };
@@ -80,7 +85,16 @@ class Gamepiece : public Component {
     /**
      * The variable storing what our current gamepiece state is
      */
-    enum Gamepiece::GamepieceStates currentGamepieceState = GamepieceStates::kNONE;
+    enum Gamepiece::GamepieceStates currentGamepieceState = GamepieceStates::kNO_GP;
+
+    /**
+     * The variable storing whether or not we had a coral (used to recapture dropped gamepieces)
+     */
+    bool hadCoral = false;
+    /**
+     * The variable storing whether or not we had an algae (used to recapture dropped gamepieces)
+     */
+    bool hadAlgae = false;
 
     /**
      * The possible speed settings (does not differentiate intake versus shoot, rather, it differentiates based on gamepiece)
