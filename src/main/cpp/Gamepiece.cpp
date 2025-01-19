@@ -1,14 +1,8 @@
 #include <Gamepiece.h>
 
 Gamepiece::Gamepiece() {
-}
-
-Gamepiece::~Gamepiece() {
-}
-
-void Gamepiece::doPersistentConfiguration() {
-    leftSparkMaxConfig.Inverted(false);
-    rightSparkMaxConfig.Inverted(false);
+    leftSparkMaxConfig.Inverted(true);
+    rightSparkMaxConfig.Inverted(true);
     leftSparkMaxConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kBrake);
     rightSparkMaxConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kBrake);
     // ↓ Wait until testing/implementing PID ↓
@@ -19,8 +13,34 @@ void Gamepiece::doPersistentConfiguration() {
 
     leftSparkMax.Configure(
        leftSparkMaxConfig,
-       rev::spark::SparkBase::ResetMode::kResetSafeParameters, 
-       rev::spark::SparkMax::PersistMode::kPersistParameters
+       rev::spark::SparkBase::ResetMode::kNoResetSafeParameters, 
+       rev::spark::SparkMax::PersistMode::kNoPersistParameters
+    );
+    rightSparkMax.Configure(
+        rightSparkMaxConfig, 
+        rev::spark::SparkBase::ResetMode::kResetSafeParameters, 
+        rev::spark::SparkMax::PersistMode::kPersistParameters
+    );
+}
+
+Gamepiece::~Gamepiece() {
+}
+
+void Gamepiece::doPersistentConfiguration() {
+    leftSparkMaxConfig.Inverted(true);
+    rightSparkMaxConfig.Inverted(true);
+    leftSparkMaxConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kBrake);
+    rightSparkMaxConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kBrake);
+    // ↓ Wait until testing/implementing PID ↓
+    // leftSparkMaxConfig.closedLoop.SetFeedbackSensor(rev::spark::ClosedLoopConfig::FeedbackSensor::kPrimaryEncoder)
+    // rightSparkMaxConfig.closedLoop.SetFeedbackSensor(rev::spark::ClosedLoopConfig::FeedbackSensor::kPrimaryEncoder)
+    // leftSparkMaxConfig.closedLoop.Pid(0.0, 0.0, 0.0);
+    // rightSparkMaxConfig.closedLoop.Pid(0.0, 0.0, 0.0);
+
+    leftSparkMax.Configure(
+       leftSparkMaxConfig,
+       rev::spark::SparkBase::ResetMode::kNoResetSafeParameters, 
+       rev::spark::SparkMax::PersistMode::kNoPersistParameters
     );
     rightSparkMax.Configure(
         rightSparkMaxConfig, 
@@ -75,6 +95,8 @@ void Gamepiece::process() {
             motorSpeed = MotorSpeeds::kCORAL;
             if (!coralRetroreflectiveTripped()) {
                 runMotors(presetIntakeSpeeds[motorSpeed]);
+            } else {
+                stopMotors();
             }
             break;
         case MotorModes::kCORAL_SHOOT:
@@ -85,11 +107,13 @@ void Gamepiece::process() {
             motorSpeed = MotorSpeeds::kALGAE;
             if (!algaeRetroreflectiveTripped()) {
                 runMotors(presetIntakeSpeeds[motorSpeed]);
+            } else {
+                stopMotors();
             }
             break;
         case MotorModes::kALGAE_SHOOT:
             motorSpeed = MotorSpeeds::kALGAE;
-            runMotors(presetIntakeSpeeds[motorSpeed]);
+            runMotors(presetShooterSpeeds[motorSpeed]);
             break;
         default: // Just in case
             motorSpeed = MotorSpeeds::kSTOPPED;
@@ -103,11 +127,11 @@ void Gamepiece::setMotorMode(Gamepiece::MotorModes mode) {
 }
 
 bool Gamepiece::coralRetroreflectiveTripped() {
-    return coralRetroreflective.Get();
+    return !coralRetroreflective.Get();
 }
 
 bool Gamepiece::algaeRetroreflectiveTripped() {
-    return !algaeRetroreflective.Get();
+    return algaeRetroreflective.Get();
 }
 
 void Gamepiece::stopMotors() {

@@ -62,10 +62,10 @@ void Controls::process() {
 
 
     #ifndef AUX_DISABLED
-        bool coralIntake = auxController.GetR2ButtonPressed();
-        bool coralShoot = auxController.GetR1ButtonPressed();
-        bool algaeIntake = auxController.GetL2ButtonPressed();
-        bool algaeShoot = auxController.GetL1ButtonPressed();
+        bool coralIntake = auxController.GetR1Button();
+        bool coralShoot = auxController.GetR2Button();
+        bool algaeIntake = auxController.GetL1Button();
+        bool algaeShoot = auxController.GetL2Button();
         if (coralIntake) {
             gamepiece->setMotorMode(Gamepiece::MotorModes::kCORAL_INTAKE);
         } else if (coralShoot) {

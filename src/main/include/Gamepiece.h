@@ -55,14 +55,14 @@ class Gamepiece : public Component {
 
     double presetIntakeSpeeds [MotorSpeeds::kMAX] = {
         0.0,
-        0.3,
-        0.3
+        0.25,
+        0.25
     };
 
     double presetShooterSpeeds [MotorSpeeds::kMAX] = {
         0.0,
-        -0.3,
-        -0.3
+        -0.25,
+        -0.25
     };
 
     rev::spark::SparkMax leftSparkMax {CAN_LEFT_CALGAE, rev::spark::SparkLowLevel::MotorType::kBrushless};

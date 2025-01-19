@@ -7,9 +7,9 @@
 Robot::Robot() {}
 void Robot::RobotPeriodic() {
   // AddPeriodic([&] {
-  //  for (Component* component : allComponents) {
-	//  	component->sendFeedback();
-	//  }
+    for (Component* component : allComponents) {
+	 	component->sendFeedback();
+	}
   // }, 20_ms);
 }
 
