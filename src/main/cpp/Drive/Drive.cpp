@@ -104,10 +104,10 @@ void Drive::process()
 }
 
 
-void Drive::doPersistentConfiguration()
+void Drive::doPersistantConfiguration()
 {
     for (SwerveModule* module : swerveModules) {
-        module->doPersistentConfiguration();
+        module->doPersistantConfiguration();
     }
 }
 
@@ -466,9 +466,6 @@ void Drive::execTrajectory() {
             state.pose.Rotation()
         )
     );
-    // velocities.vx = 0_mps;
-    // velocities.vy = 0_mps;
-    velocities.omega = -velocities.omega;
 
     printf("VelX: %f, VelY: %f, VelRot: %f\n", velocities.vx.value(), velocities.vy.value(), velocities.omega.value());
     frc::SmartDashboard::PutNumber("debug_driveXVel", velocities.vx.value());
@@ -476,9 +473,6 @@ void Drive::execTrajectory() {
     frc::SmartDashboard::PutNumber("debug_driveOMEGAVel", velocities.omega.value());
     // Keep target pose for feedback.
     targetPose = state.pose;
-
-    // velocities.vx = -velocities.vx;
-    // velocities.vy = -velocities.vy;
 
     // Make the robot go vroom :D
     setModuleStates(velocities);

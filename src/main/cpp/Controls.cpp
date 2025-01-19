@@ -11,18 +11,18 @@ void Controls::process() {
     wpi::array<SwerveModule*, 4>*  modules = drive->getSwerveModules();
     frc::SwerveModuleState state;
     state.speed = 0.5_mps;
-    state.angle = 45_deg;
+    state.angle = 90_deg;
 
     for (SwerveModule* swerMod : *modules){
         swerMod->setState(state);
     }
     #else
-    double xPercent = driveController.GetLeftX();
-    if (fabs(xPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
-        xPercent = 0;
-    double yPercent = driveController.GetLeftY();
-    if (fabs(yPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
-        yPercent = 0;
+    double controllerXPercent = driveController.GetLeftX();
+    if (fabs(controllerXPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
+        controllerXPercent = 0;
+    double controllerYPercent = driveController.GetLeftY();
+    if (fabs(controllerYPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
+        controllerYPercent = 0;
     double rotPercent = driveController.GetRightX();
     if (fabs(rotPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
         rotPercent = 0;
@@ -33,7 +33,7 @@ void Controls::process() {
     bool resetIMU = driveController.GetTriangleButtonPressed();
     bool brickMode = driveController.GetCrossButton();
     if (persistentConfig) {
-        drive->doPersistentConfiguration();
+        drive->doPersistantConfiguration();
     }
     unsigned flags = 0;
     if (lockX)
@@ -50,8 +50,12 @@ void Controls::process() {
     if (resetIMU)
         drive->resetOdometry();
 
+    double robotXPercent = -controllerYPercent * SPEED_REDUCTION; // positive -> forward
+    double robotYPercent = -controllerXPercent * SPEED_REDUCTION; // positive -> left
+    double robotRotPercent = -rotPercent * SPEED_REDUCTION; // positive -> counter-clockwise
+
     // SWAP: 90_deg offset for drive
-    drive->driveFromPercents(yPercent * -SPEED_REDUCTION, xPercent * SPEED_REDUCTION, rotPercent * -SPEED_REDUCTION, flags);
+    drive->driveFromPercents(robotXPercent, robotYPercent, robotRotPercent, flags);
     #endif
 
 }

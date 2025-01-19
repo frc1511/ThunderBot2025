@@ -41,6 +41,8 @@ void Robot::TestInit() {
 	for (Component* component : allComponents) {
 		component->doPersistantConfiguration();
 	}
+
+	printf("Persistantt config done boi \n");
 }
 void Robot::TestPeriodic() {}
 

@@ -51,7 +51,7 @@ public:
     void driveWithVelocities(units::meters_per_second_t xVel, units::meters_per_second_t yVel, units::radians_per_second_t angVel, unsigned flags);
     
     void sendFeedback();
-    void doPersistentConfiguration();
+    void doPersistantConfiguration() override;
 
     /// MARK: Field Centric
 
@@ -157,10 +157,10 @@ private:
 
     // The swerve modules on the robot.
     wpi::array<SwerveModule*, 4> swerveModules { // ENCODER OFFSETS: 1/12/2025 ALPHA BOT
-        new SwerveModule(CAN_SWERVE_DRIVE_FL, CAN_SWERVE_ROTATION_FL, CAN_SWERVE_CANCODER_FL, 0_deg),
-        new SwerveModule(CAN_SWERVE_DRIVE_BL, CAN_SWERVE_ROTATION_BL, CAN_SWERVE_CANCODER_BL, 0_deg),
-        new SwerveModule(CAN_SWERVE_DRIVE_BR, CAN_SWERVE_ROTATION_BR, CAN_SWERVE_CANCODER_BR, 0_deg),
-        new SwerveModule(CAN_SWERVE_DRIVE_FR, CAN_SWERVE_ROTATION_FR, CAN_SWERVE_CANCODER_FR, 0_deg),
+        new SwerveModule(CAN_SWERVE_DRIVE_FL, CAN_SWERVE_ROTATION_FL, CAN_SWERVE_CANCODER_FL, -113.46_deg),
+        new SwerveModule(CAN_SWERVE_DRIVE_BL, CAN_SWERVE_ROTATION_BL, CAN_SWERVE_CANCODER_BL, 109.16_deg),
+        new SwerveModule(CAN_SWERVE_DRIVE_BR, CAN_SWERVE_ROTATION_BR, CAN_SWERVE_CANCODER_BR, -47.98_deg + 180_deg),
+        new SwerveModule(CAN_SWERVE_DRIVE_FR, CAN_SWERVE_ROTATION_FR, CAN_SWERVE_CANCODER_FR, -128.32_deg + 180_deg),
     };
 
     /// MARK: Field Centric
