@@ -37,6 +37,7 @@ void Auto::test() { //test auto, leave, grab a note, and shoot
         step++;
     } else if (step == 1 && drive->isFinished()) {
         printf("Finished Drive!\n");
+        step++;
     }
 }
 

@@ -139,10 +139,10 @@ private:
 
 
     wpi::array<frc::Translation2d, 4> locations {
-        frc::Translation2d(-DRIVE_PREFERENCES.ROBOT_WIDTH/2, +DRIVE_PREFERENCES.ROBOT_LENGTH/2), // Front left.
-        frc::Translation2d(+DRIVE_PREFERENCES.ROBOT_WIDTH/2, +DRIVE_PREFERENCES.ROBOT_LENGTH/2), // Front right.
-        frc::Translation2d(-DRIVE_PREFERENCES.ROBOT_WIDTH/2, -DRIVE_PREFERENCES.ROBOT_LENGTH/2), // Back left.
-        frc::Translation2d(+DRIVE_PREFERENCES.ROBOT_WIDTH/2, -DRIVE_PREFERENCES.ROBOT_LENGTH/2), // Back right.
+        frc::Translation2d(+DRIVE_PREFERENCES.ROBOT_LENGTH/2, +DRIVE_PREFERENCES.ROBOT_WIDTH/2), // FRONT LEFT.
+        frc::Translation2d(-DRIVE_PREFERENCES.ROBOT_LENGTH/2, +DRIVE_PREFERENCES.ROBOT_WIDTH/2), // BACK LEFT.
+        frc::Translation2d(-DRIVE_PREFERENCES.ROBOT_LENGTH/2, -DRIVE_PREFERENCES.ROBOT_WIDTH/2), // BACK RIGHT.
+        frc::Translation2d(+DRIVE_PREFERENCES.ROBOT_LENGTH/2, -DRIVE_PREFERENCES.ROBOT_WIDTH/2), // FRONT RIGHT.
     };
     /**
      * The helper class that it used to convert chassis speeds into swerve
@@ -159,11 +159,9 @@ private:
     wpi::array<SwerveModule*, 4> swerveModules { // ENCODER OFFSETS: 1/12/2025 ALPHA BOT
         new SwerveModule(CAN_SWERVE_DRIVE_FL, CAN_SWERVE_ROTATION_FL, CAN_SWERVE_CANCODER_FL, 0_deg),
         new SwerveModule(CAN_SWERVE_DRIVE_BL, CAN_SWERVE_ROTATION_BL, CAN_SWERVE_CANCODER_BL, 0_deg),
-        new SwerveModule(CAN_SWERVE_DRIVE_FR, CAN_SWERVE_ROTATION_FR, CAN_SWERVE_CANCODER_FR, 0_deg),
         new SwerveModule(CAN_SWERVE_DRIVE_BR, CAN_SWERVE_ROTATION_BR, CAN_SWERVE_CANCODER_BR, 0_deg),
+        new SwerveModule(CAN_SWERVE_DRIVE_FR, CAN_SWERVE_ROTATION_FR, CAN_SWERVE_CANCODER_FR, 0_deg),
     };
-    
-
 
     /// MARK: Field Centric
 
@@ -192,8 +190,7 @@ private:
     bool imuCalibrated = false;
 
 
-    // The drive controller that will handle the drivetrain movement.
-    frc::HolonomicDriveController driveController;
+ 
 
     /**
      * Returns the states of the swerve modules. (velocity and rotatation)
@@ -217,17 +214,19 @@ private:
 
     frc::Pose2d targetPose;
 
-    
+
     // PID Controller for X and Y axis drivetrain movement.
     frc::PIDController xPIDController { DRIVE_PREFERENCES.PID_XY.Kp, DRIVE_PREFERENCES.PID_XY.Ki, DRIVE_PREFERENCES.PID_XY.Kd },
                        yPIDController { DRIVE_PREFERENCES.PID_XY.Kp, DRIVE_PREFERENCES.PID_XY.Ki, DRIVE_PREFERENCES.PID_XY.Kd };
 
     // PID Controller for angular drivetrain movement.
     frc::ProfiledPIDController<units::radians> trajectoryThetaPIDController {
-        DRIVE_PREFERENCES.PID_THETA.Kp, DRIVE_PREFERENCES.PID_THETA.Ki, DRIVE_PREFERENCES.PID_THETA.Ki,
+        DRIVE_PREFERENCES.PID_THETA.Kp, DRIVE_PREFERENCES.PID_THETA.Ki, DRIVE_PREFERENCES.PID_THETA.Kd,
         frc::TrapezoidProfile<units::radians>::Constraints(DRIVE_PREFERENCES.DRIVE_AUTO_MAX_ANG_VEL, DRIVE_PREFERENCES.DRIVE_AUTO_MAX_ANG_ACCEL)
     };
-
+    
+   // The drive controller that will handle the drivetrain movement.
+    frc::HolonomicDriveController driveController;
     
     // The trajectory that is currently being run.
     const CSVTrajectory* trajectory = nullptr;

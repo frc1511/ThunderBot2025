@@ -18,9 +18,8 @@ void Robot::AutonomousInit() {
     reset(Component::MatchMode::AUTO);
 }
 void Robot::AutonomousPeriodic() {
-	for (Component* component : allComponents) {
-		component->process();
-	}
+	auto_.process();
+	drive.process();
 }
 
 void Robot::TeleopInit() {

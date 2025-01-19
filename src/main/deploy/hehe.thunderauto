@@ -1,0 +1,55 @@
+{
+  "settings": {
+    "drive_ctrl": 0,
+    "field": {
+      "img": "2025",
+      "img_type": 1
+    },
+    "robot_length": 0.8064500093460083,
+    "robot_width": 0.7111999988555908
+  },
+  "state": {
+    "actions": [],
+    "paths": [
+      [
+        "match_winning_auto",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 3.1415927410125732,
+              "h1": 0.0,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 1.5707963705062866,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 1.3555890321731567,
+              "x": 2.2300000190734863,
+              "y": 0.7599999904632568
+            },
+            {
+              "actions": 0,
+              "h0": 3.1415927410125732,
+              "h1": 0.0,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 1.5707963705062866,
+              "stop": false,
+              "w0": 1.9142475128173828,
+              "w1": 1.0,
+              "x": 6.5834197998046875,
+              "y": 0.7599999904632568
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ]
+    ],
+    "waypoint_links": []
+  }
+}

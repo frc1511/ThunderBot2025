@@ -73,7 +73,7 @@ void Drive::resetToMatchMode(MatchMode mode) {
     if (wasAuto && mode == Component::MatchMode::TELEOP) {
         wasAuto = false;
         frc::Pose2d currPose(getEstimatedPose());
-        resetOdometry(frc::Pose2d(currPose.X(), currPose.Y(), currPose.Rotation().Degrees() + 90_deg + (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed ? 180_deg : 0_deg)));
+        // resetOdometry(frc::Pose2d(currPose.X(), currPose.Y(), currPose.Rotation().Degrees() + 90_deg + (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed ? 180_deg : 0_deg)));
     }
     else {
         // Check if going from Auto to Disabled.
@@ -183,7 +183,6 @@ void Drive::executeVelocityData()
 
 void Drive::setModuleStates(frc::ChassisSpeeds speeds)
 {
-
     /// NOTE: If auto is 90_deg off swap X and Y in chassis speeds here, its swaped in controls.
 
     // Store velocities for feedback.
@@ -291,14 +290,13 @@ void Drive::resetOdometry(frc::Pose2d pose) {
     }
 }
 
-
 frc::Pose2d Drive::getEstimatedPose() {
     return poseEstimator.GetEstimatedPosition();
 }
 
 frc::Rotation2d Drive::getRotation() {
     // The raw rotation from the IMU.
-    return frc::Rotation2d(-pigeon.GetYaw().GetValue() - 90_deg);
+    return frc::Rotation2d(-pigeon.GetYaw().GetValue());
 }
 
 void Drive::resetPIDControllers() {
@@ -313,7 +311,6 @@ void Drive::resetPIDControllers() {
 
 }
 
-
 void Drive::updateOdometry() {
     /**
      * Update the pose estimator with encoder measurements from
@@ -321,7 +318,6 @@ void Drive::updateOdometry() {
      */
     poseEstimator.Update(getRotation(), getModulePositions());
 }
-
 
 wpi::array<frc::SwerveModuleState, 4> Drive::getModuleStates() {
     return { swerveModules.at(0)->getState(), swerveModules.at(1)->getState(),
@@ -367,7 +363,7 @@ void Drive::runTrajectory(const CSVTrajectory* _trajectory, const std::map<u_int
 void Drive::setupInitialTrajectoryPosition(const CSVTrajectory *trajectory)
 {
     frc::Pose2d initPose(trajectory->getInitialPose());
-    resetOdometry(frc::Pose2d(initPose.X(), initPose.Y(), initPose.Rotation().Degrees() - 90_deg));
+    resetOdometry(frc::Pose2d(initPose.X(), initPose.Y(), initPose.Rotation().Degrees()));
 }
 
 void Drive::execTrajectory() {
@@ -377,36 +373,36 @@ void Drive::execTrajectory() {
     bool execAction = false;
 
     // If we've got another action to go.
-    if (trajectoryActionIter != trajectory->getActions().cend()) {
-        const auto& [action_time, actions] = *trajectoryActionIter;
+    // if (trajectoryActionIter != trajectory->getActions().cend()) {
+    //     const auto& [action_time, actions] = *trajectoryActionIter;
 
-        // Check if it's time to execute the action.
-        if (time >= action_time) {
-            execAction = true;
+    //     // Check if it's time to execute the action.
+    //     if (time >= action_time) {
+    //         execAction = true;
 
-            // Loop through the available actions.
-            for (auto it(trajectoryActions->cbegin()); it != trajectoryActions->cend(); ++it) {
-                const auto& [id, action] = *it;
+    //         // Loop through the available actions.
+    //         for (auto it(trajectoryActions->cbegin()); it != trajectoryActions->cend(); ++it) {
+    //             const auto& [id, action] = *it;
 
-                // Narrow the list down to only actions that have not been completed yet.
-                if (std::find(doneTrajectoryActions.cbegin(), doneTrajectoryActions.cend(), id) == doneTrajectoryActions.cend()) {
-                    // If the action's bit is set in the bit field.
-                    if (actions & id) {
-                        // Execute the action.
-                        Action::Result res = action->process();
+    //             // Narrow the list down to only actions that have not been completed yet.
+    //             if (std::find(doneTrajectoryActions.cbegin(), doneTrajectoryActions.cend(), id) == doneTrajectoryActions.cend()) {
+    //                 // If the action's bit is set in the bit field.
+    //                 if (actions & id) {
+    //                     // Execute the action.
+    //                     Action::Result res = action->process();
 
-                        // If the action has completed.
-                        if (res == Action::Result::DONE) {
-                            // Remember that it's done.
-                            doneTrajectoryActions.push_back(id);
-                        }
+    //                     // If the action has completed.
+    //                     if (res == Action::Result::DONE) {
+    //                         // Remember that it's done.
+    //                         doneTrajectoryActions.push_back(id);
+    //                     }
 
-                        actionRes += res;
-                    }
-                }
-            }
-        }
-    }
+    //                     actionRes += res;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
     // Stop the trajectory because an action is still running.
     if (actionRes) {
@@ -431,15 +427,13 @@ void Drive::execTrajectory() {
     // Sample the trajectory at the current time for the desired state of the robot.
     CSVTrajectory::State state(trajectory->sample(time));
 
-    printf("Speed: %lf, X: %lf, Y: %lf\n", state.velocity, state.pose.X().value(), state.pose.Y().value());
-
     // Don't be moving if an action is being worked on.
     if (actionRes) {
         state.velocity = 0_mps;
     }
 
     // Adjust the rotation because everything about this robot is 90 degrees off D:
-    state.pose = frc::Pose2d(state.pose.Translation(), state.pose.Rotation() - 90_deg);
+    // state.pose = frc::Pose2d(state.pose.Translation(), state.pose.Rotation() - 90_deg);
 
     // The current pose of the robot.
     frc::Pose2d currentPose(getEstimatedPose());
@@ -449,18 +443,21 @@ void Drive::execTrajectory() {
 
     // The angle at which the robot should be driving at.
     frc::Rotation2d heading;
-    if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
-        heading = frc::Rotation2d(units::math::atan2(twist.dy, twist.dx) + 90_deg);
-    }
-    else {
-        heading = frc::Rotation2d(units::math::atan2(twist.dy, twist.dx) - 90_deg);
-    }
+    // if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
+        heading = frc::Rotation2d(units::math::atan2(twist.dy, twist.dx));
+    // }
+    // else {
+        // heading = frc::Rotation2d(units::math::atan2(twist.dy, twist.dx) - 90_deg);
+    // }
     
+    // printf("Speed: %lf, X: %lf, Y: %lf, stateRot: %lf, heading: %lf\n", state.velocity.value(), state.pose.X().value(), state.pose.Y().value(), state.pose.Rotation().Degrees().value(), heading.Degrees().value());
+    // printf("(Pose) X: %lf, Y: %lf, Rot: %lf\n", currentPose.X().value(), currentPose.Y().value(), currentPose.Rotation().Degrees().value());
 
     /**
      * Calculate the chassis velocities based on the error between the current
      * pose and the desired pose.
      */
+
     frc::ChassisSpeeds velocities(
         driveController.Calculate(
             currentPose,
@@ -469,9 +466,19 @@ void Drive::execTrajectory() {
             state.pose.Rotation()
         )
     );
+    // velocities.vx = 0_mps;
+    // velocities.vy = 0_mps;
+    velocities.omega = -velocities.omega;
 
+    printf("VelX: %f, VelY: %f, VelRot: %f\n", velocities.vx.value(), velocities.vy.value(), velocities.omega.value());
+    frc::SmartDashboard::PutNumber("debug_driveXVel", velocities.vx.value());
+    frc::SmartDashboard::PutNumber("debug_driveYVel", velocities.vy.value());
+    frc::SmartDashboard::PutNumber("debug_driveOMEGAVel", velocities.omega.value());
     // Keep target pose for feedback.
     targetPose = state.pose;
+
+    // velocities.vx = -velocities.vx;
+    // velocities.vy = -velocities.vy;
 
     // Make the robot go vroom :D
     setModuleStates(velocities);

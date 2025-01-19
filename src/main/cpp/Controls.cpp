@@ -7,6 +7,16 @@ Controls::Controls(Drive* drive_)
 #define SPEED_REDUCTION 1
 
 void Controls::process() {
+    #if 0
+    wpi::array<SwerveModule*, 4>*  modules = drive->getSwerveModules();
+    frc::SwerveModuleState state;
+    state.speed = 0.5_mps;
+    state.angle = 45_deg;
+
+    for (SwerveModule* swerMod : *modules){
+        swerMod->setState(state);
+    }
+    #else
     double xPercent = driveController.GetLeftX();
     if (fabs(xPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
         xPercent = 0;
@@ -35,11 +45,13 @@ void Controls::process() {
     if (brickMode)
         flags |= Drive::ControlFlag::BRICK;
 
-    flags |= Drive::ControlFlag::FIELD_CENTRIC;
+    //flags |= Drive::ControlFlag::FIELD_CENTRIC;
 
     if (resetIMU)
         drive->resetOdometry();
 
     // SWAP: 90_deg offset for drive
     drive->driveFromPercents(yPercent * -SPEED_REDUCTION, xPercent * SPEED_REDUCTION, rotPercent * -SPEED_REDUCTION, flags);
+    #endif
+
 }

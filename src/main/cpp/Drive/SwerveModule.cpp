@@ -89,6 +89,10 @@ void SwerveModule::setState(frc::SwerveModuleState state)
 
 void SwerveModule::setTurningMotor(units::radian_t angle)
 {
+    // angle = 360_deg - angle;
+    // if (angle > 360_deg) {
+    //     angle -= 360_deg;
+    // }
     // Subtract the absolute rotation from the target rotation to get the angle to turn.
     units::radian_t angleDelta(angle - getCANcoderRotation());
     
@@ -131,7 +135,7 @@ units::turn_t SwerveModule::getTurningMotorPosition()
     return turningMotor.GetPosition().GetValue();
 }
 
-frc::SwerveModuleState SwerveModule::getState()
+frc::SwerveModuleState SwerveModule::getState()                                                              
 {
     // The velocity and rotation of the swerve module.
     return { getDriveVelocity(), getCANcoderRotation() };
