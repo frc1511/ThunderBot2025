@@ -96,9 +96,12 @@
     "variant": "cpp"
   },
   "cSpell.words": [
+    "CALGAE",
     "gamepiece",
+    "intaking",
     "Odometry",
     "Retroreflective",
-    "sooo"
+    "sooo",
+    "TELEOP"
   ]
 }

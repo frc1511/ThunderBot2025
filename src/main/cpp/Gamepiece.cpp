@@ -1,26 +1,7 @@
 #include <Gamepiece.h>
 
 Gamepiece::Gamepiece() {
-    leftSparkMaxConfig.Inverted(true);
-    rightSparkMaxConfig.Inverted(true);
-    leftSparkMaxConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kBrake);
-    rightSparkMaxConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kBrake);
-    // ↓ Wait until testing/implementing PID ↓
-    // leftSparkMaxConfig.closedLoop.SetFeedbackSensor(rev::spark::ClosedLoopConfig::FeedbackSensor::kPrimaryEncoder)
-    // rightSparkMaxConfig.closedLoop.SetFeedbackSensor(rev::spark::ClosedLoopConfig::FeedbackSensor::kPrimaryEncoder)
-    // leftSparkMaxConfig.closedLoop.Pid(0.0, 0.0, 0.0);
-    // rightSparkMaxConfig.closedLoop.Pid(0.0, 0.0, 0.0);
-
-    leftSparkMax.Configure(
-       leftSparkMaxConfig,
-       rev::spark::SparkBase::ResetMode::kNoResetSafeParameters, 
-       rev::spark::SparkMax::PersistMode::kNoPersistParameters
-    );
-    rightSparkMax.Configure(
-        rightSparkMaxConfig, 
-        rev::spark::SparkBase::ResetMode::kResetSafeParameters, 
-        rev::spark::SparkMax::PersistMode::kPersistParameters
-    );
+    doPersistentConfiguration();
 }
 
 Gamepiece::~Gamepiece() {
@@ -28,7 +9,7 @@ Gamepiece::~Gamepiece() {
 
 void Gamepiece::doPersistentConfiguration() {
     leftSparkMaxConfig.Inverted(true);
-    rightSparkMaxConfig.Inverted(true);
+    rightSparkMaxConfig.Inverted(false);
     leftSparkMaxConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kBrake);
     rightSparkMaxConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kBrake);
     // ↓ Wait until testing/implementing PID ↓
@@ -53,6 +34,7 @@ void Gamepiece::resetToMatchMode(Component::MatchMode mode) {
     switch (mode)
     {
     case Component::MatchMode::DISABLED:
+        motorSpeed = MotorSpeeds::kSTOPPED;
         stopMotors();
         break;
     case Component::MatchMode::AUTO:
@@ -86,40 +68,61 @@ void Gamepiece::sendFeedback() {
 }
 
 void Gamepiece::process() {
-    switch (motorMode) { // motorMode is set by setMotorMode, which is called by controls
-        case MotorModes::kNONE: 
-            motorSpeed = MotorSpeeds::kSTOPPED;
-            stopMotors();
+    updateGamepieceState();
+
+    motorSpeed = MotorSpeeds::kSTOPPED; // In case we make it through the below logic without getting a speed
+
+    // If we don't have a gamepiece, so intake
+    if ((currentGamepieceState == GamepieceStates::kNONE)) {
+        switch (motorMode) {
+        case MotorModes::kNONE: // If we aren't being told to move motors
+            motorSpeed = MotorSpeeds::kSTOPPED; // Set speed to stop
             break;
-        case MotorModes::kCORAL_INTAKE:
-            motorSpeed = MotorSpeeds::kCORAL;
-            if (!coralRetroreflectiveTripped()) {
-                runMotors(presetIntakeSpeeds[motorSpeed]);
-            } else {
-                stopMotors();
-            }
+        case MotorModes::kCORAL_INTAKE: // If we are told to intake coral
+            motorSpeed = MotorSpeeds::kCORAL; // Set speed to coral
             break;
-        case MotorModes::kCORAL_SHOOT:
-            motorSpeed = MotorSpeeds::kCORAL;
-            runMotors(presetShooterSpeeds[motorSpeed]);
+        case MotorModes::kALGAE_INTAKE: // If we are told to intake algae
+            motorSpeed = MotorSpeeds::kALGAE; // Set speed to algae
             break;
-        case MotorModes::kALGAE_INTAKE:
-            motorSpeed = MotorSpeeds::kALGAE;
-            if (!algaeRetroreflectiveTripped()) {
-                runMotors(presetIntakeSpeeds[motorSpeed]);
-            } else {
-                stopMotors();
-            }
+        default:
+            motorSpeed = MotorSpeeds::kSTOPPED; // Set the motors to stop because we don't have anything to shoot
             break;
-        case MotorModes::kALGAE_SHOOT:
-            motorSpeed = MotorSpeeds::kALGAE;
-            runMotors(presetShooterSpeeds[motorSpeed]);
+        }
+
+        runMotors(presetIntakeSpeeds[motorSpeed]);  // Run motors in at the speed ^
+
+    // If we have Coral
+    } else if (currentGamepieceState == GamepieceStates::kHAS_CORAL) {
+        switch (motorMode) {
+        case MotorModes::kNONE: // If we aren't being told to move motors
+            motorSpeed = MotorSpeeds::kSTOPPED; // Set speed to stop
             break;
-        default: // Just in case
-            motorSpeed = MotorSpeeds::kSTOPPED;
-            stopMotors();
+        case MotorModes::kSHOOT: // If we are told to shoot
+            motorSpeed = MotorSpeeds::kCORAL; // Set speed to coral
             break;
-    };
+        default:
+            motorSpeed = MotorSpeeds::kSTOPPED; // Set the motors to stop because we shouldn't be intaking
+            break;
+        }
+
+        runMotors(presetShooterSpeeds[motorSpeed]);  // Run motors out at the speed ^
+
+    // If we have Algae
+    } else if (currentGamepieceState == GamepieceStates::kHAS_ALGAE) {
+        switch (motorMode) {
+        case MotorModes::kNONE: // If we aren't being told to move motors
+            motorSpeed = MotorSpeeds::kSTOPPED; // Set speed to stop
+            break;
+        case MotorModes::kSHOOT: // If we are told to shoot
+            motorSpeed = MotorSpeeds::kALGAE; // Set speed to algae
+            break;
+        default:
+            motorSpeed = MotorSpeeds::kSTOPPED; // Set the motors to stop because we shouldn't be intaking
+            break;
+        }
+
+        runMotors(presetShooterSpeeds[motorSpeed]); // Run motors out at the speed ^
+    }
 }
 
 void Gamepiece::setMotorMode(Gamepiece::MotorModes mode) {
@@ -142,4 +145,13 @@ void Gamepiece::stopMotors() {
 void Gamepiece::runMotors(double speed) {
     leftSparkMax.Set(speed);
     rightSparkMax.Set(speed);
+}
+
+void Gamepiece::updateGamepieceState() {
+    currentGamepieceState = GamepieceStates::kNONE;
+    if (algaeRetroreflectiveTripped()) {
+        currentGamepieceState = GamepieceStates::kHAS_ALGAE;
+    } else if (coralRetroreflectiveTripped()) {
+        currentGamepieceState = GamepieceStates::kHAS_CORAL;
+    }
 }
