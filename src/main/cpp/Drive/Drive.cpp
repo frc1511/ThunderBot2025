@@ -1,17 +1,22 @@
 #include "Drive/drive.h"
 
-Drive::Drive():
+Drive::Drive(Limelight* _limelight):
 driveController(
     [&]() -> frc::HolonomicDriveController {
         // Set the angular PID controller range from -180 to 180 degrees.
         trajectoryThetaPIDController.EnableContinuousInput(units::radian_t(-180_deg), units::radian_t(180_deg));
         // Setup the drive controller with the individual axis PID controllers.
         return frc::HolonomicDriveController(xPIDController, yPIDController, trajectoryThetaPIDController);
-    } ()) {
+    } ()),
+limelight(_limelight)
+ {
     manualThetaPIDController.EnableContinuousInput(units::radian_t(-180_deg), units::radian_t(180_deg));
 
     // Enable the trajectory drive controller.
     driveController.SetEnabled(true);
+
+    //Initialize the field widget
+    frc::SmartDashboard::PutData("Field", &m_field);
 }
 
 Drive::~Drive() 
@@ -220,6 +225,8 @@ void Drive::sendFeedback()
     for (std::size_t i = 0; i < swerveModules.size(); i++) {
         swerveModules.at(i)->sendDebugInfo(i);
     }
+    updateOdometry();
+    m_field.SetRobotPose(getEstimatedPose());
 }
 
 bool Drive::isFinished() const 
@@ -287,8 +294,17 @@ void Drive::updateOdometry() {
      * the swerve modules.
      */
     poseEstimator.Update(getRotation(), getModulePositions());
-}
 
+    LimelightHelpers::SetRobotOrientation("", poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0);
+
+    LimelightHelpers::PoseEstimate limelightMeasurement = limelight->getEstimatedBotPose();
+
+    poseEstimator.SetVisionMeasurementStdDevs({0.7, 0.7, 9999999.0});
+    poseEstimator.AddVisionMeasurement(
+        limelightMeasurement.pose,
+        limelightMeasurement.timestampSeconds
+    );
+}
 
 wpi::array<frc::SwerveModuleState, 4> Drive::getModuleStates() {
     return { swerveModules.at(0)->getState(), swerveModules.at(1)->getState(),

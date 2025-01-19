@@ -6,7 +6,9 @@
 
 Robot::Robot() {}
 void Robot::RobotPeriodic() {
-
+   for (Component* component : allComponents) {
+	 	component->sendFeedback();
+	}
 }
 
 void Robot::AutonomousInit() {
@@ -35,7 +37,7 @@ void Robot::DisabledPeriodic() {}
 void Robot::TestInit() {
     reset(Component::MatchMode::TEST);
 	for (Component* component : allComponents) {
-		component->doPersistantConfiguration();
+		component->doPersistentConfiguration();
 	}
 }
 void Robot::TestPeriodic() {}

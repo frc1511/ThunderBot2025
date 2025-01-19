@@ -20,10 +20,10 @@ class Component {
 
     /**
      * Component should do calibrations and reset/configure hardware for correct power-on usage
-     * This should save things in a non-volatile/persistant configuration
+     * This should save things in a non-volatile/persistent configuration
      * This will always be followed by resetToMatchMode() to restore correct runtime operations for that specific mode
      */
-    virtual void doPersistantConfiguration() {};
+    virtual inline void doPersistentConfiguration() {};
 
     /**
      * Resets the component to run in the given configuration
