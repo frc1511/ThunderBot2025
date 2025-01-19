@@ -21,7 +21,7 @@ Drive::~Drive()
     }
 }
 
-void Drive::resetToMatchMode(MatchMode mode) {
+void Drive::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
     resetPIDControllers();
 
     driveMode = DriveMode::STOPPED;
@@ -77,7 +77,7 @@ void Drive::resetToMatchMode(MatchMode mode) {
     }
     else {
         // Check if going from Auto to Disabled.
-        wasAuto = getLastMode() == Component::MatchMode::AUTO && mode == Component::MatchMode::DISABLED;
+        wasAuto = priorMode == Component::MatchMode::AUTO && mode == Component::MatchMode::DISABLED;
 
         // Doing something else.
         if (!wasAuto && mode != Component::MatchMode::DISABLED) {

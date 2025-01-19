@@ -28,10 +28,10 @@
 class Drive : public Component {
 public:
     Drive();
-    ~Drive();
+    virtual ~Drive();
 
-    void process();
-    void resetToMatchMode(MatchMode mode); 
+    virtual void process();
+    virtual void resetToMatchMode(MatchMode priorMode, MatchMode mode); 
 
     enum ControlFlag {
         NONE          = 0,
