@@ -90,5 +90,7 @@ static PreferencesSwerve SWERVE_PREFERENCE;
 struct PreferencesControls
 {
     double AXIS_DEADZONE = .2;
+    const bool DRIVE_DISABLED = true;
+    const bool AUX_DISABLED = true;
 };
 static PreferencesControls CONTROLS_PREFERENCE;
