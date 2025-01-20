@@ -16,7 +16,7 @@ void Controls::process() {
 
 
 
-    #ifndef DRIVE_DISABLED
+    if (!CONTROLS_PREFERENCE.DRIVE_DISABLED) {
         double xPercent = driveController.GetLeftX();
         if (fabs(xPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
             xPercent = 0;
@@ -52,7 +52,7 @@ void Controls::process() {
 
         // SWAP: 90_deg offset for drive
         drive->driveFromPercents(yPercent * -SPEED_REDUCTION, xPercent * SPEED_REDUCTION, rotPercent * -SPEED_REDUCTION, flags);
-    #endif
+    }
     // MARK: Aux
 
 
@@ -61,7 +61,7 @@ void Controls::process() {
 
 
 
-    #ifndef AUX_DISABLED
+    if (!CONTROLS_PREFERENCE.AUX_DISABLED) {
         bool coralIntake = auxController.GetR2Button();
         bool algaeIntake = auxController.GetL2Button();
         bool shoot = auxController.GetR1Button();
@@ -78,5 +78,5 @@ void Controls::process() {
         if (resetHadGamepiece) {
             gamepiece->resetHadGamepiece();
         }
-    #endif
+    }
 }

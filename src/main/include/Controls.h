@@ -6,9 +6,6 @@
 #include "Drive/Drive.h"
 #include "Gamepiece.h"
 
-#define DRIVE_DISABLED
-// #define AUX_DISABLED
-
 class Controls : public Component {
   public:
     Controls(Drive* drive_, Gamepiece* gamepiece_);

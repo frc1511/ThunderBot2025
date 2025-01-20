@@ -33,7 +33,7 @@
 #define CAN_PIGEON 14
 
 
-#define IS_TESTBOARD
+// #define IS_TESTBOARD
 #ifdef IS_TESTBOARD
 
     #define CAN_LEFT_CALGAE 3

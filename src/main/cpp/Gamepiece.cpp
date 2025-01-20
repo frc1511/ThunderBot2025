@@ -8,8 +8,8 @@ Gamepiece::~Gamepiece() {
 }
 
 void Gamepiece::doPersistentConfiguration() {
-    leftSparkMaxConfig.Inverted(true);
-    rightSparkMaxConfig.Inverted(false);
+    leftSparkMaxConfig.Inverted(false);
+    rightSparkMaxConfig.Inverted(true);
     leftSparkMaxConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kBrake);
     rightSparkMaxConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kBrake);
     // ↓ Wait until testing/implementing PID ↓
@@ -65,6 +65,8 @@ void Gamepiece::sendFeedback() {
     frc::SmartDashboard::PutBoolean("Coral Retroreflective"               , coralRetroreflectiveTripped()           );
     frc::SmartDashboard::PutBoolean("Algae Retroreflective Raw"           , algaeRetroreflective.Get()              );
     frc::SmartDashboard::PutBoolean("Algae Retroreflective"               , algaeRetroreflectiveTripped()           );
+    frc::SmartDashboard::PutBoolean("Had Algae"                           , hadAlgae                                );
+    frc::SmartDashboard::PutBoolean("Had Coral"                           , hadCoral                                );
 }
 
 void Gamepiece::process() {
@@ -96,11 +98,11 @@ void Gamepiece::process() {
 
         runMotors(presetIntakeSpeeds[motorSpeed]);  // Run motors in at the speed ^
 
-    } else if (currentGamepieceState == GamepieceStates::kHAS_CORAL | currentGamepieceState == GamepieceStates::kHAS_ALGAE) { // If we have Coral/Algae, so shoot or nothing
-        if (currentGamepieceState == GamepieceStates::kHAS_CORAL && !(hadCoral)) { // We have coral
+    } else if ((currentGamepieceState == GamepieceStates::kHAS_CORAL) | (currentGamepieceState == GamepieceStates::kHAS_ALGAE)) { // If we have Coral/Algae, so shoot or nothing
+        if (currentGamepieceState == GamepieceStates::kHAS_CORAL) { // We have coral
             hadCoral = true;
         }
-        if (currentGamepieceState == GamepieceStates::kHAS_ALGAE && !(hadAlgae)) { // We have algae
+        if (currentGamepieceState == GamepieceStates::kHAS_ALGAE) { // We have algae
             hadAlgae = true;
         }
         switch (motorMode) {
