@@ -1,4 +1,4 @@
-#include <Gamepiece.h>
+#include "Gamepiece.h"
 
 Gamepiece::Gamepiece() {
     doPersistentConfiguration();

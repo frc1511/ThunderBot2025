@@ -138,5 +138,4 @@ class Gamepiece : public Component {
 
     frc::DigitalInput coralRetroreflective {DIO_CORAL_RETROREFLECTIVE};
     frc::DigitalInput algaeRetroreflective {DIO_ALGAE_RETROREFLECTIVE};
-
 };
