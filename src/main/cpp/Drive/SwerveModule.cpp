@@ -13,7 +13,7 @@ SwerveModule::SwerveModule(int driveID, int turningID, int canCoderID, units::de
 {
 }
 
-void SwerveModule::doPersistantConfiguration()
+void SwerveModule::doPersistentConfiguration()
 {
     // Can Coder
     ctre::phoenix6::configs::MagnetSensorConfigs magnetConfig;

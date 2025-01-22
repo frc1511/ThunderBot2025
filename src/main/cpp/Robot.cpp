@@ -39,7 +39,7 @@ void Robot::DisabledPeriodic() {}
 void Robot::TestInit() {
     reset(Component::MatchMode::TEST);
 	for (Component* component : allComponents) {
-		component->doPersistantConfiguration();
+		component->doPersistentConfiguration();
 	}
 
 	printf("Persistantt config done boi \n");

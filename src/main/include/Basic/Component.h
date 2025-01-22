@@ -22,7 +22,7 @@ class Component {
      * This should save things in a non-volatile/persistant configuration
      * This will always be followed by resetToMatchMode() to restore correct runtime operations for that specific mode
      */
-    virtual inline void doPersistantConfiguration() {};
+    virtual inline void doPersistentConfiguration() {};
 
     /**
      * Resets the component to run in the given configuration

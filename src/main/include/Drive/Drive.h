@@ -51,7 +51,7 @@ public:
     void driveWithVelocities(units::meters_per_second_t xVel, units::meters_per_second_t yVel, units::radians_per_second_t angVel, unsigned flags);
     
     void sendFeedback();
-    void doPersistantConfiguration() override;
+    void doPersistentConfiguration() override;
 
     /// MARK: Field Centric
 
@@ -243,6 +243,7 @@ private:
     frc::Timer trajectoryTimer;
 
     frc::Field2d feedbackField {};
+    frc::Field2d trajectoryField {};
     
     /**
      * Executes the instructions for when the robot is running a trajectory.

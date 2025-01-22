@@ -104,10 +104,10 @@ void Drive::process()
 }
 
 
-void Drive::doPersistantConfiguration()
+void Drive::doPersistentConfiguration()
 {
     for (SwerveModule* module : swerveModules) {
-        module->doPersistantConfiguration();
+        module->doPersistentConfiguration();
     }
 }
 
@@ -223,6 +223,7 @@ void Drive::sendFeedback()
 
     feedbackField.SetRobotPose(pose);
     frc::SmartDashboard::PutData("Field", &feedbackField);
+    frc::SmartDashboard::PutData("debug_TrajectoryTargetField", &trajectoryField);
 
     
     // Drive feedback.
@@ -331,8 +332,8 @@ wpi::array<frc::SwerveModulePosition, 4> Drive::getModulePositions() {
 
 
 void Drive::makeBrick() {
-    swerveModules.at(0)->setTurningMotor(-45_deg);
-    swerveModules.at(1)->setTurningMotor(45_deg);
+    swerveModules.at(0)->setTurningMotor(45_deg);
+    swerveModules.at(1)->setTurningMotor(-45_deg);
     swerveModules.at(2)->setTurningMotor(45_deg);
     swerveModules.at(3)->setTurningMotor(-45_deg);
 }
@@ -443,12 +444,11 @@ void Drive::execTrajectory() {
 
     // The angle at which the robot should be driving at.
     frc::Rotation2d heading;
-    // if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
-        heading = frc::Rotation2d(units::math::atan2(twist.dy, twist.dx));
-    // }
-    // else {
-        // heading = frc::Rotation2d(units::math::atan2(twist.dy, twist.dx) - 90_deg);
-    // }
+    if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
+        heading = frc::Rotation2d(units::math::atan2(twist.dy, twist.dx) + 90_deg);
+    } else {
+        heading = frc::Rotation2d(units::math::atan2(twist.dy, twist.dx) - 90_deg);
+    }
     
     // printf("Speed: %lf, X: %lf, Y: %lf, stateRot: %lf, heading: %lf\n", state.velocity.value(), state.pose.X().value(), state.pose.Y().value(), state.pose.Rotation().Degrees().value(), heading.Degrees().value());
     // printf("(Pose) X: %lf, Y: %lf, Rot: %lf\n", currentPose.X().value(), currentPose.Y().value(), currentPose.Rotation().Degrees().value());
@@ -467,7 +467,9 @@ void Drive::execTrajectory() {
         )
     );
 
-    printf("VelX: %f, VelY: %f, VelRot: %f\n", velocities.vx.value(), velocities.vy.value(), velocities.omega.value());
+    trajectoryField.SetRobotPose(state.pose);
+
+    frc::SmartDashboard::PutNumber("debug_driveHeading_deg", heading.Degrees().value());
     frc::SmartDashboard::PutNumber("debug_driveXVel", velocities.vx.value());
     frc::SmartDashboard::PutNumber("debug_driveYVel", velocities.vy.value());
     frc::SmartDashboard::PutNumber("debug_driveOMEGAVel", velocities.omega.value());

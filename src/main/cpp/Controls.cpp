@@ -33,7 +33,7 @@ void Controls::process() {
     bool resetIMU = driveController.GetTriangleButtonPressed();
     bool brickMode = driveController.GetCrossButton();
     if (persistentConfig) {
-        drive->doPersistantConfiguration();
+        drive->doPersistentConfiguration();
     }
     unsigned flags = 0;
     if (lockX)
@@ -45,7 +45,7 @@ void Controls::process() {
     if (brickMode)
         flags |= Drive::ControlFlag::BRICK;
 
-    //flags |= Drive::ControlFlag::FIELD_CENTRIC;
+    flags |= Drive::ControlFlag::FIELD_CENTRIC;
 
     if (resetIMU)
         drive->resetOdometry();
