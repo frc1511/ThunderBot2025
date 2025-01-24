@@ -57,6 +57,10 @@ void SwerveModule::doPersistentConfiguration()
     driveMotor.GetConfigurator().Apply(drivePIDConfig);
     ctre::phoenix6::configs::MotorOutputConfigs driveMotorOutput {};
     driveMotorOutput.Inverted = true;
+    
+    /// TODO: Add me to a function
+    driveMotorOutput.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake); // Brake Mode Here!!!! 
+    
     driveMotor.GetConfigurator().Apply(driveMotorOutput);
 
 
@@ -85,6 +89,9 @@ void SwerveModule::setState(frc::SwerveModuleState state)
          */
         optimizedState = frc::SwerveModuleState::Optimize(state, currentState.angle);
     }
+
+    // Cosine Compensation; Don't drive full bore when facing the wrong way
+    optimizedState.speed *= (optimizedState.angle - currentState.angle).Cos();
 
     /**
      * Only handle turning when the robot is actually driving (Stops the modules

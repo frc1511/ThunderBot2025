@@ -44,12 +44,12 @@ struct DrivePreferences {
 
     DrivePreferences()
     {
-        PID_XY.Kp = 0.05; 
-        // PID_XY.Ki = 0.1;
-        PID_XY.Kd = 0.01;
+        PID_XY.Kp = 1.5; 
+        // PID_XY.Ki = 0.001;
+        PID_XY.Kd = 0.001;
 
         PID_THETA.Kp = 0.1;
-        PID_THETA.Kd = 0.01;
+        // PID_THETA.Kd = 0.01;
     }
 };
 static const DrivePreferences DRIVE_PREFERENCES;

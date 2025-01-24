@@ -434,7 +434,7 @@ void Drive::execTrajectory() {
     }
 
     // Adjust the rotation because everything about this robot is 90 degrees off D:
-    // state.pose = frc::Pose2d(state.pose.Translation(), state.pose.Rotation() - 90_deg);
+    // state.pose = frc::Pose2d(state.pose.Translation(), frc::Rotation2d(state.pose.Rotation() - 90_deg));
 
     // The current pose of the robot.
     frc::Pose2d currentPose(getEstimatedPose());
@@ -445,9 +445,9 @@ void Drive::execTrajectory() {
     // The angle at which the robot should be driving at.
     frc::Rotation2d heading;
     if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
-        heading = frc::Rotation2d(units::math::atan2(twist.dy, twist.dx) + 90_deg);
+        heading = frc::Rotation2d(units::math::atan2(twist.dy, twist.dx) + 180_deg);
     } else {
-        heading = frc::Rotation2d(units::math::atan2(twist.dy, twist.dx) - 90_deg);
+        heading = frc::Rotation2d(units::math::atan2(twist.dy, twist.dx));
     }
     
     // printf("Speed: %lf, X: %lf, Y: %lf, stateRot: %lf, heading: %lf\n", state.velocity.value(), state.pose.X().value(), state.pose.Y().value(), state.pose.Rotation().Degrees().value(), heading.Degrees().value());
