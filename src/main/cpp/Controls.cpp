@@ -61,17 +61,22 @@ void Controls::process() {
 
 
 
+    #define CALGAE_SENSOR_BROKEN false// Replace with switchboard?
     if (!CONTROLS_PREFERENCE.AUX_DISABLED) {
         bool coralIntake = auxController.GetR2Button();
         bool algaeIntake = auxController.GetL2Button();
         bool shoot = auxController.GetR1Button();
         bool resetHadGamepiece = auxController.GetL1ButtonPressed();
+        bool shootDone = auxController.GetR1ButtonReleased();
         if (coralIntake) {
             gamepiece->setMotorMode(Gamepiece::MotorModes::kCORAL_INTAKE);
         } else if (algaeIntake) {
             gamepiece->setMotorMode(Gamepiece::MotorModes::kALGAE_INTAKE);
         } else if (shoot) {
-            gamepiece->setMotorMode(Gamepiece::MotorModes::kSHOOT);
+            if (!CALGAE_SENSOR_BROKEN) gamepiece->setMotorMode(Gamepiece::MotorModes::kSHOOT);
+            else gamepiece->setMotorMode(Gamepiece::MotorModes::kSHOOT_OVERRIDE);
+        } else if (shootDone) {
+            gamepiece->setMotorMode(Gamepiece::MotorModes::kDONE_SHOOTING);
         } else {
             gamepiece->setMotorMode(Gamepiece::MotorModes::kNONE);
         }

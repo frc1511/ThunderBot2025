@@ -16,7 +16,7 @@ class Gamepiece : public Component {
 
     void doPersistentConfiguration();
 
-    void resetToMatchMode(MatchMode mode);
+    void resetToMatchMode(Component::MatchMode lastMode, Component::MatchMode mode);
 
     void sendFeedback();
 
@@ -29,7 +29,9 @@ class Gamepiece : public Component {
         kNONE,
         kCORAL_INTAKE,
         kALGAE_INTAKE,
-        kSHOOT
+        kSHOOT,
+        kSHOOT_OVERRIDE,
+        kDONE_SHOOTING
     };
 
     /**
@@ -38,7 +40,7 @@ class Gamepiece : public Component {
     void setMotorMode(Gamepiece::MotorModes mode);
 
     /**
-     * Reset the had gamepiece states to false
+     * Reset the had gamepiece states to false (Used by Controls for a manual reset)
      */
     void resetHadGamepiece();
 
@@ -64,9 +66,9 @@ class Gamepiece : public Component {
     void runMotors(double speed);
 
     /**
-     * Manually Set which gamepiece we have, if any
+     * Convert the lastGamepieceState to a string for smartdashboard purposes
      */
-    void updateGamepieceState();
+    std::string lastGamepieceStateToString();
 
     /**
      * Mode set by controls through setMotorMode()
@@ -82,19 +84,22 @@ class Gamepiece : public Component {
         kHAS_ALGAE
     };
 
-    /**
-     * The variable storing what our current gamepiece state is
-     */
-    enum Gamepiece::GamepieceStates currentGamepieceState = GamepieceStates::kNO_GP;
+    enum lastGamepieceStates {
+        kHAD_NONE,
+        kHAD_CORAL,
+        kHAD_ALGAE, 
+        kSENSOR_BROKEN
+    };
 
     /**
-     * The variable storing whether or not we had a coral (used to recapture dropped gamepieces)
+     * The variable storing what our last gamepiece state was
      */
-    bool hadCoral = false;
+    enum Gamepiece::lastGamepieceStates lastGamepieceState = lastGamepieceStates::kHAD_NONE;
+
     /**
-     * The variable storing whether or not we had an algae (used to recapture dropped gamepieces)
+     * Return the current sensed state of the gamepieces (which one we have)
      */
-    bool hadAlgae = false;
+    Gamepiece::GamepieceStates updateGamepieceState();
 
     /**
      * The possible speed settings (does not differentiate intake versus shoot, rather, it differentiates based on gamepiece)
@@ -103,6 +108,7 @@ class Gamepiece : public Component {
         kSTOPPED,
         kCORAL,
         kALGAE,
+        kREGRAB,
         kMAX
     };
 
@@ -117,7 +123,8 @@ class Gamepiece : public Component {
     double presetIntakeSpeeds [MotorSpeeds::kMAX] = {
         0.0,
         0.75, // Coral
-        1 // Algae
+        1, // Algae
+        .5 // Regrab
     };
 
     /**
