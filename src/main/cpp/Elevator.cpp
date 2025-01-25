@@ -1,55 +1,52 @@
 #include "Elevator.h" 
 
 void Elevator::process() {
-    switch (controlMode) {
-        case kMANUAL:
-            double speed = 0.1;
-            break;
-        case kPRESET:
-            currentDistanceToTarget = ElevatorPositionValues[targetPosition] - getPosition();
-            currentDistanceToTarget = std::clamp(currentDistanceToTarget, minHeight, maxHeight);
-            currentAbsoluteDistanceToTarget = abs(currentDistanceToTarget);
-            if (currentAbsoluteDistanceToTarget >= 0.01 && !getAtMinHeight()) {
-                if (!getAtMaxHeight && currentDistanceToTarget > 0) {
-                    double speed = 0.1;
-                    setSpeed(speed);
-                } else if (!getAtMinHeight()  && currentDistanceToTarget < 0) {
-                    double speed = -0.1;
-                    setSpeed(speed);
-                }
-            }
-            break;
-        case kSTOP:
-            double speed = 0.0;
-            break;
-        default:
-            break;
-    }
+    runMotorsToPreset();
 }
 
-void Elevator::getDistanceTraveled() {
+void Elevator::doPersistentConfiguration() {
+    rev::spark::SparkMaxConfig motorConfig {};
+    motorConfig.closedLoop.Pid(ELEVATOR_PREFERENCE.PID.Kp, ELEVATOR_PREFERENCE.PID.Ki, ELEVATOR_PREFERENCE.PID.Kd);
+
+    rightSparkMax.Configure(motorConfig, rev::spark::SparkBase::ResetMode::kNoResetSafeParameters, rev::spark::SparkBase::PersistMode::kPersistParameters);
     
+    motorConfig.Inverted(true);
+    leftSparkMax.Configure(motorConfig, rev::spark::SparkBase::ResetMode::kNoResetSafeParameters, rev::spark::SparkBase::PersistMode::kPersistParameters);
 }
 
-bool Elevator::getAtMaxHeight() {
-    return getPosition() >= maxHeight ? true : false;
+bool Elevator::atMaxHeight() {
+    return getUpperLimitSwitch();
 }
 
-bool Elevator::getAtMinHeight() {
-    return getPosition() <= minHeight ? true : false;
+bool Elevator::atMinHeight() {
+    return getLowerLimitSwitch();
+}
+
+bool Elevator::getLowerLimitSwitch() {
+    return !lowerLimitSwitch.Get();
+}
+
+bool Elevator::getUpperLimitSwitch() {
+    return !upperLimitSwitch.Get();
 }
 
 double Elevator::getPosition() {
-    return ((leftEncoder.GetPosition() + rightEncoder.GetPosition())/2);
+    return ((leftEncoder.GetPosition() + rightEncoder.GetPosition()) / 2);
 }
 
-void Elevator::goToPosition(ElevatorPositions target) {
-    controlMode = ElevatorControlModes::kPRESET;
-    targetPosition = target;
-    initialDistanceToTarget = abs(ElevatorPositionValues[targetPosition] - getPosition());
+void Elevator::goToPreset(ElevatorPreset target) {
+    targetPreset = target;
 }
 
-void Elevator::setSpeed(double speed) {
-    leftSparkMax.Set(speed);
-    rightSparkMax.Set(speed);
+void Elevator::runMotorsToPreset() {
+    if (targetPreset == ElevatorPreset::kSTOP) {
+        rightSparkMax.Set(0);
+        leftSparkMax.Set(0);
+        return;
+    }
+
+    double position = ElevatorPosition[targetPreset];
+
+    rightPIDController.SetReference(position, rev::spark::SparkLowLevel::ControlType::kPosition);
+    leftPIDController.SetReference(position, rev::spark::SparkLowLevel::ControlType::kPosition);
 }

@@ -92,3 +92,12 @@ struct PreferencesControls
     double AXIS_DEADZONE = .2;
 };
 static PreferencesControls CONTROLS_PREFERENCE;
+
+struct PreferencesElevator {
+    PID_t PID;
+    PreferencesElevator() {
+        PID.Kp = 0.1;
+    }
+};
+
+static PreferencesElevator ELEVATOR_PREFERENCE;

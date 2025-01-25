@@ -2,6 +2,7 @@
 
 #include "Basic/Component.h"
 #include "Basic/IOMap.h"
+#include "Preferences.h"
 
 #include <rev/SparkMax.h>
 #include <rev/config/SparkMaxConfig.h>
@@ -11,12 +12,15 @@ class Elevator : public Component {
   public:
     void process();
 
-    void getDistanceTraveled();
+    void doPersistentConfiguration();
 
-    bool getAtMaxHeight();
-    bool getAtMinHeight();
+    bool atMaxHeight();
+    bool atMinHeight();
+    bool getLowerLimitSwitch();
+    bool getUpperLimitSwitch();
 
-    enum ElevatorPositions { //needs measurements for the height of these sections
+    enum ElevatorPreset { //need measurements for the height of these sections, RN we have guesstimates with no units. ~G
+        kSTOP,
         kGROUND,
         kPROCESSOR,
         kCORAL_STATION,
@@ -24,48 +28,39 @@ class Elevator : public Component {
         kL2,
         kL3,
         kL4,
-        kMAX
+        kMAX,
     };
 
-    void goToPosition(ElevatorPositions target);
+    void goToPreset(ElevatorPreset target);
 
-    private:
-        double getPosition();
+  private:
+    double getPosition();
 
-        void setSpeed(double speed);
+    void runMotorsToPreset();
 
-        double ElevatorPositionValues[ElevatorPositions::kMAX] {
-            100.0, // Ground
-            200.0, // Processor
-            350.0, // Coral Station
-            300.0, // L1
-            400.0, // L2
-            500.0, // L3
-            600.0  // L4
-        };
-        enum ElevatorPositions targetPosition;
+    double ElevatorPosition[ElevatorPreset::kMAX] {
+        0,     // Stopped
+        100.0, // Ground
+        200.0, // Processor
+        350.0, // Coral Station
+        300.0, // L1
+        400.0, // L2
+        500.0, // L3
+        600.0  // L4
+    };
+    ElevatorPreset targetPreset;
 
-        enum ElevatorControlModes {
-            kMANUAL, 
-            kPRESET,
-            kSTOP,
-        };
-        enum ElevatorControlModes controlMode = kMANUAL;
+    //Not sure about motors for now. ~G
+    //Added placeholders for device ID
+    rev::spark::SparkMax leftSparkMax {1, rev::spark::SparkLowLevel::MotorType::kBrushless};
+    rev::spark::SparkMax rightSparkMax {2, rev::spark::SparkLowLevel::MotorType::kBrushless};
 
-        double speed = 0.0;
+    rev::spark::SparkRelativeEncoder leftEncoder = leftSparkMax.GetEncoder();
+    rev::spark::SparkRelativeEncoder rightEncoder = rightSparkMax.GetEncoder();
 
-        double minHeight = 0.0;
-        double maxHeight = 0.0;
+    frc::DigitalInput lowerLimitSwitch {DIO_ELEVATOR_BOTTOM_LIMITSWITCH};
+    frc::DigitalInput upperLimitSwitch {DIO_ELEVATOR_TOP_LIMITSWITCH};
 
-        double initialDistanceToTarget;
-        double currentDistanceToTarget;
-        double currentAbsoluteDistanceToTarget;
-
-        //Not sure about motors for now. ~G
-        //Added placeholders for device ID
-        rev::spark::SparkMax leftSparkMax {1, rev::spark::SparkLowLevel::MotorType::kBrushless};
-        rev::spark::SparkMax rightSparkMax {2, rev::spark::SparkLowLevel::MotorType::kBrushless};
-
-        rev::spark::SparkRelativeEncoder leftEncoder = leftSparkMax.GetEncoder();
-        rev::spark::SparkRelativeEncoder rightEncoder = rightSparkMax.GetEncoder();
+    rev::spark::SparkClosedLoopController leftPIDController {leftSparkMax.GetClosedLoopController()};
+    rev::spark::SparkClosedLoopController rightPIDController {rightSparkMax.GetClosedLoopController()};
 };
