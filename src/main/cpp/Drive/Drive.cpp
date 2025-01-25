@@ -445,9 +445,9 @@ void Drive::execTrajectory() {
     // The angle at which the robot should be driving at.
     frc::Rotation2d heading;
     if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
-        heading = frc::Rotation2d(units::math::atan2(twist.dy, twist.dx) + 180_deg);
+        heading = frc::Rotation2d(twist.dtheta + 180_deg);
     } else {
-        heading = frc::Rotation2d(units::math::atan2(twist.dy, twist.dx));
+        heading = frc::Rotation2d(twist.dtheta);
     }
     
     // printf("Speed: %lf, X: %lf, Y: %lf, stateRot: %lf, heading: %lf\n", state.velocity.value(), state.pose.X().value(), state.pose.Y().value(), state.pose.Rotation().Degrees().value(), heading.Degrees().value());
@@ -470,6 +470,7 @@ void Drive::execTrajectory() {
     trajectoryField.SetRobotPose(state.pose);
 
     frc::SmartDashboard::PutNumber("debug_driveHeading_deg", heading.Degrees().value());
+    frc::SmartDashboard::PutNumber("debug_driveTwist_thetadeg", units::degree_t(twist.dtheta).value());
     frc::SmartDashboard::PutNumber("debug_driveXVel", velocities.vx.value());
     frc::SmartDashboard::PutNumber("debug_driveYVel", velocities.vy.value());
     frc::SmartDashboard::PutNumber("debug_driveOMEGAVel", velocities.omega.value());
