@@ -466,6 +466,8 @@ void Drive::execTrajectory() {
             state.pose.Rotation()
         )
     );
+    
+    velocities.omega *= -1;
 
     trajectoryField.SetRobotPose(state.pose);
 

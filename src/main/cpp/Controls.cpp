@@ -4,7 +4,7 @@ Controls::Controls(Drive* drive_)
 : drive(drive_)
 {}
 
-#define SPEED_REDUCTION 1
+#define SPEED_REDUCTION .5
 
 void Controls::process() {
     #if 0

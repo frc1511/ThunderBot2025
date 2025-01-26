@@ -1,5 +1,7 @@
 {
   "settings": {
+    "auto_export": false,
+    "auto_save": false,
     "drive_ctrl": 0,
     "field": {
       "img": "2025",
@@ -21,11 +23,11 @@
               "h1": 0.0,
               "link_index": -1,
               "locked": false,
-              "rotation": 0.0,
+              "rotation": 6.281330585479736,
               "stop": false,
               "w0": 1.0,
               "w1": 2.0,
-              "x": 2.2300000190734863,
+              "x": 2.0,
               "y": 0.0
             },
             {
@@ -37,15 +39,15 @@
               "rotation": 0.0,
               "stop": false,
               "w0": 2.0,
-              "w1": 1.0,
-              "x": 5.554647445678711,
-              "y": 0.6725019216537476
+              "w1": 0.6096608638763428,
+              "x": 6.0,
+              "y": 1.4962409734725952
             }
           ],
           "settings": {
             "max_centripetal_accel": 19.6200008392334,
-            "max_linear_accel": 5.0,
-            "max_linear_vel": 5.0
+            "max_linear_accel": 3.0,
+            "max_linear_vel": 3.0
           }
         }
       ]
