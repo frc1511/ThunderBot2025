@@ -8,13 +8,13 @@ Controls::Controls(Drive* drive_)
 
 void Controls::process() {
     double xPercent = driveController.GetLeftX();
-    if (fabs(xPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
+    if (fabs(xPercent) < PreferencesControls::AXIS_DEADZONE)
         xPercent = 0;
     double yPercent = driveController.GetLeftY();
-    if (fabs(yPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
+    if (fabs(yPercent) < PreferencesControls::AXIS_DEADZONE)
         yPercent = 0;
     double rotPercent = driveController.GetRightX();
-    if (fabs(rotPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
+    if (fabs(rotPercent) < PreferencesControls::AXIS_DEADZONE)
         rotPercent = 0;
     bool lockX = driveController.GetL2ButtonPressed();
     bool lockY = driveController.GetR2ButtonPressed();

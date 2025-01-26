@@ -17,40 +17,40 @@ void SwerveModule::doPersistentConfiguration()
 {
     // Turning Motor
     ctre::phoenix6::configs::Slot0Configs turningPIDConfig {};
-    turningPIDConfig.kP = SWERVE_PREFERENCE.TURN_MOTOR.PID.Kp;
-    turningPIDConfig.kI = SWERVE_PREFERENCE.TURN_MOTOR.PID.Ki;
-    turningPIDConfig.kD = SWERVE_PREFERENCE.TURN_MOTOR.PID.Kd;
-    turningPIDConfig.kV = SWERVE_PREFERENCE.TURN_MOTOR.PID.Kv;
-    turningPIDConfig.kS = SWERVE_PREFERENCE.TURN_MOTOR.PID.Ks;
+    turningPIDConfig.kP = PreferencesSwerve::TURN_MOTOR.PID.Kp;
+    turningPIDConfig.kI = PreferencesSwerve::TURN_MOTOR.PID.Ki;
+    turningPIDConfig.kD = PreferencesSwerve::TURN_MOTOR.PID.Kd;
+    turningPIDConfig.kV = PreferencesSwerve::TURN_MOTOR.PID.Kv;
+    turningPIDConfig.kS = PreferencesSwerve::TURN_MOTOR.PID.Ks;
 
     turningMotor.GetConfigurator().Apply(turningPIDConfig);
 
     ctre::phoenix6::configs::CurrentLimitsConfigs turningCurrentLimit {};
-    turningCurrentLimit.WithSupplyCurrentLimit(SWERVE_PREFERENCE.TURN_MOTOR.MAX_AMPERAGE);
+    turningCurrentLimit.WithSupplyCurrentLimit(PreferencesSwerve::TURN_MOTOR.MAX_AMPERAGE);
     turningCurrentLimit.WithSupplyCurrentLimitEnable(true);
-    turningCurrentLimit.WithStatorCurrentLimit(SWERVE_PREFERENCE.TURN_MOTOR.MAX_AMPERAGE);
+    turningCurrentLimit.WithStatorCurrentLimit(PreferencesSwerve::TURN_MOTOR.MAX_AMPERAGE);
     turningCurrentLimit.WithStatorCurrentLimitEnable(true);
     turningMotor.GetConfigurator().Apply(turningCurrentLimit);
 
     ctre::phoenix6::configs::ClosedLoopRampsConfigs ramp {};
-    ramp.WithVoltageClosedLoopRampPeriod(SWERVE_PREFERENCE.DRIVE_RAMP_TIME);
+    ramp.WithVoltageClosedLoopRampPeriod(PreferencesSwerve::DRIVE_RAMP_TIME);
 
     driveMotor.GetConfigurator().Apply(ramp);
 
     // Drive Motor
     ctre::phoenix6::configs::Slot0Configs drivePIDConfig {};
-    drivePIDConfig.kP = SWERVE_PREFERENCE.DRIVE_MOTOR.PID.Kp;
-    drivePIDConfig.kI = SWERVE_PREFERENCE.DRIVE_MOTOR.PID.Ki;
-    drivePIDConfig.kD = SWERVE_PREFERENCE.DRIVE_MOTOR.PID.Kd;
-    drivePIDConfig.kV = SWERVE_PREFERENCE.DRIVE_MOTOR.PID.Kv;
-    drivePIDConfig.kS = SWERVE_PREFERENCE.DRIVE_MOTOR.PID.Ks;
+    drivePIDConfig.kP = PreferencesSwerve::DRIVE_MOTOR.PID.Kp;
+    drivePIDConfig.kI = PreferencesSwerve::DRIVE_MOTOR.PID.Ki;
+    drivePIDConfig.kD = PreferencesSwerve::DRIVE_MOTOR.PID.Kd;
+    drivePIDConfig.kV = PreferencesSwerve::DRIVE_MOTOR.PID.Kv;
+    drivePIDConfig.kS = PreferencesSwerve::DRIVE_MOTOR.PID.Ks;
 
     driveMotor.GetConfigurator().Apply(drivePIDConfig);
 
     ctre::phoenix6::configs::CurrentLimitsConfigs driveCurrentLimit {};
-    driveCurrentLimit.WithSupplyCurrentLimit(SWERVE_PREFERENCE.DRIVE_MOTOR.MAX_AMPERAGE);
+    driveCurrentLimit.WithSupplyCurrentLimit(PreferencesSwerve::DRIVE_MOTOR.MAX_AMPERAGE);
     driveCurrentLimit.WithSupplyCurrentLimitEnable(true);
-    driveCurrentLimit.WithStatorCurrentLimit(SWERVE_PREFERENCE.DRIVE_MOTOR.MAX_AMPERAGE);
+    driveCurrentLimit.WithStatorCurrentLimit(PreferencesSwerve::DRIVE_MOTOR.MAX_AMPERAGE);
     driveCurrentLimit.WithStatorCurrentLimitEnable(true);
     driveMotor.GetConfigurator().Apply(driveCurrentLimit);
 }
@@ -112,7 +112,7 @@ void SwerveModule::setTurningMotor(units::radian_t angle)
 
 void SwerveModule::setDriveMotor(units::meters_per_second_t velocity)
 {
-    const units::turns_per_second_t tps = units::turns_per_second_t(velocity.value() * SWERVE_PREFERENCE.DRIVE_MOTOR.METERS_TO_TURNS);
+    const units::turns_per_second_t tps = units::turns_per_second_t(velocity.value() * PreferencesSwerve::DRIVE_MOTOR.METERS_TO_TURNS);
     
     driveMotor.SetControl(driveRequest.WithVelocity(tps));
 }
@@ -159,12 +159,12 @@ units::radian_t SwerveModule::getCANcoderRotation()
 
 units::meters_per_second_t SwerveModule::getDriveVelocity()
 {
-    return units::meters_per_second_t(driveMotor.GetVelocity().GetValue().value() * SWERVE_PREFERENCE.DRIVE_MOTOR.TURNS_TO_METERS);
+    return units::meters_per_second_t(driveMotor.GetVelocity().GetValue().value() * PreferencesSwerve::DRIVE_MOTOR.TURNS_TO_METERS);
 }
 
 units::meter_t SwerveModule::getDrivePosition()
 {
-    return units::meter_t(driveMotor.GetPosition().GetValueAsDouble() * SWERVE_PREFERENCE.DRIVE_MOTOR.TURNS_TO_METERS);
+    return units::meter_t(driveMotor.GetPosition().GetValueAsDouble() * PreferencesSwerve::DRIVE_MOTOR.TURNS_TO_METERS);
 }
 
 void SwerveModule::sendDebugInfo(std::size_t moduleIndex)

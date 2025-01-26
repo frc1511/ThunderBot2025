@@ -27,68 +27,52 @@ struct PID_t
 };
 
 
-const units::inch_t WHEEL_DISTANCE_FROM_FRAME = 2.625_in;
 
 struct DrivePreferences {
-    PID_t PID_XY;
-    PID_t PID_THETA;
-    units::inch_t ROBOT_WIDTH = 29_in - WHEEL_DISTANCE_FROM_FRAME * 2;
-    units::inch_t ROBOT_LENGTH = 30_in - WHEEL_DISTANCE_FROM_FRAME * 2;
+    static const units::inch_t WHEEL_DISTANCE_FROM_FRAME;
 
-    units::radians_per_second_t DRIVE_AUTO_MAX_ANG_VEL = 6.28_rad_per_s;
-    units::radians_per_second_squared_t DRIVE_AUTO_MAX_ANG_ACCEL = 3.14_rad_per_s_sq;
+    static const PID_t PID_XY;
+    static const PID_t PID_THETA;
 
-    units::meters_per_second_t DRIVE_MANUAL_MAX_VEL = 2.5_mps;
-    units::degrees_per_second_t DRIVE_MANUAL_MAX_ANG_VEL = 240_deg_per_s; // 540
-    units::radians_per_second_squared_t DRIVE_MANUAL_MAX_ANG_ACCEL = 4.5_rad_per_s_sq; // 9.42
+    static const units::inch_t ROBOT_WIDTH;
+    static const units::inch_t ROBOT_LENGTH;
 
-    DrivePreferences()
-    {
-        PID_XY.Kp = 3.25;
-        PID_XY.Ki = 0.1;
+    static const units::radians_per_second_t DRIVE_AUTO_MAX_ANG_VEL;
+    static const units::radians_per_second_squared_t DRIVE_AUTO_MAX_ANG_ACCEL;
 
-        PID_THETA.Kp = 8.0;
-        PID_THETA.Kd = 0.1;
-    }
+    static const units::meters_per_second_t DRIVE_MANUAL_MAX_VEL;
+    static const units::degrees_per_second_t DRIVE_MANUAL_MAX_ANG_VEL;
+    static const units::radians_per_second_squared_t DRIVE_MANUAL_MAX_ANG_ACCEL;
 };
-static const DrivePreferences DRIVE_PREFERENCES;
 
 struct PreferencesDriveMotor
 {
     PID_t PID;
-    units::current::ampere_t MAX_AMPERAGE = 40_A;
-    double METERS_TO_TURNS = 16.6474609375;
-    double TURNS_TO_METERS = (1 / (METERS_TO_TURNS));
+    units::current::ampere_t MAX_AMPERAGE;
+    double METERS_TO_TURNS;
+    double TURNS_TO_METERS;
+
+    PreferencesDriveMotor();
 };
 
 struct PreferencesTurnMotor
 {
     PID_t PID;
 
-    units::current::ampere_t MAX_AMPERAGE = 30_A;
-    double TURN_RADIAN_TO_ENCODER_FACTOR = 2.03362658302;
+    units::current::ampere_t MAX_AMPERAGE;
+    double TURN_RADIAN_TO_ENCODER_FACTOR;
+
+    PreferencesTurnMotor();
 };
 
 struct PreferencesSwerve 
 {
-    PreferencesDriveMotor DRIVE_MOTOR;
-    PreferencesTurnMotor TURN_MOTOR;
-    units::second_t DRIVE_RAMP_TIME = 0.3_s;
-    PreferencesSwerve()
-    {
-        DRIVE_MOTOR.PID.Kp = 0.1;
-        DRIVE_MOTOR.PID.Kv = 0.124;
-        DRIVE_MOTOR.PID.Kff = 0;
-
-        TURN_MOTOR.PID.Kp = 33;
-        TURN_MOTOR.PID.Ki = 0;
-        TURN_MOTOR.PID.Kd = 0;
-    }
+    static const PreferencesDriveMotor DRIVE_MOTOR;
+    static const PreferencesTurnMotor TURN_MOTOR;
+    static const units::second_t DRIVE_RAMP_TIME;
 };
-static PreferencesSwerve SWERVE_PREFERENCE;
 
 struct PreferencesControls
 {
-    double AXIS_DEADZONE = .2;
+    static const double AXIS_DEADZONE;
 };
-static PreferencesControls CONTROLS_PREFERENCE;
