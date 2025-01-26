@@ -22,20 +22,24 @@
 
 #include <ctre/phoenix6/Pigeon2.hpp>
 
+#include <frc/smartdashboard/Field2d.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+
 #include "Basic/Component.h"
 #include "iomap.h"
 #include "preferences.h"
 #include "swerveModule.h"
 #include "Drive/CSVTrajectory.h"
 #include "Auto/Action.h"
+#include "Limelight.h"
 
 class Drive : public Component {
 public:
-    Drive();
+    Drive(Limelight* _limelight);
     ~Drive();
 
-    void process();
-    void resetToMatchMode(MatchMode mode); 
+    virtual void process();
+    virtual void resetToMatchMode(MatchMode priorMode, MatchMode mode); 
 
     enum ControlFlag {
         NONE          = 0,
@@ -177,8 +181,8 @@ private:
         getRotation(),
         getModulePositions(),
         frc::Pose2d(),
-        { 0.1, 0.1, 0.1 }, // Standard deviations of model states.
-        { 0.9, 0.9, 0.9 } // Standard deviations of the vision measurements.
+        { 0.01, 0.01, 0.01 }, // Standard deviations of model states.
+        { 0.1, 0.1, 0.1 } // Standard deviations of the vision measurements.
     };
 
     // PID Controller for angular drivetrain movement.
@@ -207,7 +211,6 @@ private:
      * Updates the position and rotation of the drivetrain on the field.
      */
     void updateOdometry();
-
 
     /// MARK: Trajectory
 
@@ -250,4 +253,7 @@ private:
      */
     void execTrajectory();
 
+    /// MARK: Limelight
+
+    Limelight* limelight;
 };

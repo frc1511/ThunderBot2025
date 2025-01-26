@@ -4,13 +4,14 @@
 
 #include "Robot.h"
 
+Robot::Robot() {}
 void Robot::RobotInit() {
 	auto_.autoSelectorInit();
-	AddPeriodic([&] {
-		for (Component* component : allComponents) {
-			component->sendFeedback();
-		}
-	}, 20_ms);
+}
+void Robot::RobotPeriodic() {
+   for (Component* component : allComponents) {
+	 	component->sendFeedback();
+	}
 }
 void Robot::RobotPeriodic() {}
 
@@ -51,7 +52,7 @@ void Robot::SimulationPeriodic() {}
 
 void Robot::reset(Component::MatchMode mode) {
 	for (Component* component : allComponents) {
-		component->callResetToMode(lastMode);
+		component->resetToMatchMode(lastMode, mode);
 	}
 
 	lastMode = mode;

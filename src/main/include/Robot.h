@@ -34,13 +34,13 @@ class Robot : public frc::TimedRobot {
   private:
 	void reset(Component::MatchMode mode);
 	Component::MatchMode lastMode = Component::MatchMode::DISABLED;
-	Drive drive;
+	Drive drive {&limelight};
 	Gamepiece gamepiece;
 	Controls controls {&drive};
 	Auto auto_ {&drive};
-	
+	Limelight limelight;
 
 	std::vector<Component*> allComponents {
-        &auto_, &drive, &gamepiece, &controls
+        &auto_, &drive, &gamepiece, &controls, &limelight
    };
 };

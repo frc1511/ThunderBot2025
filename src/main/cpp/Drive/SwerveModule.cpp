@@ -79,15 +79,13 @@ void SwerveModule::setState(frc::SwerveModuleState state)
     frc::SwerveModuleState optimizedState;
 
     // Turn off optimization in crater mode to help with configuration.
-    if (OPTIMIZATION_BYPASS) {
-        optimizedState = state;
-    }
-    else {
+    optimizedState = state;
+    if (!OPTIMIZATION_BYPASS) {
         /**
          * Optimize the target state by flipping motor directions and adjusting
          * rotations in order to turn the least amount of distance possible.
          */
-        optimizedState = frc::SwerveModuleState::Optimize(state, currentState.angle);
+        optimizedState.Optimize(currentState.angle);
     }
 
     // Cosine Compensation; Don't drive full bore when facing the wrong way

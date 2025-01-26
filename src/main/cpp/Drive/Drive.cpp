@@ -1,17 +1,22 @@
 #include "Drive/drive.h"
 
-Drive::Drive():
+Drive::Drive(Limelight* _limelight):
 driveController(
     [&]() -> frc::HolonomicDriveController {
         // Set the angular PID controller range from -180 to 180 degrees.
         trajectoryThetaPIDController.EnableContinuousInput(units::radian_t(-180_deg), units::radian_t(180_deg));
         // Setup the drive controller with the individual axis PID controllers.
         return frc::HolonomicDriveController(xPIDController, yPIDController, trajectoryThetaPIDController);
-    } ()) {
+    } ()),
+limelight(_limelight)
+ {
     manualThetaPIDController.EnableContinuousInput(units::radian_t(-180_deg), units::radian_t(180_deg));
 
     // Enable the trajectory drive controller.
     driveController.SetEnabled(true);
+
+    //Initialize the field widget
+    frc::SmartDashboard::PutData("Field", &m_field);
 }
 
 Drive::~Drive() 
@@ -21,7 +26,7 @@ Drive::~Drive()
     }
 }
 
-void Drive::resetToMatchMode(MatchMode mode) {
+void Drive::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
     resetPIDControllers();
 
     driveMode = DriveMode::STOPPED;
@@ -77,7 +82,7 @@ void Drive::resetToMatchMode(MatchMode mode) {
     }
     else {
         // Check if going from Auto to Disabled.
-        wasAuto = getLastMode() == Component::MatchMode::AUTO && mode == Component::MatchMode::DISABLED;
+        wasAuto = priorMode == Component::MatchMode::AUTO && mode == Component::MatchMode::DISABLED;
 
         // Doing something else.
         if (!wasAuto && mode != Component::MatchMode::DISABLED) {
@@ -252,7 +257,6 @@ void Drive::sendFeedback()
     frc::SmartDashboard::PutNumber("thunderdashboard_drive_target_ang",   targetPose.Rotation().Radians().value());
 
     frc::SmartDashboard::PutBoolean("thunderdashboard_gyro", !imuCalibrated);
-
 }
 
 bool Drive::isFinished() const 
@@ -318,6 +322,16 @@ void Drive::updateOdometry() {
      * the swerve modules.
      */
     poseEstimator.Update(getRotation(), getModulePositions());
+
+    LimelightHelpers::SetRobotOrientation("", poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0);
+
+    LimelightHelpers::PoseEstimate limelightMeasurement = limelight->getEstimatedBotPose();
+
+    poseEstimator.SetVisionMeasurementStdDevs({0.7, 0.7, 9999999.0});
+    poseEstimator.AddVisionMeasurement(
+        limelightMeasurement.pose,
+        limelightMeasurement.timestampSeconds
+    );
 }
 
 wpi::array<frc::SwerveModuleState, 4> Drive::getModuleStates() {
