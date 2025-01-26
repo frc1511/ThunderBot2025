@@ -91,6 +91,6 @@ struct PreferencesControls
 {
     double AXIS_DEADZONE = .2;
     const bool DRIVE_DISABLED = true;
-    const bool AUX_DISABLED = true;
+    const bool AUX_DISABLED = false;
 };
 static PreferencesControls CONTROLS_PREFERENCE;

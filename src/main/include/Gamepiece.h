@@ -78,13 +78,13 @@ class Gamepiece : public Component {
     /**
      * Possible states for the gamepiece (based on the sensors)
      */
-    enum GamepieceStates {
+    enum GamepieceState {
         kNO_GP,
         kHAS_CORAL,
         kHAS_ALGAE
     };
 
-    enum lastGamepieceStates {
+    enum lastGamepieceState {
         kHAD_NONE,
         kHAD_CORAL,
         kHAD_ALGAE, 
@@ -94,17 +94,17 @@ class Gamepiece : public Component {
     /**
      * The variable storing what our last gamepiece state was
      */
-    enum Gamepiece::lastGamepieceStates lastGamepieceState = lastGamepieceStates::kHAD_NONE;
+    enum Gamepiece::lastGamepieceState lastGamepieceState = lastGamepieceState::kHAD_NONE;
 
     /**
      * Return the current sensed state of the gamepieces (which one we have)
      */
-    Gamepiece::GamepieceStates updateGamepieceState();
+    Gamepiece::GamepieceState updateGamepieceState();
 
     /**
      * The possible speed settings (does not differentiate intake versus shoot, rather, it differentiates based on gamepiece)
      */
-    enum MotorSpeeds {
+    enum MotorSpeed {
         kSTOPPED,
         kCORAL,
         kALGAE,
@@ -115,12 +115,12 @@ class Gamepiece : public Component {
     /**
      * The variable storing what our current motor speed setting is based on MotorSpeeds
      */
-    Gamepiece::MotorSpeeds motorSpeed = MotorSpeeds::kSTOPPED;
+    Gamepiece::MotorSpeed motorSpeed = MotorSpeed::kSTOPPED;
 
     /**
      * The set of intake speeds
      */
-    double presetIntakeSpeeds [MotorSpeeds::kMAX] = {
+    double presetIntakeSpeeds [MotorSpeed::kMAX] = {
         0.0,
         0.75, // Coral
         1, // Algae
@@ -130,16 +130,14 @@ class Gamepiece : public Component {
     /**
      * The set of shooter speeds
      */
-    double presetShooterSpeeds [MotorSpeeds::kMAX] = {
+    double presetShooterSpeeds [MotorSpeed::kMAX] = {
         0.0,
         -0.75, // Coral
         -1 // Algae
     };
 
     rev::spark::SparkMax leftSparkMax {CAN_LEFT_CALGAE, rev::spark::SparkLowLevel::MotorType::kBrushless};
-    rev::spark::SparkMaxConfig leftSparkMaxConfig {};
     rev::spark::SparkMax rightSparkMax {CAN_RIGHT_CALGAE, rev::spark::SparkLowLevel::MotorType::kBrushless};
-    rev::spark::SparkMaxConfig rightSparkMaxConfig {};
     // rev::spark::SparkClosedLoopController leftPidController = leftSparkMax.GetClosedLoopController(); // No PID Yet (also this probably won't be what we use , I think we're doing PWM)
     // rev::spark::SparkClosedLoopController rightPidController = rightSparkMax.GetClosedLoopController();
 

@@ -9,7 +9,7 @@
 #include "Basic/Component.h"
 #include "Drive/Drive.h"
 #include "Controls.h"
-#include "Gamepiece.h"
+#include "GamEpiece.h"
 
 class Robot : public frc::TimedRobot {
   public:
@@ -39,6 +39,6 @@ class Robot : public frc::TimedRobot {
   Limelight limelight;
 
 	std::vector<Component*> allComponents {
-        &drive, &gamepiece, &controls, &limelight
+    	&drive, &gamepiece, &controls, &limelight
    };
 };
