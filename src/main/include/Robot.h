@@ -8,12 +8,13 @@
 
 #include "Basic/Component.h"
 #include "Drive/Drive.h"
+#include "Auto/Auto.h"
 #include "Controls.h"
 #include "Gamepiece.h"
 
 class Robot : public frc::TimedRobot {
   public:
-	Robot();
+	void RobotInit() override;
 	void RobotPeriodic() override;
 
 	void AutonomousInit() override;
@@ -36,9 +37,10 @@ class Robot : public frc::TimedRobot {
 	Drive drive {&limelight};
 	Gamepiece gamepiece;
 	Controls controls {&drive};
+	Auto auto_ {&drive};
 	Limelight limelight;
 
 	std::vector<Component*> allComponents {
-        &drive, &gamepiece, &controls, &limelight
+        &auto_, &drive, &gamepiece, &controls, &limelight
    };
 };

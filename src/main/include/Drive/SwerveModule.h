@@ -17,7 +17,7 @@
 class SwerveModule {
 public:
     SwerveModule(int driveID, int turningID, int canCoderID, units::degree_t offset);
-    void doPersistentConfiguration();
+    void doPersistentConfiguration() override;
     void setState(frc::SwerveModuleState state);
     void sendDebugInfo(std::size_t moduleIndex); // Replaces sendFeedback();
     
@@ -29,9 +29,10 @@ public:
 
     void stop();
     void setTurningMotor(units::radian_t angle);
+    void setDriveMotor(units::meters_per_second_t velocity);
+    
 private:
 
-    void setDriveMotor(units::meters_per_second_t velocity);
 
     units::radian_t getRawCANcoderRotation();
     units::radian_t getCANcoderRotation();

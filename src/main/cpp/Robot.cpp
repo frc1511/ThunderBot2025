@@ -5,19 +5,22 @@
 #include "Robot.h"
 
 Robot::Robot() {}
+void Robot::RobotInit() {
+	auto_.autoSelectorInit();
+}
 void Robot::RobotPeriodic() {
    for (Component* component : allComponents) {
 	 	component->sendFeedback();
 	}
 }
+void Robot::RobotPeriodic() {}
 
 void Robot::AutonomousInit() {
     reset(Component::MatchMode::AUTO);
 }
 void Robot::AutonomousPeriodic() {
-	for (Component* component : allComponents) {
-		component->process();
-	}
+	auto_.process();
+	drive.process();
 }
 
 void Robot::TeleopInit() {
@@ -39,6 +42,8 @@ void Robot::TestInit() {
 	for (Component* component : allComponents) {
 		component->doPersistentConfiguration();
 	}
+
+	printf("Persistantt config done boi \n");
 }
 void Robot::TestPeriodic() {}
 
