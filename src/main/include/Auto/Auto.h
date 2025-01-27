@@ -17,7 +17,7 @@ public:
 
     void process() override;
     void sendFeedback() override;
-    void resetToMatchMode(MatchMode mode) override;
+    void resetToMatchMode(MatchMode priorMode, MatchMode mode) override;
 
     frc::SendableChooser<int> autoSelector;
     void autoSelectorInit();

@@ -5,7 +5,7 @@
 class Gamepiece : public Component {
 public:
     Gamepiece();
-    virtual ~Gamepiece();
+    ~Gamepiece();
 
-    virtual void process();
+    void process();
 };

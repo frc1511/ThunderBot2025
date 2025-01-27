@@ -8,7 +8,7 @@ class Controls : public Component {
   public:
     Controls(Drive* drive_);
 
-    virtual void process();
+    void process();
 private:
     Drive* drive;
 

@@ -14,9 +14,6 @@ limelight(_limelight)
 
     // Enable the trajectory drive controller.
     driveController.SetEnabled(true);
-
-    //Initialize the field widget
-    frc::SmartDashboard::PutData("Field", &m_field);
 }
 
 Drive::~Drive() 
@@ -325,12 +322,18 @@ void Drive::updateOdometry() {
 
     LimelightHelpers::SetRobotOrientation("", poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0);
 
-    LimelightHelpers::PoseEstimate limelightMeasurement = limelight->getEstimatedBotPose();
+    std::pair<bool, LimelightHelpers::PoseEstimate> limelightResult = limelight->getEstimatedBotPose();
 
-    poseEstimator.SetVisionMeasurementStdDevs({0.7, 0.7, 9999999.0});
+    bool limelightReliable = limelightResult.first;
+    LimelightHelpers::PoseEstimate mt1 = limelightResult.second;
+
+    frc::SmartDashboard::PutBoolean("limelight reliable", limelightReliable);
+
+    if (!limelightReliable) return;
+    poseEstimator.SetVisionMeasurementStdDevs({0.3, 0.3, 0.3});
     poseEstimator.AddVisionMeasurement(
-        limelightMeasurement.pose,
-        limelightMeasurement.timestampSeconds
+        mt1.pose,
+        mt1.timestampSeconds
     );
 }
 

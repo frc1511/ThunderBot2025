@@ -17,7 +17,7 @@
 class SwerveModule {
 public:
     SwerveModule(int driveID, int turningID, int canCoderID, units::degree_t offset);
-    void doPersistentConfiguration() override;
+    void doPersistentConfiguration();
     void setState(frc::SwerveModuleState state);
     void sendDebugInfo(std::size_t moduleIndex); // Replaces sendFeedback();
     

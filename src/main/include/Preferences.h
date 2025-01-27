@@ -101,3 +101,10 @@ struct PreferencesTrajectory
     units::meter_t FIELD_Y = 8.05_m;
 };
 static PreferencesTrajectory TRAJECTORY_PREFERENCE;
+
+
+struct PreferencesLimelight
+{
+    std::string LIMELIGHT_NAME = "limelight";
+};
+static PreferencesLimelight LIMELIGHT_PREFERENCE;

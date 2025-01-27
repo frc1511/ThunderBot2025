@@ -41,7 +41,7 @@ class Component {
     /**
      * The periodic function. Should be employed for basic, TeleOperated and Autonomonous operations
      */
-    virtual void process() = 0;
+    virtual void process() {};
 
   protected:
     static Settings settings;

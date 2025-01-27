@@ -38,8 +38,8 @@ public:
     Drive(Limelight* _limelight);
     ~Drive();
 
-    virtual void process();
-    virtual void resetToMatchMode(MatchMode priorMode, MatchMode mode); 
+    void process();
+    void resetToMatchMode(MatchMode priorMode, MatchMode mode); 
 
     enum ControlFlag {
         NONE          = 0,
