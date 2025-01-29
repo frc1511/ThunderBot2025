@@ -7,12 +7,15 @@
 #include <rev/SparkMax.h>
 #include <rev/config/SparkMaxConfig.h>
 #include <frc/DigitalInput.h>
+#include <frc/controller/ProfiledPIDController.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 
 class Elevator : public Component {
   public:
     void process();
 
     void doPersistentConfiguration();
+    void sendFeedback();
 
     bool atMaxHeight();
     bool atMinHeight();
@@ -38,15 +41,15 @@ class Elevator : public Component {
 
     void runMotorsToPreset();
 
-    double ElevatorPosition[ElevatorPreset::kMAX] {
-        0,     // Stopped
-        100.0, // Ground
-        200.0, // Processor
-        350.0, // Coral Station
-        300.0, // L1
-        400.0, // L2
-        500.0, // L3
-        600.0  // L4
+    units::turn_t ElevatorPosition[ElevatorPreset::kMAX] {
+        0_tr,     // Stopped (Does not move to 0 turns)
+        100_tr, // Ground
+        200_tr, // Processor
+        350_tr, // Coral Station
+        300_tr, // L1
+        400_tr, // L2
+        500_tr, // L3
+        600_tr  // L4
     };
     ElevatorPreset targetPreset;
 
@@ -61,6 +64,8 @@ class Elevator : public Component {
     frc::DigitalInput lowerLimitSwitch {DIO_ELEVATOR_BOTTOM_LIMITSWITCH};
     frc::DigitalInput upperLimitSwitch {DIO_ELEVATOR_TOP_LIMITSWITCH};
 
-    rev::spark::SparkClosedLoopController leftPIDController {leftSparkMax.GetClosedLoopController()};
-    rev::spark::SparkClosedLoopController rightPIDController {rightSparkMax.GetClosedLoopController()};
+    frc::ProfiledPIDController<units::turn> PIDController {
+      ELEVATOR_PREFERENCE.PID.Kp, ELEVATOR_PREFERENCE.PID.Ki, ELEVATOR_PREFERENCE.PID.Kd,
+      frc::TrapezoidProfile<units::turn>::Constraints(ELEVATOR_PREFERENCE.PID.MaxVel, ELEVATOR_PREFERENCE.PID.MaxAccel)
+    };
 };
