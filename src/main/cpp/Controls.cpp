@@ -1,8 +1,9 @@
 #include "Controls.h"
 
-Controls::Controls(Drive* drive_, Gamepiece* gamepiece_):
+Controls::Controls(Drive* drive_, Calgae* calgae_, Wrist* wrist_):
     drive(drive_),
-    gamepiece(gamepiece_)
+    calgae(calgae_),
+    wrist(wrist_)
 {}
 
 #define SPEED_REDUCTION 1
@@ -63,25 +64,27 @@ void Controls::process() {
 
     #define CALGAE_SENSOR_BROKEN false// Replace with switchboard?
     if (!CONTROLS_PREFERENCE.AUX_DISABLED) {
+
         bool coralIntake = auxController.GetR2Button();
         bool algaeIntake = auxController.GetL2Button();
         bool shoot = auxController.GetR1Button();
         bool resetHadGamepiece = auxController.GetL1ButtonPressed();
         bool shootDone = auxController.GetR1ButtonReleased();
+
         if (coralIntake) {
-            gamepiece->setMotorMode(Gamepiece::MotorModes::kCORAL_INTAKE);
+            calgae->setMotorMode(Calgae::MotorModes::kCORAL_INTAKE);
         } else if (algaeIntake) {
-            gamepiece->setMotorMode(Gamepiece::MotorModes::kALGAE_INTAKE);
+            calgae->setMotorMode(Calgae::MotorModes::kALGAE_INTAKE);
         } else if (shoot) {
-            if (!CALGAE_SENSOR_BROKEN) gamepiece->setMotorMode(Gamepiece::MotorModes::kSHOOT);
-            else gamepiece->setMotorMode(Gamepiece::MotorModes::kSHOOT_OVERRIDE);
+            if (!CALGAE_SENSOR_BROKEN) calgae->setMotorMode(Calgae::MotorModes::kSHOOT);
+            else calgae->setMotorMode(Calgae::MotorModes::kSHOOT_OVERRIDE);
         } else if (shootDone) {
-            gamepiece->setMotorMode(Gamepiece::MotorModes::kDONE_SHOOTING);
+            calgae->setMotorMode(Calgae::MotorModes::kDONE_SHOOTING);
         } else {
-            gamepiece->setMotorMode(Gamepiece::MotorModes::kNONE);
+            calgae->setMotorMode(Calgae::MotorModes::kNONE);
         }
         if (resetHadGamepiece) {
-            gamepiece->resetHadGamepiece();
+            calgae->resetHadGamepiece();
         }
     }
 }

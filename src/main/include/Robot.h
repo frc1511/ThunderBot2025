@@ -9,7 +9,8 @@
 #include "Basic/Component.h"
 #include "Drive/Drive.h"
 #include "Controls.h"
-#include "GamEpiece.h"
+#include "GamEpiece/Calgae.h"
+#include "GamEpiece/Wrist.h"
 
 class Robot : public frc::TimedRobot {
   public:
@@ -34,11 +35,12 @@ class Robot : public frc::TimedRobot {
 	void reset(Component::MatchMode mode);
 	Component::MatchMode lastMode = Component::MatchMode::DISABLED;
 	Drive drive {&limelight};
-	Gamepiece gamepiece;
-	Controls controls {&drive, &gamepiece};
-  Limelight limelight;
+	Calgae calgae;
+	Wrist wrist;
+	Controls controls {&drive, &calgae, &wrist};
+    Limelight limelight;
 
 	std::vector<Component*> allComponents {
-    	&drive, &gamepiece, &controls, &limelight
+    	&drive, &calgae, &wrist, &controls, &limelight
    };
 };

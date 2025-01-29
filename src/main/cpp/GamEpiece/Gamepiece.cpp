@@ -1,13 +1,13 @@
-#include "GamEpiece.h"
+#include "GamEpiece/Calgae.h"
 
-Gamepiece::Gamepiece() {
+Calgae::Calgae() {
     doPersistentConfiguration();
 }
 
-Gamepiece::~Gamepiece() {
+Calgae::~Calgae() {
 }
 
-void Gamepiece::doPersistentConfiguration() {
+void Calgae::doPersistentConfiguration() {
     rev::spark::SparkMaxConfig leftSparkMaxConfig {};
     rev::spark::SparkMaxConfig rightSparkMaxConfig {};
     leftSparkMaxConfig.Inverted(false);
@@ -32,7 +32,7 @@ void Gamepiece::doPersistentConfiguration() {
     );
 }
 
-void Gamepiece::resetToMatchMode(Component::MatchMode lastMode, Component::MatchMode mode) {
+void Calgae::resetToMatchMode(Component::MatchMode lastMode, Component::MatchMode mode) {
     switch (mode) {
     case Component::MatchMode::DISABLED:
         motorSpeed = MotorSpeed::kSTOPPED;
@@ -57,7 +57,7 @@ void Gamepiece::resetToMatchMode(Component::MatchMode lastMode, Component::Match
     }
 }
 
-void Gamepiece::sendFeedback() {
+void Calgae::sendFeedback() {
     frc::SmartDashboard::PutNumber ("Left SparkMax Speed -1 to 1"         , leftSparkMax.Get()                      );
     frc::SmartDashboard::PutNumber ("Left SparkMax Temp C"                , leftSparkMax.GetMotorTemperature()      );
     frc::SmartDashboard::PutNumber ("Left SparkMax Rotation"              , leftSparkMax.GetEncoder().GetPosition() );
@@ -73,8 +73,8 @@ void Gamepiece::sendFeedback() {
     frc::SmartDashboard::PutString ("Last Gamepiece"                      , lastGamepieceStateToString()            );
 }
 
-void Gamepiece::process() {    
-    Gamepiece::GamepieceState currentGamepieceState = updateGamepieceState();
+void Calgae::process() {    
+    Calgae::GamepieceState currentGamepieceState = updateGamepieceState();
 
     motorSpeed = MotorSpeed::kSTOPPED; // In case we make it through the below logic without getting a speed
 
@@ -95,7 +95,7 @@ void Gamepiece::process() {
             case MotorModes::kALGAE_INTAKE: // If we are told to intake algae
                 motorSpeed = MotorSpeed::kALGAE; // Set speed to algae
                 break;
-            case MotorModes::kSHOOT: // If we are told to shoot, do it even though we don't have anything sensed in case we lose detection early while shooting
+            case MotorModes::kSHOOT: // If we are told to shoot, do it even though we don't have anything sensed, in case we lose detection early while shooting.
                 
                 if (lastGamepieceState == lastGamepieceState::kHAD_CORAL) { // If we had coral
                     motorSpeed = MotorSpeed::kCORAL;
@@ -154,34 +154,34 @@ void Gamepiece::process() {
     }
 }
 
-void Gamepiece::setMotorMode(Gamepiece::MotorModes mode) {
+void Calgae::setMotorMode(Calgae::MotorModes mode) {
     motorMode = mode;
 }
 
-void Gamepiece::resetHadGamepiece() {
+void Calgae::resetHadGamepiece() {
     lastGamepieceState = lastGamepieceState::kHAD_NONE;
 }
 
-bool Gamepiece::coralRetroreflectiveTripped() {
+bool Calgae::coralRetroreflectiveTripped() {
     return !coralRetroreflective.Get();
 }
 
-bool Gamepiece::algaeRetroreflectiveTripped() {
+bool Calgae::algaeRetroreflectiveTripped() {
     return algaeRetroreflective.Get();
 }
 
-void Gamepiece::stopMotors() {
+void Calgae::stopMotors() {
     leftSparkMax.Set(presetIntakeSpeeds[MotorSpeed::kSTOPPED]);
     rightSparkMax.Set(presetIntakeSpeeds[MotorSpeed::kSTOPPED]);    
 }
 
-void Gamepiece::runMotors(double speed) {
+void Calgae::runMotors(double speed) {
     leftSparkMax.Set(speed);
     rightSparkMax.Set(speed);
 }
 
-Gamepiece::GamepieceState Gamepiece::updateGamepieceState() {
-    enum Gamepiece::GamepieceState currentGamepieceState = GamepieceState::kNO_GP;
+Calgae::GamepieceState Calgae::updateGamepieceState() {
+    enum Calgae::GamepieceState currentGamepieceState = GamepieceState::kNO_GP;
     if (algaeRetroreflectiveTripped() && coralRetroreflectiveTripped()) {
         printf("SENSOR ERROR: Coral and Algae Triggered Together\n");
         currentGamepieceState = GamepieceState::kHAS_ALGAE; // Prioritize algae for faster size
@@ -193,7 +193,7 @@ Gamepiece::GamepieceState Gamepiece::updateGamepieceState() {
     return currentGamepieceState;
 }
 
-std::string Gamepiece::lastGamepieceStateToString() {
+std::string Calgae::lastGamepieceStateToString() {
     switch (lastGamepieceState) {
     case lastGamepieceState::kHAD_NONE: return "None";
     case lastGamepieceState::kHAD_CORAL: return "Algae";

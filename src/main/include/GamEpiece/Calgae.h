@@ -9,10 +9,10 @@
 #include <frc/DigitalInput.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
-class Gamepiece : public Component {
+class Calgae : public Component {
   public:
-    Gamepiece();
-    ~Gamepiece();
+    Calgae();
+    ~Calgae();
 
     void doPersistentConfiguration();
 
@@ -37,7 +37,7 @@ class Gamepiece : public Component {
     /**
      * Set the motor modes based on controls
      */
-    void setMotorMode(Gamepiece::MotorModes mode);
+    void setMotorMode(Calgae::MotorModes mode);
 
     /**
      * Reset the had gamepiece states to false (Used by Controls for a manual reset)
@@ -73,7 +73,7 @@ class Gamepiece : public Component {
     /**
      * Mode set by controls through setMotorMode()
      */
-    Gamepiece::MotorModes motorMode = MotorModes::kNONE;
+    Calgae::MotorModes motorMode = MotorModes::kNONE;
 
     /**
      * Possible states for the gamepiece (based on the sensors)
@@ -94,12 +94,12 @@ class Gamepiece : public Component {
     /**
      * The variable storing what our last gamepiece state was
      */
-    enum Gamepiece::lastGamepieceState lastGamepieceState = lastGamepieceState::kHAD_NONE;
+    enum Calgae::lastGamepieceState lastGamepieceState = lastGamepieceState::kHAD_NONE;
 
     /**
      * Return the current sensed state of the gamepieces (which one we have)
      */
-    Gamepiece::GamepieceState updateGamepieceState();
+    Calgae::GamepieceState updateGamepieceState();
 
     /**
      * The possible speed settings (does not differentiate intake versus shoot, rather, it differentiates based on gamepiece)
@@ -115,7 +115,7 @@ class Gamepiece : public Component {
     /**
      * The variable storing what our current motor speed setting is based on MotorSpeeds
      */
-    Gamepiece::MotorSpeed motorSpeed = MotorSpeed::kSTOPPED;
+    Calgae::MotorSpeed motorSpeed = MotorSpeed::kSTOPPED;
 
     /**
      * The set of intake speeds
@@ -138,7 +138,7 @@ class Gamepiece : public Component {
 
     rev::spark::SparkMax leftSparkMax {CAN_LEFT_CALGAE, rev::spark::SparkLowLevel::MotorType::kBrushless};
     rev::spark::SparkMax rightSparkMax {CAN_RIGHT_CALGAE, rev::spark::SparkLowLevel::MotorType::kBrushless};
-    // rev::spark::SparkClosedLoopController leftPidController = leftSparkMax.GetClosedLoopController(); // No PID Yet (also this probably won't be what we use , I think we're doing PWM)
+    // rev::spark::SparkClosedLoopController leftPidController = leftSparkMax.GetClosedLoopController(); // No PID Yet (also this probably won't be what we use, I think we're doing PWM)
     // rev::spark::SparkClosedLoopController rightPidController = rightSparkMax.GetClosedLoopController();
 
     frc::DigitalInput coralRetroreflective {DIO_CORAL_RETROREFLECTIVE};

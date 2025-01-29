@@ -43,7 +43,7 @@
 
 #define PWM_SLOT_0 0
 #define PWM_SLOT_1 1
-#define PWM_SLOT_2 2
+#define PWM_WRIST 2
 #define PWM_SLOT_3 3
 #define PWM_SLOT_4 4
 #define PWM_SLOT_5 5
@@ -55,7 +55,7 @@
 #define DIO_ALGAE_RETROREFLECTIVE 1
 #define DIO_CORAL_RETROREFLECTIVE 2
 #define DIO_SLOT_3 3
-#define DIO_SLOT_4 4
+#define DIO_WRIST_ENCODER 4
 #define DIO_SLOT_5 5
 #define DIO_SLOT_6 6
 #define DIO_SLOT_7 7

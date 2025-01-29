@@ -94,3 +94,11 @@ struct PreferencesControls
     const bool AUX_DISABLED = false;
 };
 static PreferencesControls CONTROLS_PREFERENCE;
+
+struct PreferencesWrist {
+    PID_t PID;
+    double MAX_SPEED = 1;
+    PreferencesWrist() {
+    }
+};
+static PreferencesWrist WRIST_PREFERENCE;

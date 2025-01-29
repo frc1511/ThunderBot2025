@@ -4,16 +4,18 @@
 
 #include "Basic/Component.h"
 #include "Drive/Drive.h"
-#include "GamEpiece.h"
+#include "GamEpiece/Calgae.h"
+#include "GamEpiece/Wrist.h"
 
 class Controls : public Component {
   public:
-    Controls(Drive* drive_, Gamepiece* gamepiece_);
+    Controls(Drive* drive_, Calgae* calgae_, Wrist* wrist_);
 
     void process();
  private:
     Drive* drive;
-    Gamepiece* gamepiece;
+    Calgae* calgae;
+    Wrist* wrist;
 
     frc::PS4Controller driveController {0};
     frc::PS4Controller auxController {1};
