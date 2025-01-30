@@ -24,16 +24,30 @@ void Auto::process() { //called during auto
         case DO_NOTHING:
             doNothing();
             break;
-        case TEST:
+        case _TEST:
             test();
+            break;
+        case _SQUARE:
+            square();
             break;
     }
 }
 
 void Auto::test() { //test auto, leave, grab a note, and shoot
     if (step == 0) {
-        drive->setupInitialTrajectoryPosition(&paths->at(Path::TEST));
-        drive->runTrajectory(&paths->at(Path::TEST), actions);
+        drive->setupInitialTrajectoryPosition(&paths->at(Path::_TEST));
+        drive->runTrajectory(&paths->at(Path::_TEST), actions);
+        step++;
+    } else if (step == 1 && drive->isFinished()) {
+        printf("Finished Drive!\n");
+        step++;
+    }
+}
+
+void Auto::square() { //test auto, leave, grab a note, and shoot
+    if (step == 0) {
+        drive->setupInitialTrajectoryPosition(&paths->at(Path::_SQUARE));
+        drive->runTrajectory(&paths->at(Path::_SQUARE), actions);
         step++;
     } else if (step == 1 && drive->isFinished()) {
         printf("Finished Drive!\n");
@@ -59,8 +73,9 @@ void Auto::doNothing() {
 }
 
 void Auto::autoSelectorInit() {
-    autoSelector.SetDefaultOption("Do Nothing", (int)AutoMode::DO_NOTHING);
-    autoSelector.SetDefaultOption("TEST",       (int)AutoMode::TEST);
+    autoSelector.SetDefaultOption("Do Nothing",  (int)AutoMode::DO_NOTHING);
+    autoSelector.SetDefaultOption("zzz_TEST",       (int)AutoMode::_TEST);
+    autoSelector.SetDefaultOption("zzz_SQUARE",      (int)AutoMode::_SQUARE);
 }
 
 void Auto::sendFeedback() {

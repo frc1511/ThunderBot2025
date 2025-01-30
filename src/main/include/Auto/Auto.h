@@ -26,7 +26,8 @@ private:
     enum class AutoMode
     {
         DO_NOTHING   = 0,
-        TEST         = 1,
+        _TEST        = 1,
+        _SQUARE      = 2,
     };
     Drive *drive;
 
@@ -34,22 +35,27 @@ private:
 
     void doNothing();
     void test();
+    void square();
 
     const std::map<AutoMode, const char*> autoModeNames {
         { AutoMode::DO_NOTHING, "Do Nothing"},
-        { AutoMode::TEST,       "Test"},
+        { AutoMode::_TEST,      "zzz_Test"},
+        { AutoMode::_SQUARE,    "zzz_Square"},
     };
     int step = 0;
 
     enum class Path {
-        TEST,
+        _TEST,
+        _SQUARE
     };
     const std::map<Path, CSVTrajectory> bluePaths {
-        { Path::TEST, CSVTrajectory{ DEPLOY_DIR "match_winning_auto.csv",          false } },
+        { Path::_TEST, CSVTrajectory{ DEPLOY_DIR "match_winning_auto.csv",          false } },
+        { Path::_SQUARE, CSVTrajectory{ DEPLOY_DIR "square.csv",                    false } },
 
     };
     const std::map<Path, CSVTrajectory> redPaths {
-        { Path::TEST, CSVTrajectory{ DEPLOY_DIR "match_winning_auto.csv",          true  } },
+        { Path::_TEST, CSVTrajectory{ DEPLOY_DIR "match_winning_auto.csv",          true  } },
+        { Path::_SQUARE, CSVTrajectory{ DEPLOY_DIR "square.csv",                    true  } },
     };
     const std::map<Path, CSVTrajectory>* paths = nullptr;
 
