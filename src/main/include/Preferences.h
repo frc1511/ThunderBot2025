@@ -35,10 +35,10 @@ struct DrivePreferences {
     units::inch_t ROBOT_WIDTH = 29_in - WHEEL_DISTANCE_FROM_FRAME * 2;
     units::inch_t ROBOT_LENGTH = 30_in - WHEEL_DISTANCE_FROM_FRAME * 2;
 
-    units::radians_per_second_t DRIVE_AUTO_MAX_ANG_VEL = 6.28_rad_per_s;
-    units::radians_per_second_squared_t DRIVE_AUTO_MAX_ANG_ACCEL = 3.14_rad_per_s_sq;
+    units::radians_per_second_t DRIVE_AUTO_MAX_ANG_VEL = 9.28_rad_per_s;
+    units::radians_per_second_squared_t DRIVE_AUTO_MAX_ANG_ACCEL = 6.14_rad_per_s_sq;
 
-    units::meters_per_second_t DRIVE_MANUAL_MAX_VEL = 3.5_mps;
+    units::meters_per_second_t DRIVE_MANUAL_MAX_VEL = 2.5_mps;
     units::degrees_per_second_t DRIVE_MANUAL_MAX_ANG_VEL = 240_deg_per_s; // 540
     units::radians_per_second_squared_t DRIVE_MANUAL_MAX_ANG_ACCEL = 4.5_rad_per_s_sq; // 9.42
 
@@ -48,8 +48,8 @@ struct DrivePreferences {
         // PID_XY.Ki = 0.001;
         // PID_XY.Kd = 0.1;
 
-        PID_THETA.Kp = 1;
-        // PID_THETA.Kd = 0.1;
+        PID_THETA.Kp = 19;
+        PID_THETA.Kd = 0.125;
     }
 };
 static const DrivePreferences DRIVE_PREFERENCES;

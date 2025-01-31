@@ -298,7 +298,7 @@ frc::Pose2d Drive::getEstimatedPose() {
 
 frc::Rotation2d Drive::getRotation() {
     // The raw rotation from the IMU.
-    return frc::Rotation2d(-pigeon.GetYaw().GetValue());
+    return frc::Rotation2d(pigeon.GetYaw().GetValue());
 }
 
 void Drive::resetPIDControllers() {
@@ -483,8 +483,6 @@ void Drive::execTrajectory() {
             state.pose.Rotation()
         )
     );
-    
-    velocities.omega *= -1;
 
     trajectoryField.SetRobotPose(state.pose);
 
