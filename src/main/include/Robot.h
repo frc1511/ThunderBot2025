@@ -10,6 +10,7 @@
 #include "Drive/Drive.h"
 #include "Controls.h"
 #include "Gamepiece.h"
+#include "Elevator.h"
 
 class Robot : public frc::TimedRobot {
   public:
@@ -36,8 +37,9 @@ class Robot : public frc::TimedRobot {
 	// Drive drive;
 	Gamepiece gamepiece;
 	Controls controls {nullptr, &gamepiece};
-
+	Elevator elevator;
 	std::vector<Component*> allComponents {
         /*&drive, */&gamepiece, &controls
+
    };
 };

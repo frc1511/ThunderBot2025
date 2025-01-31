@@ -68,7 +68,7 @@ class Gamepiece : public Component {
     rev::spark::SparkMax leftSparkMax {CAN_LEFT_CALGAE, rev::spark::SparkLowLevel::MotorType::kBrushless};
     rev::spark::SparkMaxConfig leftSparkMaxConfig {};
     rev::spark::SparkClosedLoopController leftPidController = leftSparkMax.GetClosedLoopController();
-    rev::spark::SparkMax rightSparkMax {CAN_RIGHT_CALGAE, rev::spark::SparkLowLevel::MotorType::kBrushless};
+    rev::spark::SparkMax rightSparkMax {5, rev::spark::SparkLowLevel::MotorType::kBrushless};
     rev::spark::SparkMaxConfig rightSparkMaxConfig {};
     rev::spark::SparkClosedLoopController rightPidController = rightSparkMax.GetClosedLoopController();
 

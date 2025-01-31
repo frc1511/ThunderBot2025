@@ -6,7 +6,7 @@ void Elevator::process() {
 
 void Elevator::doPersistentConfiguration() {
     rev::spark::SparkMaxConfig motorConfig {};
-
+    
     motorConfig.Inverted(false);
     rightSparkMax.Configure(motorConfig, rev::spark::SparkBase::ResetMode::kNoResetSafeParameters, rev::spark::SparkBase::PersistMode::kPersistParameters);
     
@@ -62,7 +62,12 @@ void Elevator::runMotorsToPreset() {
         PIDOutput = 0;
     if (atMaxHeight() && PIDOutput > 0)
         PIDOutput = 0;
-
+    if (PIDOutput > maxMotorSpeedPositive) {
+        PIDOutput = maxMotorSpeedPositive;
+    } else if (PIDOutput < maxMotorSpeedNegative) {
+        PIDOutput = maxMotorSpeedNegative;
+    }
+    
     rightSparkMax.Set(PIDOutput);
     leftSparkMax.Set(PIDOutput);
 }

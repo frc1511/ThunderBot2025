@@ -41,9 +41,12 @@ class Elevator : public Component {
 
     void runMotorsToPreset();
 
+    const double maxMotorSpeedPositive = 0.05;
+    const double maxMotorSpeedNegative = -0.05;
+
     units::turn_t ElevatorPosition[ElevatorPreset::kMAX] {
         0_tr,     // Stopped (Does not move to 0 turns)
-        100_tr, // Ground
+        20_tr, // Ground
         200_tr, // Processor
         350_tr, // Coral Station
         300_tr, // L1

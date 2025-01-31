@@ -41,8 +41,13 @@ void Robot::TestInit() {
 	for (Component* component : allComponents) {
 		component->doPersistentConfiguration();
 	}
+
 }
-void Robot::TestPeriodic() {}
+void Robot::TestPeriodic() {
+	elevator.goToPreset(Elevator::kGROUND);
+	elevator.process();
+	//Make sure the robot starts in the same spot each time
+}
 
 void Robot::SimulationInit() {}
 void Robot::SimulationPeriodic() {}
