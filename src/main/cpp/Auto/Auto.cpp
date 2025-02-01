@@ -30,6 +30,12 @@ void Auto::process() { //called during auto
         case _SQUARE:
             square();
             break;
+        case LEAVE_GO_TO_UPPER_CORAL:
+            leave_upper_coral();
+            break;
+        case LEAVE_GO_TO_LOWER_CORAL:
+            leave_lower_coral();
+            break;
     }
 }
 
@@ -73,9 +79,13 @@ void Auto::doNothing() {
 }
 
 void Auto::autoSelectorInit() {
-    autoSelector.SetDefaultOption("Do Nothing",  (int)AutoMode::DO_NOTHING);
-    autoSelector.SetDefaultOption("zzz_TEST",       (int)AutoMode::_TEST);
-    autoSelector.SetDefaultOption("zzz_SQUARE",      (int)AutoMode::_SQUARE);
+    autoSelector.AddOption("Do Nothing",              (int)AutoMode::DO_NOTHING);
+    autoSelector.AddOption("zzz_TEST",                (int)AutoMode::_TEST);
+    autoSelector.AddOption("zzz_SQUARE",              (int)AutoMode::_SQUARE);
+    autoSelector.AddOption("LEAVE_GO_TO_UPPER_CORAL", (int)AutoMode::LEAVE_GO_TO_UPPER_CORAL);
+    autoSelector.AddOption("LEAVE_GO_TO_LOWER_CORAL", (int)AutoMode::LEAVE_GO_TO_LOWER_CORAL);
+
+    autoSelector.SetDefaultOption("Do Nothing",       (int)AutoMode::DO_NOTHING);
 }
 
 void Auto::sendFeedback() {

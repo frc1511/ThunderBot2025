@@ -25,9 +25,11 @@ public:
 private:
     enum class AutoMode
     {
-        DO_NOTHING   = 0,
-        _TEST        = 1,
-        _SQUARE      = 2,
+        DO_NOTHING                 = 0,
+        _TEST                      = 1,
+        _SQUARE                    = 2,
+        LEAVE_GO_TO_UPPER_CORAL    = 4,
+        LEAVE_GO_TO_LOWER_CORAL    = 5,
     };
     Drive *drive;
 
@@ -36,26 +38,35 @@ private:
     void doNothing();
     void test();
     void square();
+    void leave_upper_coral();
+    void leave_lower_coral();
 
     const std::map<AutoMode, const char*> autoModeNames {
-        { AutoMode::DO_NOTHING, "Do Nothing"},
-        { AutoMode::_TEST,      "zzz_Test"},
-        { AutoMode::_SQUARE,    "zzz_Square"},
+        { AutoMode::DO_NOTHING,                "Do Nothing"},
+        { AutoMode::_TEST,                     "zzz_Test"},
+        { AutoMode::_SQUARE,                   "zzz_Square"},
+        { AutoMode::LEAVE_GO_TO_UPPER_CORAL, "Leave go to UPPER coral station"},
+        { AutoMode::LEAVE_GO_TO_LOWER_CORAL, "Leave go to LOWER coral station"},
     };
     int step = 0;
 
     enum class Path {
         _TEST,
-        _SQUARE
+        _SQUARE,
+        LEAVE_GO_TO_UPPER_CORAL,
+        LEAVE_GO_TO_LOWER_CORAL,
     };
     const std::map<Path, CSVTrajectory> bluePaths {
-        { Path::_TEST, CSVTrajectory{ DEPLOY_DIR "match_winning_auto.csv",          false } },
-        { Path::_SQUARE, CSVTrajectory{ DEPLOY_DIR "square.csv",                    false } },
-
+        { Path::_TEST, CSVTrajectory{ DEPLOY_DIR "match_winning_auto.csv",                   false } },
+        { Path::_SQUARE, CSVTrajectory{ DEPLOY_DIR "square.csv",                             false } },
+        { Path::LEAVE_GO_TO_UPPER_CORAL, CSVTrajectory{ DEPLOY_DIR "GoToCoralStation1.csv",  false } },
+        { Path::LEAVE_GO_TO_LOWER_CORAL, CSVTrajectory{ DEPLOY_DIR "GoToCoralStation2.csv",  false } },
     };
     const std::map<Path, CSVTrajectory> redPaths {
-        { Path::_TEST, CSVTrajectory{ DEPLOY_DIR "match_winning_auto.csv",          true  } },
-        { Path::_SQUARE, CSVTrajectory{ DEPLOY_DIR "square.csv",                    true  } },
+        { Path::_TEST, CSVTrajectory{ DEPLOY_DIR "match_winning_auto.csv",                   true  } },
+        { Path::_SQUARE, CSVTrajectory{ DEPLOY_DIR "square.csv",                             true  } },
+        { Path::LEAVE_GO_TO_UPPER_CORAL, CSVTrajectory{ DEPLOY_DIR "GoToCoralStation1.csv",  true  } },
+        { Path::LEAVE_GO_TO_LOWER_CORAL, CSVTrajectory{ DEPLOY_DIR "GoToCoralStation2.csv",  true  } },
     };
     const std::map<Path, CSVTrajectory>* paths = nullptr;
 
