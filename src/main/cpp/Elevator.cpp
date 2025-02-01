@@ -19,24 +19,36 @@ void Elevator::sendFeedback() {
     frc::SmartDashboard::PutNumber ("Elevator Left Motor Tempature C",           leftSparkMax.GetMotorTemperature());
     frc::SmartDashboard::PutNumber ("Elevator Right Motor Position (rotations)", rightEncoder.GetPosition());
     frc::SmartDashboard::PutNumber ("Elevator Right Motor Tempature C",          rightSparkMax.GetMotorTemperature());
-    frc::SmartDashboard::PutNumber ("Elevator Target Position (rotations)",      ElevatorPosition[targetPreset].value());
-    frc::SmartDashboard::PutBoolean("Elevator Lower Limit tripping",             getLowerLimitSwitch());
-    frc::SmartDashboard::PutBoolean("Elevator Upper Limit tripping",             getUpperLimitSwitch());
+    frc::SmartDashboard::PutNumber ("Elevator Target Position (rotations)",      Position[targetPreset].value());
+    frc::SmartDashboard::PutBoolean("Elevator Lower Limit tripping",             getLowerLimit());
+    frc::SmartDashboard::PutBoolean("Elevator Upper Limit tripping",             getUpperLimit());
+}
+
+void Elevator::incrementPositionIndex() {
+    tempPresetIndex = std::clamp(tempPresetIndex+1, int(Preset::kSTOP), int(Preset::kMAX)-1);
+}
+
+void Elevator::decrementPositionIndex() {
+    tempPresetIndex = std::clamp(tempPresetIndex-1, int(Preset::kSTOP), int(Preset::kMAX)-1);
+}
+
+void Elevator::updateCurrentPreset() {
+    goToPreset(Preset(tempPresetIndex));
 }
 
 bool Elevator::atMaxHeight() {
-    return getUpperLimitSwitch();
+    return getUpperLimit();
 }
 
 bool Elevator::atMinHeight() {
-    return getLowerLimitSwitch();
+    return getLowerLimit();
 }
 
-bool Elevator::getLowerLimitSwitch() {
+bool Elevator::getLowerLimit() {
     return !lowerLimitSwitch.Get();
 }
 
-bool Elevator::getUpperLimitSwitch() {
+bool Elevator::getUpperLimit() {
     return !upperLimitSwitch.Get();
 }
 
@@ -44,29 +56,26 @@ double Elevator::getPosition() {
     return (leftEncoder.GetPosition() + rightEncoder.GetPosition()) / 2;
 }
 
-void Elevator::goToPreset(ElevatorPreset target) {
+void Elevator::goToPreset(Preset target) {
     targetPreset = target;
 }
 
 void Elevator::runMotorsToPreset() {
-    if (targetPreset == ElevatorPreset::kSTOP) {
+    if (targetPreset == Preset::kSTOP) {
         rightSparkMax.Set(0);
         leftSparkMax.Set(0);
         return;
     }
 
-    units::turn_t position = ElevatorPosition[targetPreset];
+    units::turn_t position = Position[targetPreset];
     double PIDOutput = PIDController.Calculate((units::turn_t)getPosition(), position);
     
     if (atMinHeight() && PIDOutput < 0)
         PIDOutput = 0;
     if (atMaxHeight() && PIDOutput > 0)
         PIDOutput = 0;
-    if (PIDOutput > maxMotorSpeedPositive) {
-        PIDOutput = maxMotorSpeedPositive;
-    } else if (PIDOutput < maxMotorSpeedNegative) {
-        PIDOutput = maxMotorSpeedNegative;
-    }
+
+    PIDOutput = std::clamp(PIDOutput, -ELEVATOR_PREFERENCE.MAX_SPEED, ELEVATOR_PREFERENCE.MAX_SPEED);
     
     rightSparkMax.Set(PIDOutput);
     leftSparkMax.Set(PIDOutput);

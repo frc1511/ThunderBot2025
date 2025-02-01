@@ -35,11 +35,11 @@ class Robot : public frc::TimedRobot {
 	void reset(Component::MatchMode mode);
 	Component::MatchMode lastMode = Component::MatchMode::DISABLED;
 	// Drive drive;
-	Gamepiece gamepiece;
-	Controls controls {nullptr, &gamepiece};
+	// Gamepiece gamepiece;
+	Controls controls {nullptr, nullptr, &elevator};
 	Elevator elevator;
 	std::vector<Component*> allComponents {
-        /*&drive, */&gamepiece, &controls
+        /*&drive, &gamepiece*/&controls, &elevator
 
    };
 };

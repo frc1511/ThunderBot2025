@@ -17,12 +17,17 @@ class Elevator : public Component {
     void doPersistentConfiguration();
     void sendFeedback();
 
+    void incrementPositionIndex();
+    void decrementPositionIndex();
+
+    void updateCurrentPreset();
+  private:
     bool atMaxHeight();
     bool atMinHeight();
-    bool getLowerLimitSwitch();
-    bool getUpperLimitSwitch();
+    bool getLowerLimit();
+    bool getUpperLimit();
 
-    enum ElevatorPreset { //need measurements for the height of these sections, RN we have guesstimates with no units. ~G
+    enum Preset { //need measurements for the height of these sections, RN we have guesstimates with no units. ~G
         kSTOP,
         kGROUND,
         kPROCESSOR,
@@ -34,17 +39,7 @@ class Elevator : public Component {
         kMAX,
     };
 
-    void goToPreset(ElevatorPreset target);
-
-  private:
-    double getPosition();
-
-    void runMotorsToPreset();
-
-    const double maxMotorSpeedPositive = 0.05;
-    const double maxMotorSpeedNegative = -0.05;
-
-    units::turn_t ElevatorPosition[ElevatorPreset::kMAX] {
+    units::turn_t Position[Preset::kMAX] {
         0_tr,     // Stopped (Does not move to 0 turns)
         20_tr, // Ground
         200_tr, // Processor
@@ -54,7 +49,15 @@ class Elevator : public Component {
         500_tr, // L3
         600_tr  // L4
     };
-    ElevatorPreset targetPreset;
+
+    Preset targetPreset = Elevator::Preset::kSTOP;
+    int tempPresetIndex = 0;
+
+    void goToPreset(Preset target);
+
+    double getPosition();
+
+    void runMotorsToPreset();
 
     //Not sure about motors for now. ~G
     //Added placeholders for device ID

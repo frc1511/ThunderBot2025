@@ -1,21 +1,19 @@
 #include "Controls.h"
 
-Controls::Controls(Drive* drive_, Gamepiece* gamepiece_):
+Controls::Controls(Drive* drive_, Gamepiece* gamepiece_, Elevator* elevator_):
     drive(drive_),
-    gamepiece(gamepiece_)
+    gamepiece(gamepiece_),
+    elevator(elevator_)
 {}
 
 #define SPEED_REDUCTION 1
 
+void Controls::sendFeedback() {
+}
+
 void Controls::process() {
+    
     // MARK: Drive
-
-
-
-
-
-
-
     #ifndef DRIVE_DISABLED
         double xPercent = driveController.GetLeftX();
         if (fabs(xPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
@@ -53,29 +51,36 @@ void Controls::process() {
         // SWAP: 90_deg offset for drive
         drive->driveFromPercents(yPercent * -SPEED_REDUCTION, xPercent * SPEED_REDUCTION, rotPercent * -SPEED_REDUCTION, flags);
     #endif
+
     // MARK: Aux
-
-
-
-
-
-
-
     #ifndef AUX_DISABLED
-        bool coralIntake = auxController.GetR1Button();
-        bool coralShoot = auxController.GetR2Button();
-        bool algaeIntake = auxController.GetL1Button();
-        bool algaeShoot = auxController.GetL2Button();
-        if (coralIntake) {
-            gamepiece->setMotorMode(Gamepiece::MotorModes::kCORAL_INTAKE);
-        } else if (coralShoot) {
-            gamepiece->setMotorMode(Gamepiece::MotorModes::kCORAL_SHOOT);
-        } else if (algaeIntake) {
-            gamepiece->setMotorMode(Gamepiece::MotorModes::kALGAE_INTAKE);
-        } else if (algaeShoot) {
-            gamepiece->setMotorMode(Gamepiece::MotorModes::kALGAE_SHOOT);
-        } else {
-            gamepiece->setMotorMode(Gamepiece::MotorModes::kNONE);
+        // bool coralIntake = auxController.GetR1Button();
+        // bool coralShoot = auxController.GetR2Button();
+        // bool algaeIntake = auxController.GetL1Button();
+        // bool algaeShoot = auxController.GetL2Button();
+        bool elevatorUp = auxController.GetPOV(0) > 0;
+        bool elevatorDown = auxController.GetPOV(180) > 0;
+        bool elevatorMove = auxController.GetPOV(90) > 0;
+
+        // if (coralIntake) {
+        //     gamepiece->setMotorMode(Gamepiece::MotorModes::kCORAL_INTAKE);
+        // } else if (coralShoot) {
+        //     gamepiece->setMotorMode(Gamepiece::MotorModes::kCORAL_SHOOT);
+        // } else if (algaeIntake) {
+        //     gamepiece->setMotorMode(Gamepiece::MotorModes::kALGAE_INTAKE);
+        // } else if (algaeShoot) {
+        //     gamepiece->setMotorMode(Gamepiece::MotorModes::kALGAE_SHOOT);
+        // } else {
+        //     gamepiece->setMotorMode(Gamepiece::MotorModes::kNONE);
+        // }
+
+        if (elevatorUp) {
+            elevator->incrementPositionIndex();
+        } else if (elevatorDown) {
+            elevator->decrementPositionIndex();
+        }
+        if (elevatorMove) {
+            elevator->updateCurrentPreset();
         }
     #endif
 }

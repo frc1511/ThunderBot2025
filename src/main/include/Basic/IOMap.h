@@ -36,13 +36,15 @@
 #define IS_TESTBOARD
 #ifdef IS_TESTBOARD
 
-    #define CAN_LEFT_CALGAE 3
-    #define CAN_RIGHT_CALGAE 2
+    #define CAN_LEFT_ELEVATOR 3
+    #define CAN_RIGHT_ELEVATOR 2
+    #define CAN_LEFT_CALGAE 1
+    #define CAN_RIGHT_CALGAE 4
 
 #else
 
-    #define CAN_LEFT_CALGAE 15
-    #define CAN_RIGHT_CALGAE 16
+    #define CAN_LEFT_ELEVATOR 15
+    #define CAN_RIGHT_ELEVATOR 16
 
 #endif
 
