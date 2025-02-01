@@ -1,0 +1,57 @@
+{
+  "settings": {
+    "auto_export": true,
+    "auto_save": false,
+    "drive_ctrl": 0,
+    "field": {
+      "img": "2025",
+      "img_type": 1
+    },
+    "robot_length": 0.8064500093460083,
+    "robot_width": 0.7111999988555908
+  },
+  "state": {
+    "actions": [],
+    "paths": [
+      [
+        "Leave",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 0.06249189376831055,
+              "h1": 3.204084873199463,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 3.1415927410125732,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 0.1405436247587204,
+              "x": 7.5643815994262695,
+              "y": 7.400000095367432
+            },
+            {
+              "actions": 0,
+              "h0": 3.2052438259124756,
+              "h1": 0.06365108489990234,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 3.1415927410125732,
+              "stop": false,
+              "w0": 0.13798809051513672,
+              "w1": 1.0,
+              "x": 6.318202972412109,
+              "y": 7.400000095367432
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ]
+    ],
+    "waypoint_links": []
+  }
+}

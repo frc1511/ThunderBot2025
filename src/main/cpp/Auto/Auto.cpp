@@ -35,6 +35,8 @@ void Auto::process() { //called during auto
             break;
         case LEAVE_GO_TO_LOWER_CORAL:
             leave_lower_coral();
+        case LEAVE:
+            leave();
             break;
     }
 }
@@ -54,6 +56,18 @@ void Auto::square() { //test auto, leave, grab a note, and shoot
     if (step == 0) {
         drive->setupInitialTrajectoryPosition(&paths->at(Path::_SQUARE));
         drive->runTrajectory(&paths->at(Path::_SQUARE), actions);
+        step++;
+    } else if (step == 1 && drive->isFinished()) {
+        printf("Finished Drive!\n");
+        step++;
+    }
+}
+
+
+    void Auto::leave() { //test auto, leave, grab a note, and shoot
+    if (step == 0) {
+        drive->setupInitialTrajectoryPosition(&paths->at(Path::LEAVE));
+        drive->runTrajectory(&paths->at(Path::LEAVE), actions);
         step++;
     } else if (step == 1 && drive->isFinished()) {
         printf("Finished Drive!\n");
@@ -84,8 +98,9 @@ void Auto::autoSelectorInit() {
     autoSelector.AddOption("zzz_SQUARE",              (int)AutoMode::_SQUARE);
     autoSelector.AddOption("LEAVE_GO_TO_UPPER_CORAL", (int)AutoMode::LEAVE_GO_TO_UPPER_CORAL);
     autoSelector.AddOption("LEAVE_GO_TO_LOWER_CORAL", (int)AutoMode::LEAVE_GO_TO_LOWER_CORAL);
+    autoSelector.AddOption("leave",           (int)AutoMode::LEAVE);
 
-    autoSelector.SetDefaultOption("Do Nothing",       (int)AutoMode::DO_NOTHING);
+    autoSelector.SetDefaultOption("Do Nothing",     (int)AutoMode::DO_NOTHING);
 }
 
 void Auto::sendFeedback() {
