@@ -43,7 +43,11 @@ void Robot::TestInit() {
 	}
 
 }
-void Robot::TestPeriodic() {}
+void Robot::TestPeriodic() {
+	elevator.goToPreset(Elevator::kGROUND);
+	//elevator.manualMovement(0.05);
+	elevator.process();
+}
 
 void Robot::SimulationInit() {}
 void Robot::SimulationPeriodic() {}

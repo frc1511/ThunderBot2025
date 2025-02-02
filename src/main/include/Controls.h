@@ -8,7 +8,7 @@
 #include "Elevator.h"
 
 #define DRIVE_DISABLED
-// #define AUX_DISABLED
+#define AUX_DISABLED
 
 class Controls : public Component {
   public:
