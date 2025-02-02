@@ -58,8 +58,9 @@ class Elevator : public Component {
     // IN TURNS
     const double targetTolerance = 1;
     bool sensorBroken = false;
-    double getPosition();
     bool encoderZeroed = false;
+
+    double getPosition();
     double computeSpeedForPreset();
 
     //Not sure about motors for now. ~G
