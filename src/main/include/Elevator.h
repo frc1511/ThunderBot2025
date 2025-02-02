@@ -77,9 +77,5 @@ class Elevator : public Component {
       ELEVATOR_PREFERENCE.PID.Kp, ELEVATOR_PREFERENCE.PID.Ki, ELEVATOR_PREFERENCE.PID.Kd,
       frc::TrapezoidProfile<units::turn>::Constraints(ELEVATOR_PREFERENCE.PID.MaxVel, ELEVATOR_PREFERENCE.PID.MaxAccel)
     };
-    /* Elevator needs to be able to stop moving/change the way it moves to certain presets (like if we accidentaly meant to go to L1 but went to L3)
-    Elevator needs to know if it has reached its preset or if it is at its set preset
-    Elevator needs to be able to move without presets (manual movement)
-    Elevator needs to be at/reach a set starting point when it starts/turns on
-    If Elevator sensor is broken, have code that can do its best without the sensor/stop the robot */
+    // If Elevator sensor is broken, have code that can do its best without the sensor/stop the robot 
 };

@@ -43,6 +43,7 @@ void Elevator::sendFeedback() {
     frc::SmartDashboard::PutNumber ("Elevator Left Motor Tempature C",           leftSparkMax.GetMotorTemperature());
     frc::SmartDashboard::PutNumber ("Elevator Right Motor Position (rotations)", rightEncoder.GetPosition());
     //frc::SmartDashboard::PutNumber ("Elevator Right Motor Tempature C",          rightSparkMax.GetMotorTemperature());
+    frc::SmartDashboard::PutBoolean ("Elevator At Target Preset",      atPreset());
     frc::SmartDashboard::PutNumber ("Elevator Target Position (rotations)",      Position[targetPreset].value());
     frc::SmartDashboard::PutBoolean("Elevator Lower Limit tripping",             getLowerLimit());
     frc::SmartDashboard::PutBoolean("Elevator Upper Limit tripping",             getUpperLimit());
@@ -74,8 +75,11 @@ void Elevator::goToPreset(Preset target) {
 }
 
 bool Elevator::atPreset() {
-    if(manualControl || targetPreset == kSTOP) return true;
-    if(getPosition() < (targetPreset + targetTolerance) && getPosition() > (targetPreset - targetTolerance)) {
+    if(manualControl || targetPreset == kSTOP)
+        return true;
+    if (!encoderZeroed)
+        return false;
+    if(getPosition() < (Position[targetPreset].value() + targetTolerance) && getPosition() > (Position[targetPreset].value() - targetTolerance)) {
         return true;
     }
     else {

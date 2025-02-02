@@ -44,9 +44,32 @@ void Robot::TestInit() {
 
 }
 void Robot::TestPeriodic() {
-	elevator.goToPreset(Elevator::kGROUND);
+//#define ELEVATOR_TESTING
+#ifdef ELEVATOR_TESTING
+	static Elevator::Preset testPresets[] = {
+		Elevator::kGROUND,
+		Elevator::kL4,
+		Elevator::kL1,
+		Elevator::kL2,
+		Elevator::kL3,
+		Elevator::kGROUND,
+		Elevator::kSTOP
+	};
+	static int curTestPos = 0;
+	static frc::Timer stepWaitTimer;
+	elevator.goToPreset(testPresets[curTestPos]);
+	if (elevator.atPreset() && testPresets[curTestPos] != Elevator::kSTOP) {
+		if (stepWaitTimer.IsRunning() && stepWaitTimer.Get() > 5_s) {
+			stepWaitTimer.Stop();
+			stepWaitTimer.Reset();
+			curTestPos++;
+		} else {
+			stepWaitTimer.Start();
+		}
+	}
 	//elevator.manualMovement(0.05);
 	elevator.process();
+#endif
 }
 
 void Robot::SimulationInit() {}
