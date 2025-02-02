@@ -2,7 +2,8 @@
 
 Auto::Auto(Drive* drive)
     : drive(drive) {
-
+        actions[1] = &elevatorToL1;
+        actions[2] = &outtakeCoral;
 }
 void Auto::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
     if (mode == MatchMode::AUTO) {

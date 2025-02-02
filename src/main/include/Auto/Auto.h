@@ -4,9 +4,10 @@
 #include <frc/smartdashboard/SendableChooser.h>
 
 #include "Drive/CSVTrajectory.h"
-#include "Drive/Drive.h"
 #include "Basic/Component.h"
 #include "Auto/Action.h"
+
+#include "Drive/Drive.h"
 
 #define DEPLOY_DIR "/home/lvuser/deploy/"
 
@@ -85,9 +86,36 @@ private:
     };
     const std::map<Path, CSVTrajectory>* paths = nullptr;
 
-    std::map<u_int32_t, Action*> actions {
-
+    class ElevatorToL1 : public Action {
+      public:
+        ElevatorToL1() {}
+        Action::Result process() override {
+            // Elevator->gotToPreset();
+            // Action::Result atPosition = Action::Result::WORKING;
+            // if (Elevator->getAtTarget()) {
+            //     atPosition = Action::Result::DONE;
+            // }
+            // return atPosition;
+        }
     };
+    ElevatorToL1 elevatorToL1;
+
+    class OuttakeCoral : public Action {
+      public:
+        OuttakeCoral() {}
+        Action::Result process() override {
+            // calgae->setMotorMode(Calgae::MotorModes::kSHOOT);
+            // Action::Result shootDone = Action::Result::WORKING;
+            // if (calgae->shootDone()) {
+            //     shootDone = Action::Result::DONE;
+            //     calgae->setMotorMode(Calgae::MotorModes::kDONE_SHOOTING); //TODO: Make sure this actually stops the motors
+            // }
+            // return shootDone;
+        }
+    };
+    OuttakeCoral outtakeCoral;
+
+    std::map<u_int32_t, Action*> actions {}; // Actions are in the constructor
 
     std::string autoSelected;
 };

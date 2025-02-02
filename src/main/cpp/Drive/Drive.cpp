@@ -391,40 +391,35 @@ void Drive::execTrajectory() {
     bool execAction = false;
 
     // If we've got another action to go.
-    // if (trajectoryActionIter != trajectory->getActions().cend()) {
-    //     const auto& [action_time, actions] = *trajectoryActionIter;
-
-    //     // Check if it's time to execute the action.
-    //     if (time >= action_time) {
-    //         execAction = true;
-
-    //         // Loop through the available actions.
-    //         for (auto it(trajectoryActions->cbegin()); it != trajectoryActions->cend(); ++it) {
-    //             const auto& [id, action] = *it;
-
-    //             // Narrow the list down to only actions that have not been completed yet.
-    //             if (std::find(doneTrajectoryActions.cbegin(), doneTrajectoryActions.cend(), id) == doneTrajectoryActions.cend()) {
-    //                 // If the action's bit is set in the bit field.
-    //                 if (actions & id) {
-    //                     // Execute the action.
-    //                     Action::Result res = action->process();
-
-    //                     // If the action has completed.
-    //                     if (res == Action::Result::DONE) {
-    //                         // Remember that it's done.
-    //                         doneTrajectoryActions.push_back(id);
-    //                     }
-
-    //                     actionRes += res;
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
+    if (trajectoryActionIter != trajectory->getActions().cend()) {
+        const auto& [action_time, actions] = *trajectoryActionIter;
+        // Check if it's time to execute the action.
+        if (time >= action_time) {
+            execAction = true;
+            // Loop through the available actions.
+            for (auto it(trajectoryActions->cbegin()); it != trajectoryActions->cend(); ++it) {
+                const auto& [id, action] = *it;
+                // Narrow the list down to only actions that have not been completed yet.
+                if (std::find(doneTrajectoryActions.cbegin(), doneTrajectoryActions.cend(), id) == doneTrajectoryActions.cend()) {
+                    // If the action's bit is set in the bit field.
+                    if (actions & id) {
+                        // Execute the action.
+                        Action::Result res = action->process();
+                        // If the action has completed.
+                        if (res == Action::Result::DONE) {
+                            // Remember that it's done.
+                            doneTrajectoryActions.push_back(id);
+                        }
+                        actionRes += res;
+                    }
+                }
+            }
+        }
+    }
 
     // Stop the trajectory because an action is still running.
     if (actionRes) {
-        trajectoryTimer.Stop();
+        trajectoryTimer.Stop(); // NOTE: Do we want to do this? I thought we wanted to raise the elevator while moving for efficiency...
     }
     // Continue/Resume the trajectory because the actions are done.
     else {
