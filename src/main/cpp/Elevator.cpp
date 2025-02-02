@@ -31,6 +31,7 @@ void Elevator::doPersistentConfiguration() {
     rev::spark::SparkMaxConfig motorConfig {};
     
     motorConfig.Inverted(false);
+    motorConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kCoast);
     rightSparkMax.Configure(motorConfig, rev::spark::SparkBase::ResetMode::kNoResetSafeParameters, rev::spark::SparkBase::PersistMode::kPersistParameters);
     
     motorConfig.Inverted(true);
