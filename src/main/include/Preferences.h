@@ -48,7 +48,7 @@ struct DrivePreferences {
         // PID_XY.Ki = 0.001;
         // PID_XY.Kd = 0.1;
 
-        PID_THETA.Kp = 19;
+        PID_THETA.Kp = 13;
         PID_THETA.Kd = 0.125;
     }
 };

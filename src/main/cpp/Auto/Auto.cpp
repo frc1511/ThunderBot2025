@@ -1,9 +1,8 @@
 #include "Auto/Auto.h"
 
-Auto::Auto(Drive* drive)
-    : drive(drive) {
-        actions[1] = &elevatorToL1;
-        actions[2] = &outtakeCoral;
+Auto::Auto(Drive *drive_, Limelight *limelight_)
+    : drive(drive_),
+      limelight(limelight_) {
 }
 void Auto::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
     if (mode == MatchMode::AUTO) {
@@ -58,6 +57,7 @@ void Auto::test() {
 }
 
 void Auto::leave() {
+    limelight->setFunctioningState(false);
     if (step == 0) {
         drive->setupInitialTrajectoryPosition(&paths->at(Path::LEAVE));
         drive->runTrajectory(&paths->at(Path::LEAVE), actions);

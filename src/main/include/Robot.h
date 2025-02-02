@@ -37,7 +37,7 @@ class Robot : public frc::TimedRobot {
 	Drive drive {&limelight};
 	Gamepiece gamepiece;
 	Controls controls {&drive};
-	Auto auto_ {&drive};
+	Auto auto_ {&drive, &limelight};
 	Limelight limelight;
 
 	std::vector<Component*> allComponents {

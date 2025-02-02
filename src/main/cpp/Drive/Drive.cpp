@@ -387,15 +387,15 @@ void Drive::setupInitialTrajectoryPosition(const CSVTrajectory *trajectory)
 void Drive::execTrajectory() {
     units::second_t time(trajectoryTimer.Get());
 
-    int actionRes = 0;
-    bool execAction = false;
+    bool actionExecuting = false;
+    bool actionExecuted = false;
 
     // If we've got another action to go.
     if (trajectoryActionIter != trajectory->getActions().cend()) {
         const auto& [action_time, actions] = *trajectoryActionIter;
         // Check if it's time to execute the action.
         if (time >= action_time) {
-            execAction = true;
+            actionExecuted = true;
             // Loop through the available actions.
             for (auto it(trajectoryActions->cbegin()); it != trajectoryActions->cend(); ++it) {
                 const auto& [id, action] = *it;
@@ -410,7 +410,9 @@ void Drive::execTrajectory() {
                             // Remember that it's done.
                             doneTrajectoryActions.push_back(id);
                         }
-                        actionRes += res;
+
+                        if (!actionExecuting)
+                            actionExecuting = res;
                     }
                 }
             }
@@ -418,13 +420,13 @@ void Drive::execTrajectory() {
     }
 
     // Stop the trajectory because an action is still running.
-    if (actionRes) {
-        trajectoryTimer.Stop(); // NOTE: Do we want to do this? I thought we wanted to raise the elevator while moving for efficiency...
+    if (actionExecuting) {
+        trajectoryTimer.Stop();
     }
     // Continue/Resume the trajectory because the actions are done.
     else {
         // Increment the action if an action was just finished.
-        if (execAction) {
+        if (actionExecuted) {
             ++trajectoryActionIter;
             doneTrajectoryActions.clear();
         }
@@ -441,7 +443,7 @@ void Drive::execTrajectory() {
     CSVTrajectory::State state(trajectory->sample(time));
 
     // Don't be moving if an action is being worked on.
-    if (actionRes) {
+    if (actionExecuting) {
         state.velocity = 0_mps;
     }
 

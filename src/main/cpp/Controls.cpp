@@ -7,6 +7,14 @@ Controls::Controls(Drive* drive_)
 #define SPEED_REDUCTION .5
 
 void Controls::process() {
+    // utilizeSwitchBoard();
+
+    // TODO: Move to a drive control process, (not done to avoid merge conflicts)
+    if (!driveController.IsConnected()) {
+        printf("Drive Contoller is Not Connected to Port 0\n");
+        return;
+    }
+
     #if 0
     wpi::array<SwerveModule*, 4>*  modules = drive->getSwerveModules();
     frc::SwerveModuleState state;
@@ -50,12 +58,23 @@ void Controls::process() {
     if (resetIMU)
         drive->resetOdometry();
 
-    double robotXPercent = -controllerYPercent * SPEED_REDUCTION; // positive -> forward
-    double robotYPercent = -controllerXPercent * SPEED_REDUCTION; // positive -> left
+    double robotXPercent = controllerYPercent * SPEED_REDUCTION; // positive -> forward
+    double robotYPercent = controllerXPercent * SPEED_REDUCTION; // positive -> left
     double robotRotPercent = -rotPercent * SPEED_REDUCTION; // positive -> counter-clockwise
 
     // SWAP: 90_deg offset for drive
     drive->driveFromPercents(robotXPercent, robotYPercent, robotRotPercent, flags);
     #endif
 
+}
+
+void Controls::utilizeSwitchBoard() {
+    if (!switchBoard.IsConnected()) {
+        printf("Switch Board Not Connected to port 2\n");
+        return;
+    }
+
+    bool disableLimelight = switchBoard.GetRawButton(1);
+
+    limelight->setFunctioningState(disableLimelight);
 }
