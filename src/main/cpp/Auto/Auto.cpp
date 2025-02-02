@@ -30,18 +30,22 @@ void Auto::process() { //called during auto
         case _SQUARE:
             square();
             break;
-        case LEAVE_GO_TO_UPPER_CORAL:
-            leave_upper_coral();
-            break;
-        case LEAVE_GO_TO_LOWER_CORAL:
-            leave_lower_coral();
         case LEAVE:
             leave();
+            break;
+        case LEAVE_GO_TO_UPPER_CORAL:
+            leaveUpperCoral();
+            break;
+        case LEAVE_GO_TO_LOWER_CORAL:
+            leaveLowerCoral();
+            break;
+        case L1:
+            L1Coral1();
             break;
     }
 }
 
-void Auto::test() { //test auto, leave, grab a note, and shoot
+void Auto::test() {
     if (step == 0) {
         drive->setupInitialTrajectoryPosition(&paths->at(Path::_TEST));
         drive->runTrajectory(&paths->at(Path::_TEST), actions);
@@ -52,10 +56,10 @@ void Auto::test() { //test auto, leave, grab a note, and shoot
     }
 }
 
-void Auto::square() { //test auto, leave, grab a note, and shoot
+void Auto::leave() {
     if (step == 0) {
-        drive->setupInitialTrajectoryPosition(&paths->at(Path::_SQUARE));
-        drive->runTrajectory(&paths->at(Path::_SQUARE), actions);
+        drive->setupInitialTrajectoryPosition(&paths->at(Path::LEAVE));
+        drive->runTrajectory(&paths->at(Path::LEAVE), actions);
         step++;
     } else if (step == 1 && drive->isFinished()) {
         printf("Finished Drive!\n");
@@ -63,11 +67,42 @@ void Auto::square() { //test auto, leave, grab a note, and shoot
     }
 }
 
-
-    void Auto::leave() { //test auto, leave, grab a note, and shoot
+void Auto::leaveUpperCoral() {
     if (step == 0) {
-        drive->setupInitialTrajectoryPosition(&paths->at(Path::LEAVE));
-        drive->runTrajectory(&paths->at(Path::LEAVE), actions);
+        drive->setupInitialTrajectoryPosition(&paths->at(Path::LEAVE_GO_TO_UPPER_CORAL));
+        drive->runTrajectory(&paths->at(Path::LEAVE_GO_TO_UPPER_CORAL), actions);
+        step++;
+    } else if (step == 1 && drive->isFinished()) {
+        printf("Finished Drive!\n");
+        step++;
+    }
+}
+
+void Auto::leaveLowerCoral() {
+    if (step == 0) {
+        drive->setupInitialTrajectoryPosition(&paths->at(Path::LEAVE_GO_TO_LOWER_CORAL));
+        drive->runTrajectory(&paths->at(Path::LEAVE_GO_TO_LOWER_CORAL), actions);
+        step++;
+    } else if (step == 1 && drive->isFinished()) {
+        printf("Finished Drive!\n");
+        step++;
+    }
+}
+
+void Auto::L1Coral1() {
+    if (step == 0) {
+        drive->setupInitialTrajectoryPosition(&paths->at(Path::L1));
+        drive->runTrajectory(&paths->at(Path::_SQUARE), actions);
+        step++;
+    } else if (step == 1 && drive->isFinished()) {
+        step++;
+    }
+}
+
+void Auto::square() {
+    if (step == 0) {
+        drive->setupInitialTrajectoryPosition(&paths->at(Path::_SQUARE));
+        drive->runTrajectory(&paths->at(Path::_SQUARE), actions);
         step++;
     } else if (step == 1 && drive->isFinished()) {
         printf("Finished Drive!\n");
@@ -93,14 +128,15 @@ void Auto::doNothing() {
 }
 
 void Auto::autoSelectorInit() {
-    autoSelector.AddOption("Do Nothing",              (int)AutoMode::DO_NOTHING);
-    autoSelector.AddOption("zzz_TEST",                (int)AutoMode::_TEST);
-    autoSelector.AddOption("zzz_SQUARE",              (int)AutoMode::_SQUARE);
-    autoSelector.AddOption("LEAVE_GO_TO_UPPER_CORAL", (int)AutoMode::LEAVE_GO_TO_UPPER_CORAL);
-    autoSelector.AddOption("LEAVE_GO_TO_LOWER_CORAL", (int)AutoMode::LEAVE_GO_TO_LOWER_CORAL);
-    autoSelector.AddOption("leave",           (int)AutoMode::LEAVE);
+    autoSelector.AddOption("Do Nothing",                       (int)AutoMode::DO_NOTHING);
+    autoSelector.AddOption("zzz_TEST",                         (int)AutoMode::_TEST);
+    autoSelector.AddOption("zzz_SQUARE",                       (int)AutoMode::_SQUARE);
+    autoSelector.AddOption("leave",                            (int)AutoMode::LEAVE);
+    autoSelector.AddOption("leave to far coral station",       (int)AutoMode::LEAVE_GO_TO_UPPER_CORAL);
+    autoSelector.AddOption("leave to processor coral station", (int)AutoMode::LEAVE_GO_TO_LOWER_CORAL);
+    autoSelector.AddOption("1 Coral to L1",                    (int)AutoMode::L1);
 
-    autoSelector.SetDefaultOption("Do Nothing",     (int)AutoMode::DO_NOTHING);
+    autoSelector.SetDefaultOption("Do Nothing",                (int)AutoMode::DO_NOTHING);
 }
 
 void Auto::sendFeedback() {

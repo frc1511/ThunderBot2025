@@ -1,0 +1,60 @@
+{
+  "settings": {
+    "auto_export": false,
+    "auto_save": false,
+    "drive_ctrl": 0,
+    "field": {
+      "img": "2025",
+      "img_type": 1
+    },
+    "robot_length": 0.7874000072479248,
+    "robot_width": 0.7111999988555908
+  },
+  "state": {
+    "actions": [
+      "Elevator to L1",
+      "Outtake"
+    ],
+    "paths": [
+      [
+        "L1",
+        {
+          "points": [
+            {
+              "actions": 1,
+              "h0": 0.0,
+              "h1": 3.1415927410125732,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 3.1415927410125732,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 0.6000000238418579,
+              "x": 7.574999809265137,
+              "y": 4.025000095367432
+            },
+            {
+              "actions": 2,
+              "h0": 0.0,
+              "h1": 3.1415927410125732,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 3.1415927410125732,
+              "stop": false,
+              "w0": 0.6000000238418579,
+              "w1": 1.0,
+              "x": 6.0,
+              "y": 4.025000095367432
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 4.0,
+            "max_linear_vel": 5.0
+          }
+        }
+      ]
+    ],
+    "waypoint_links": []
+  }
+}
