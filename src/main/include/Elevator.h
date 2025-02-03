@@ -54,12 +54,12 @@ class Elevator : public Component {
 
     Preset targetPreset = Elevator::Preset::kSTOP;
     double manualMovementSpeed = 0;
-    bool manualControl = false;
+    bool manualControl = false; // is manual control default false
     // IN TURNS
     const double targetTolerance = 1;
-    bool sensorBroken = false;
+    bool sensorBroken = false; // sensor broken default false
     double getPosition();
-    bool encoderZeroed = false;
+    bool encoderZeroed = false; // elevator at the bottom default false
     double computeSpeedForPreset();
 
     //Not sure about motors for now. ~G
