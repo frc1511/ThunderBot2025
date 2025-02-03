@@ -1,13 +1,13 @@
 #include "Elevator.h" 
 void Elevator::process() {
     double motorSpeed = 0;
-    if (atMinHeight()) {
-        leftEncoder.SetPosition(0);
+    if (atMinHeight()) { // if elevator at the lower limit switch
+        leftEncoder.SetPosition(0); // zero the encoders
         rightEncoder.SetPosition(0);
         encoderZeroed = true;
     }
-    if (encoderZeroed == false) {
-        motorSpeed = -0.05;
+    if (encoderZeroed == false) { // if elevator not at the lower limit switch
+        motorSpeed = -0.05; // move down slowly until at the lower limit switch
     }
     else if(manualControl) {
         motorSpeed = manualMovementSpeed;
@@ -15,7 +15,7 @@ void Elevator::process() {
     else {
         motorSpeed = computeSpeedForPreset();
     }
-    if (atMinHeight() && motorSpeed < 0)
+    if (atMinHeight() && motorSpeed < 0) // stop moving when at either limit switch
         motorSpeed = 0;
 
     if (atMaxHeight() && motorSpeed > 0)
@@ -40,8 +40,7 @@ void Elevator::doPersistentConfiguration() {
 
 void Elevator::sendFeedback() {
     frc::SmartDashboard::PutNumber ("Elevator Left Motor Position (rotations)",  leftEncoder.GetPosition());
-    //
-    frc::SmartDashboard::PutNumber ("Elevator Left Motor Tempature C",           leftSparkMax.GetMotorTemperature());
+    //frc::SmartDashboard::PutNumber ("Elevator Left Motor Tempature C",           leftSparkMax.GetMotorTemperature());
     frc::SmartDashboard::PutNumber ("Elevator Right Motor Position (rotations)", rightEncoder.GetPosition());
     //frc::SmartDashboard::PutNumber ("Elevator Right Motor Tempature C",          rightSparkMax.GetMotorTemperature());
     frc::SmartDashboard::PutBoolean ("Elevator At Target Preset",      atPreset());
@@ -76,14 +75,14 @@ void Elevator::goToPreset(Preset target) {
 }
 
 bool Elevator::atPreset() {
-    if(manualControl || targetPreset == kSTOP)
+    if(manualControl || targetPreset == kSTOP) // if in manual control or stopped we are always at our preset
         return true;
-    if (!encoderZeroed)
+    if (!encoderZeroed) // if we are at the bottom we are not at our preset
         return false;
-    if(getPosition() < (Position[targetPreset].value() + targetTolerance) && getPosition() > (Position[targetPreset].value() - targetTolerance)) {
+    if(getPosition() < (Position[targetPreset].value() + targetTolerance) && getPosition() > (Position[targetPreset].value() - targetTolerance)) { // if we are within 1 turn(this can be changed) of the preset, we are at our preset
         return true;
     }
-    else {
+    else { // if we arent at our preset, we arent at our preset
         return false;
     }
 }
@@ -93,7 +92,7 @@ void Elevator::manualMovement(double speed) {
     manualControl = true;
 }
 
-void Elevator::setSensorBroken(bool isBroken) {
+void Elevator::setSensorBroken(bool isBroken) { // this still needs to be implemented
     sensorBroken = isBroken;
 }
 double Elevator::computeSpeedForPreset() {
