@@ -12,10 +12,11 @@
 
 class Elevator : public Component {
   public:
-    void process();
+    void process() override;
 
-    void doPersistentConfiguration();
-    void sendFeedback();
+    void resetToMatchMode(MatchMode priorMode, MatchMode mode) override;
+    void doPersistentConfiguration() override;
+    void sendFeedback() override;
 
   private:
     bool atMaxHeight();
@@ -63,10 +64,8 @@ class Elevator : public Component {
     double getPosition();
     double computeSpeedForPreset();
 
-    //Not sure about motors for now. ~G
-    //Added placeholders for device ID
-    rev::spark::SparkMax leftSparkMax {1, rev::spark::SparkLowLevel::MotorType::kBrushless};
-    rev::spark::SparkMax rightSparkMax {2, rev::spark::SparkLowLevel::MotorType::kBrushless};
+    rev::spark::SparkMax leftSparkMax {CAN_LEFT_ELEVATOR, rev::spark::SparkLowLevel::MotorType::kBrushless};
+    rev::spark::SparkMax rightSparkMax {CAN_RIGHT_ELEVATOR, rev::spark::SparkLowLevel::MotorType::kBrushless};
 
     rev::spark::SparkRelativeEncoder leftEncoder = leftSparkMax.GetEncoder();
     rev::spark::SparkRelativeEncoder rightEncoder = rightSparkMax.GetEncoder();

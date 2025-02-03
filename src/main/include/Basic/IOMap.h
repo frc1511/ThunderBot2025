@@ -12,6 +12,18 @@
     ██║╚██████╔╝    ██║ ╚═╝ ██║██║  ██║██║     
     ╚═╝ ╚═════╝     ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝     
 */
+
+// Enable or disable portions of robot during development using these
+#define ENABLE_DRIVE
+#define ENABLE_ELEVATOR
+// #define ENABLE_GAMEPIECE
+// Auto requires drive at present
+#ifdef ENABLE_DRIVE
+#define ENABLE_AUTO
+#endif
+// Real robot or testboard?
+#define IS_TESTBOARD
+
 #define CAN_DO_NOT_USE 1
 
 #define CAN_SWERVE_DRIVE_FL 1
@@ -31,20 +43,26 @@
 #define CAN_SWERVE_CANCODER_BL 12
 
 #define CAN_PIGEON 14
+#define CAN_SHOOTER_INTAKE 15
+#define CAN_SHOOTER_LEFT 16
+#define CAN_SHOOTER_RIGHT 17
+
+#define CAN_PIVOT_ARM 18
+#define CAN_PIVOT_ARM_BRAKE 19
+
+#define CAN_HANG_ARM_RIGHT 20
+#define CAN_HANG_ARM_LEFT 21
 
 
-#define IS_TESTBOARD
 #ifdef IS_TESTBOARD
 
-    #define CAN_LEFT_ELEVATOR 3
+    #define CAN_LEFT_ELEVATOR 1
     #define CAN_RIGHT_ELEVATOR 2
-    #define CAN_LEFT_CALGAE 1
-    #define CAN_RIGHT_CALGAE 4
 
 #else
 
-    #define CAN_LEFT_ELEVATOR 15
-    #define CAN_RIGHT_ELEVATOR 16
+    #define CAN_LEFT_ELEVATOR 16
+    #define CAN_RIGHT_ELEVATOR 15
 
 #endif
 
@@ -68,9 +86,15 @@
 #define PWM_SLOT_9 9
 
 #define DIO_ALGAE_RETROREFLECTIVE 0
-#define DIO_CORAL_RETROREFLECTIVE 1
-#define DIO_ELEVATOR_TOP_LIMITSWITCH 2 // 1 on test board
-#define DIO_ELEVATOR_BOTTOM_LIMITSWITCH 3 // 2 on test board
+#ifdef IS_TESTBOARD
+    #define DIO_CORAL_RETROREFLECTIVE 9
+    #define DIO_ELEVATOR_TOP_LIMITSWITCH 1
+    #define DIO_ELEVATOR_BOTTOM_LIMITSWITCH 2
+#else
+    #define DIO_CORAL_RETROREFLECTIVE 1
+    #define DIO_ELEVATOR_TOP_LIMITSWITCH 2
+    #define DIO_ELEVATOR_BOTTOM_LIMITSWITCH 3
+#endif
 #define DIO_SLOT_4 4
 #define DIO_SLOT_5 5
 #define DIO_SLOT_6 6

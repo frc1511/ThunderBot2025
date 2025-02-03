@@ -27,6 +27,14 @@ void Elevator::process() {
     leftSparkMax.Set(motorSpeed);
 }
 
+void Elevator::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
+    targetPreset = kSTOP;
+    manualControl = false;
+    manualMovementSpeed = 0;
+    leftSparkMax.Set(0);
+    rightSparkMax.Set(0);
+}
+
 void Elevator::doPersistentConfiguration() {
     rev::spark::SparkMaxConfig motorConfig {};
     

@@ -44,10 +44,11 @@ struct DrivePreferences {
 
     DrivePreferences()
     {
-        PID_XY.Kp = 3.25;
-        PID_XY.Ki = 0.1;
+        PID_XY.Kp = 7.5;
+        // PID_XY.Ki = 0.001;
+        PID_XY.Kd = 0.1;
 
-        PID_THETA.Kp = 8.0;
+        PID_THETA.Kp = 4.0;
         PID_THETA.Kd = 0.1;
     }
 };
@@ -102,3 +103,10 @@ struct PreferencesElevator {
 };
 
 static PreferencesElevator ELEVATOR_PREFERENCE;
+
+struct PreferencesTrajectory
+{
+    units::meter_t FIELD_X = 17.55_m;
+    units::meter_t FIELD_Y = 8.05_m;
+};
+static PreferencesTrajectory TRAJECTORY_PREFERENCE;

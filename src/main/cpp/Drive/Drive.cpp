@@ -1,17 +1,22 @@
 #include "Drive/drive.h"
 
-Drive::Drive():
+Drive::Drive(Limelight* _limelight):
 driveController(
     [&]() -> frc::HolonomicDriveController {
         // Set the angular PID controller range from -180 to 180 degrees.
         trajectoryThetaPIDController.EnableContinuousInput(units::radian_t(-180_deg), units::radian_t(180_deg));
         // Setup the drive controller with the individual axis PID controllers.
         return frc::HolonomicDriveController(xPIDController, yPIDController, trajectoryThetaPIDController);
-    } ()) {
+    } ()),
+limelight(_limelight)
+ {
     manualThetaPIDController.EnableContinuousInput(units::radian_t(-180_deg), units::radian_t(180_deg));
 
     // Enable the trajectory drive controller.
     driveController.SetEnabled(true);
+
+    //Initialize the field widget
+    // frc::SmartDashboard::PutData("Field", &m_field);
 }
 
 Drive::~Drive() 
@@ -21,7 +26,7 @@ Drive::~Drive()
     }
 }
 
-void Drive::resetToMatchMode(MatchMode mode) {
+void Drive::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
     resetPIDControllers();
 
     driveMode = DriveMode::STOPPED;
@@ -44,7 +49,7 @@ void Drive::resetToMatchMode(MatchMode mode) {
          */
         //setIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 
-        //trajectoryTimer.Stop();
+        trajectoryTimer.Stop();
     }
     else {
         // Brake all motors when enabled to help counteract pushing.
@@ -60,10 +65,10 @@ void Drive::resetToMatchMode(MatchMode mode) {
         }
 
         // Reset the trajectory timer.
-        //trajectoryTimer.Reset();
+        trajectoryTimer.Reset();
 
         if (mode == MatchMode::AUTO) {
-            //trajectoryTimer.Start();
+            trajectoryTimer.Start();
         }
     }
 
@@ -73,11 +78,11 @@ void Drive::resetToMatchMode(MatchMode mode) {
     if (wasAuto && mode == Component::MatchMode::TELEOP) {
         wasAuto = false;
         frc::Pose2d currPose(getEstimatedPose());
-        resetOdometry(frc::Pose2d(currPose.X(), currPose.Y(), currPose.Rotation().Degrees() + 90_deg + (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed ? 180_deg : 0_deg)));
+        // resetOdometry(frc::Pose2d(currPose.X(), currPose.Y(), currPose.Rotation().Degrees() + 90_deg + (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed ? 180_deg : 0_deg)));
     }
     else {
         // Check if going from Auto to Disabled.
-        wasAuto = getLastMode() == Component::MatchMode::AUTO && mode == Component::MatchMode::DISABLED;
+        wasAuto = priorMode == Component::MatchMode::AUTO && mode == Component::MatchMode::DISABLED;
 
         // Doing something else.
         if (!wasAuto && mode != Component::MatchMode::DISABLED) {
@@ -98,7 +103,7 @@ void Drive::process()
             executeVelocityData();
             break;
         case DriveMode::TRAJECTORY:
-            //execTrajectory();
+            execTrajectory();
             break;
     }
 }
@@ -183,7 +188,6 @@ void Drive::executeVelocityData()
 
 void Drive::setModuleStates(frc::ChassisSpeeds speeds)
 {
-
     /// NOTE: If auto is 90_deg off swap X and Y in chassis speeds here, its swaped in controls.
 
     // Store velocities for feedback.
@@ -202,12 +206,11 @@ void Drive::setModuleStates(frc::ChassisSpeeds speeds)
 
 void Drive::stop()
 {
-    /// TODO: Re-implement
     // Set the speeds to 0.
     setModuleStates({ 0_mps, 0_mps, 0_deg_per_s });
 
     // Just for feedback.
-    //targetPose = getEstimatedPose();
+    targetPose = getEstimatedPose();
 
     // Put the drivetrain into brick mode if the flag is set.
     if (controlData.flags & ControlFlag::BRICK) {
@@ -220,6 +223,40 @@ void Drive::sendFeedback()
     for (std::size_t i = 0; i < swerveModules.size(); i++) {
         swerveModules.at(i)->sendDebugInfo(i);
     }
+
+    frc::Pose2d pose(getEstimatedPose());
+
+    feedbackField.SetRobotPose(pose);
+    frc::SmartDashboard::PutData("Field", &feedbackField);
+    frc::SmartDashboard::PutData("debug_TrajectoryTargetField", &trajectoryField);
+
+    
+    // Drive feedback.
+    frc::SmartDashboard::PutNumber("Drive_PoseX_m",                 pose.X().value());
+    frc::SmartDashboard::PutNumber("Drive_PoseY_m",                 pose.Y().value());
+    frc::SmartDashboard::PutNumber("Drive_PoseRot_deg",             getRotation().Degrees().value());
+    frc::SmartDashboard::PutNumber("Drive_ControlVelX_mps",         controlData.xVel.value());
+    frc::SmartDashboard::PutNumber("Drive_ControlVelY_mps",         controlData.yVel.value());
+    frc::SmartDashboard::PutNumber("Drive_ControlVelRot_rad_per_s", controlData.angVel.value());
+    frc::SmartDashboard::PutBoolean("Drive_FieldCentric",           controlData.flags & ControlFlag::FIELD_CENTRIC);
+    frc::SmartDashboard::PutBoolean("Drive_Brick",                  controlData.flags & ControlFlag::BRICK);
+    frc::SmartDashboard::PutBoolean("Drive_LockX",                  controlData.flags & ControlFlag::LOCK_X);
+    frc::SmartDashboard::PutBoolean("Drive_LockY",                  controlData.flags & ControlFlag::LOCK_Y);
+    frc::SmartDashboard::PutBoolean("Drive_LockRot",                controlData.flags & ControlFlag::LOCK_ROT);
+    frc::SmartDashboard::PutNumber("Drive_Mode_Enum_Index",         (int)driveMode);
+
+    // ThunderDashboard things.
+    frc::SmartDashboard::PutNumber("thunderdashboard_drive_x_pos",        pose.X().value());
+    frc::SmartDashboard::PutNumber("thunderdashboard_drive_y_pos",        pose.Y().value());
+    frc::SmartDashboard::PutNumber("thunderdashboard_drive_target_x_pos", targetPose.X().value());
+    frc::SmartDashboard::PutNumber("thunderdashboard_drive_target_y_pos", targetPose.Y().value());
+    frc::SmartDashboard::PutNumber("thunderdashboard_drive_x_vel",        chassisSpeeds.vx.value());
+    frc::SmartDashboard::PutNumber("thunderdashboard_drive_y_vel",        chassisSpeeds.vy.value());
+    frc::SmartDashboard::PutNumber("thunderdashboard_drive_ang_vel",      chassisSpeeds.omega.value());
+    frc::SmartDashboard::PutNumber("thunderdashboard_drive_ang",          pose.Rotation().Radians().value());
+    frc::SmartDashboard::PutNumber("thunderdashboard_drive_target_ang",   targetPose.Rotation().Radians().value());
+
+    frc::SmartDashboard::PutBoolean("thunderdashboard_gyro", !imuCalibrated);
 }
 
 bool Drive::isFinished() const 
@@ -258,14 +295,13 @@ void Drive::resetOdometry(frc::Pose2d pose) {
     }
 }
 
-
 frc::Pose2d Drive::getEstimatedPose() {
     return poseEstimator.GetEstimatedPosition();
 }
 
 frc::Rotation2d Drive::getRotation() {
     // The raw rotation from the IMU.
-    return frc::Rotation2d(-pigeon.GetYaw().GetValue() - 90_deg);
+    return frc::Rotation2d(-pigeon.GetYaw().GetValue());
 }
 
 void Drive::resetPIDControllers() {
@@ -280,15 +316,23 @@ void Drive::resetPIDControllers() {
 
 }
 
-
 void Drive::updateOdometry() {
     /**
      * Update the pose estimator with encoder measurements from
      * the swerve modules.
      */
     poseEstimator.Update(getRotation(), getModulePositions());
-}
 
+    LimelightHelpers::SetRobotOrientation("", poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0);
+
+    LimelightHelpers::PoseEstimate limelightMeasurement = limelight->getEstimatedBotPose();
+
+    poseEstimator.SetVisionMeasurementStdDevs({0.7, 0.7, 9999999.0});
+    poseEstimator.AddVisionMeasurement(
+        limelightMeasurement.pose,
+        limelightMeasurement.timestampSeconds
+    );
+}
 
 wpi::array<frc::SwerveModuleState, 4> Drive::getModuleStates() {
     return { swerveModules.at(0)->getState(), swerveModules.at(1)->getState(),
@@ -302,8 +346,153 @@ wpi::array<frc::SwerveModulePosition, 4> Drive::getModulePositions() {
 
 
 void Drive::makeBrick() {
-    swerveModules.at(0)->setTurningMotor(-45_deg);
-    swerveModules.at(1)->setTurningMotor(45_deg);
+    swerveModules.at(0)->setTurningMotor(45_deg);
+    swerveModules.at(1)->setTurningMotor(-45_deg);
     swerveModules.at(2)->setTurningMotor(45_deg);
     swerveModules.at(3)->setTurningMotor(-45_deg);
+}
+
+
+/// MARK: Trajectory
+
+
+void Drive::runTrajectory(const CSVTrajectory* _trajectory, const std::map<u_int32_t, Action*>& actionMap) {
+    driveMode = DriveMode::TRAJECTORY;
+    // Set the trajectory.
+    trajectory = _trajectory;
+
+    // Set the initial action.
+    trajectoryActionIter = trajectory->getActions().cbegin();
+
+    trajectoryActions = &actionMap;
+
+    // Reset done trajectory actions.
+    doneTrajectoryActions.clear();
+
+    // Reset the trajectory timer.
+    trajectoryTimer.Reset();
+    trajectoryTimer.Start();
+
+}
+
+void Drive::setupInitialTrajectoryPosition(const CSVTrajectory *trajectory)
+{
+    frc::Pose2d initPose(trajectory->getInitialPose());
+    resetOdometry(frc::Pose2d(initPose.X(), initPose.Y(), initPose.Rotation().Degrees()));
+}
+
+void Drive::execTrajectory() {
+    units::second_t time(trajectoryTimer.Get());
+
+    int actionRes = 0;
+    bool execAction = false;
+
+    // If we've got another action to go.
+    // if (trajectoryActionIter != trajectory->getActions().cend()) {
+    //     const auto& [action_time, actions] = *trajectoryActionIter;
+
+    //     // Check if it's time to execute the action.
+    //     if (time >= action_time) {
+    //         execAction = true;
+
+    //         // Loop through the available actions.
+    //         for (auto it(trajectoryActions->cbegin()); it != trajectoryActions->cend(); ++it) {
+    //             const auto& [id, action] = *it;
+
+    //             // Narrow the list down to only actions that have not been completed yet.
+    //             if (std::find(doneTrajectoryActions.cbegin(), doneTrajectoryActions.cend(), id) == doneTrajectoryActions.cend()) {
+    //                 // If the action's bit is set in the bit field.
+    //                 if (actions & id) {
+    //                     // Execute the action.
+    //                     Action::Result res = action->process();
+
+    //                     // If the action has completed.
+    //                     if (res == Action::Result::DONE) {
+    //                         // Remember that it's done.
+    //                         doneTrajectoryActions.push_back(id);
+    //                     }
+
+    //                     actionRes += res;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+    // Stop the trajectory because an action is still running.
+    if (actionRes) {
+        trajectoryTimer.Stop();
+    }
+    // Continue/Resume the trajectory because the actions are done.
+    else {
+        // Increment the action if an action was just finished.
+        if (execAction) {
+            ++trajectoryActionIter;
+            doneTrajectoryActions.clear();
+        }
+        trajectoryTimer.Start();
+    }
+
+    // If the trajectory is done, then stop it.
+    if (time > trajectory->getDuration()) {// && driveController.AtReference()) { 
+        driveMode = DriveMode::STOPPED;
+        return;
+    }
+
+    // Sample the trajectory at the current time for the desired state of the robot.
+    CSVTrajectory::State state(trajectory->sample(time));
+
+    // Don't be moving if an action is being worked on.
+    if (actionRes) {
+        state.velocity = 0_mps;
+    }
+
+    // Adjust the rotation because everything about this robot is 90 degrees off D:
+    // state.pose = frc::Pose2d(state.pose.Translation(), frc::Rotation2d(state.pose.Rotation() - 90_deg));
+
+    // The current pose of the robot.
+    frc::Pose2d currentPose(getEstimatedPose());
+
+    // The desired change in position.
+    frc::Twist2d twist(currentPose.Log(state.pose));
+
+    // The angle at which the robot should be driving at.
+    frc::Rotation2d heading;
+    if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
+        heading = frc::Rotation2d(twist.dtheta + 180_deg);
+    } else {
+        heading = frc::Rotation2d(twist.dtheta);
+    }
+    
+    // printf("Speed: %lf, X: %lf, Y: %lf, stateRot: %lf, heading: %lf\n", state.velocity.value(), state.pose.X().value(), state.pose.Y().value(), state.pose.Rotation().Degrees().value(), heading.Degrees().value());
+    // printf("(Pose) X: %lf, Y: %lf, Rot: %lf\n", currentPose.X().value(), currentPose.Y().value(), currentPose.Rotation().Degrees().value());
+
+    /**
+     * Calculate the chassis velocities based on the error between the current
+     * pose and the desired pose.
+     */
+
+    frc::ChassisSpeeds velocities(
+        driveController.Calculate(
+            currentPose,
+            frc::Pose2d(state.pose.X(), state.pose.Y(), heading),
+            state.velocity,
+            state.pose.Rotation()
+        )
+    );
+    
+    velocities.omega *= -1;
+
+    trajectoryField.SetRobotPose(state.pose);
+
+    frc::SmartDashboard::PutNumber("debug_driveHeading_deg", heading.Degrees().value());
+    frc::SmartDashboard::PutNumber("debug_driveTwist_thetadeg", units::degree_t(twist.dtheta).value());
+    frc::SmartDashboard::PutNumber("debug_driveXVel", velocities.vx.value());
+    frc::SmartDashboard::PutNumber("debug_driveYVel", velocities.vy.value());
+    frc::SmartDashboard::PutNumber("debug_driveOMEGAVel", velocities.omega.value());
+    // Keep target pose for feedback.
+    targetPose = state.pose;
+
+    // Make the robot go vroom :D
+    setModuleStates(velocities);
 }

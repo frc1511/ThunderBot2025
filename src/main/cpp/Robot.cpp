@@ -4,28 +4,60 @@
 
 #include "Robot.h"
 
-Robot::Robot() {}
+Robot::Robot() :
+				lastMode(Component::MatchMode::DISABLED),
+				limelight(),
+				drive(nullptr),
+				gamepiece(nullptr),
+				elevator(nullptr),
+				controls(nullptr),
+				auto_(nullptr),
+				allComponents()
+{
+#ifdef ENABLE_DRIVE
+	drive = new Drive(&limelight);
+	allComponents.push_back(drive);
+#endif
+#ifdef ENABLE_GAMEPIECE
+	gamepiece = new Gamepiece();
+	allComponents.push_back(gamepiece);
+#endif
+#ifdef ENABLE_ELEVATOR
+	elevator = new Elevator();
+	allComponents.push_back(elevator);
+#endif
+#ifdef ENABLE_AUTO
+	auto_ = new Auto(drive);
+#endif
+	controls = new Controls(drive);
+}
+
+void Robot::RobotInit() {
+	if (auto_)
+		auto_->autoSelectorInit();
+}
 void Robot::RobotPeriodic() {
-  // AddPeriodic([&] {
-    for (Component* component : allComponents) {
+	for (Component* component : allComponents) {
 	 	component->sendFeedback();
 	}
-  // }, 20_ms);
 }
 
 void Robot::AutonomousInit() {
     reset(Component::MatchMode::AUTO);
 }
 void Robot::AutonomousPeriodic() {
-	for (Component* component : allComponents) {
+	if (auto_)
+		auto_->process();
+	
+	for (Component* component : allComponents)
 		component->process();
-	}
 }
 
 void Robot::TeleopInit() {
     reset(Component::MatchMode::TELEOP);
 }
 void Robot::TeleopPeriodic() {
+	controls->process();
 	for (Component* component : allComponents) {
 		component->process();
 	}
@@ -42,7 +74,9 @@ void Robot::TestInit() {
 		component->doPersistentConfiguration();
 	}
 
+	printf("Persistantt config done boi \n");
 }
+
 void Robot::TestPeriodic() {
 //#define ELEVATOR_TESTING
 #ifdef ELEVATOR_TESTING
@@ -76,8 +110,11 @@ void Robot::SimulationInit() {}
 void Robot::SimulationPeriodic() {}
 
 void Robot::reset(Component::MatchMode mode) {
+	if (auto_)
+		auto_->resetToMatchMode(lastMode, mode);
+	controls->resetToMatchMode(lastMode, mode);
 	for (Component* component : allComponents) {
-		component->callResetToMode(lastMode);
+		component->resetToMatchMode(lastMode, mode);
 	}
 
 	lastMode = mode;
