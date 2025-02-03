@@ -68,9 +68,9 @@
 #define PWM_SLOT_9 9
 
 #define DIO_ALGAE_RETROREFLECTIVE 0
-#define DIO_CORAL_RETROREFLECTIVE 7
-#define DIO_ELEVATOR_TOP_LIMITSWITCH 1 // 1 on test board
-#define DIO_ELEVATOR_BOTTOM_LIMITSWITCH 2 // 2 on test board
+#define DIO_CORAL_RETROREFLECTIVE 1
+#define DIO_ELEVATOR_TOP_LIMITSWITCH 2 // 1 on test board
+#define DIO_ELEVATOR_BOTTOM_LIMITSWITCH 3 // 2 on test board
 #define DIO_SLOT_4 4
 #define DIO_SLOT_5 5
 #define DIO_SLOT_6 6
