@@ -15,7 +15,7 @@
 
 // Enable or disable portions of robot during development using these
 #define ENABLE_DRIVE
-#define ENABLE_ELEVATOR
+// #define ENABLE_ELEVATOR
 // #define ENABLE_GAMEPIECE
 // Auto requires drive at present
 #ifdef ENABLE_DRIVE

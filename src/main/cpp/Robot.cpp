@@ -79,7 +79,7 @@ void Robot::TestInit() {
 
 void Robot::TestPeriodic() {
 //#define ELEVATOR_TESTING
-#ifdef ELEVATOR_TESTING
+#if defined(ENABLE_ELEVATOR) && defined(ELEVATOR_TESTING)
 	static Elevator::Preset testPresets[] = {
 		Elevator::kGROUND,
 		Elevator::kL4,
