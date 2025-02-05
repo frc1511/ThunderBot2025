@@ -95,6 +95,16 @@ struct PreferencesControls
 };
 static PreferencesControls CONTROLS_PREFERENCE;
 
+struct PreferencesCalgae {
+    double MOTOR_SPEED_STOPPED = 0.0;
+    double MOTOR_SPEED_INTAKE_CORAL = 0.75;
+    double MOTOR_SPEED_SHOOT_CORAL = -0.75;
+    double MOTOR_SPEED_INTAKE_ALGAE = 1.0;
+    double MOTOR_SPEED_SHOOT_ALGAE = -1.0;
+    double MOTOR_SPEED_INTAKE_REGRAB = 0.5;
+};
+static PreferencesCalgae CALGAE_PREFERENCE;
+
 struct PreferencesWrist {
     PID_t PID;
     double MAX_SPEED = 1;

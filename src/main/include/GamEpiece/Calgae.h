@@ -2,10 +2,9 @@
 
 #include "Basic/Component.h"
 #include "Basic/IOMap.h"
+#include "Preferences.h"
 
-#include <rev/SparkMax.h>
-#include <rev/config/SparkMaxConfig.h>
-#include <rev/config/ClosedLoopConfig.h>
+#include <frc/PWM.h>
 #include <frc/DigitalInput.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
@@ -121,25 +120,23 @@ class Calgae : public Component {
      * The set of intake speeds
      */
     double presetIntakeSpeeds [MotorSpeed::_enum_MAX] = {
-        0.0,
-        0.75, // Coral
-        1, // Algae
-        .5 // Regrab
+        CALGAE_PREFERENCE.MOTOR_SPEED_STOPPED, // Stopped
+        CALGAE_PREFERENCE.MOTOR_SPEED_INTAKE_CORAL, // Coral
+        CALGAE_PREFERENCE.MOTOR_SPEED_INTAKE_ALGAE, // Algae
+        CALGAE_PREFERENCE.MOTOR_SPEED_INTAKE_REGRAB // Regrab
     };
 
     /**
      * The set of shooter speeds
      */
     double presetShooterSpeeds [MotorSpeed::_enum_MAX] = {
-        0.0,
-        -0.75, // Coral
-        -1 // Algae
+        CALGAE_PREFERENCE.MOTOR_SPEED_STOPPED, // Stopped
+        CALGAE_PREFERENCE.MOTOR_SPEED_SHOOT_CORAL, // Coral
+        CALGAE_PREFERENCE.MOTOR_SPEED_SHOOT_ALGAE, // Algae
     };
 
-    rev::spark::SparkMax leftSparkMax {CAN_LEFT_CALGAE, rev::spark::SparkLowLevel::MotorType::kBrushless};
-    rev::spark::SparkMax rightSparkMax {CAN_RIGHT_CALGAE, rev::spark::SparkLowLevel::MotorType::kBrushless};
-    // rev::spark::SparkClosedLoopController leftPidController = leftSparkMax.GetClosedLoopController(); // No PID Yet (also this probably won't be what we use, I think we're doing PWM)
-    // rev::spark::SparkClosedLoopController rightPidController = rightSparkMax.GetClosedLoopController();
+    frc::PWM rightMotor {PWM_RIGHT_CALGAE};
+    frc::PWM leftMotor {PWM_LEFT_CALGAE};
 
     frc::DigitalInput coralRetroreflective {DIO_CORAL_RETROREFLECTIVE};
     frc::DigitalInput algaeRetroreflective {DIO_ALGAE_RETROREFLECTIVE};

@@ -7,30 +7,7 @@ Calgae::Calgae() {
 Calgae::~Calgae() {
 }
 
-void Calgae::doPersistentConfiguration() {
-    rev::spark::SparkMaxConfig leftSparkMaxConfig {};
-    rev::spark::SparkMaxConfig rightSparkMaxConfig {};
-    leftSparkMaxConfig.Inverted(false);
-    rightSparkMaxConfig.Inverted(true);
-    leftSparkMaxConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kBrake);
-    rightSparkMaxConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kBrake);
-    // ↓ Wait until testing/implementing PID ↓
-    // leftSparkMaxConfig.closedLoop.SetFeedbackSensor(rev::spark::ClosedLoopConfig::FeedbackSensor::kPrimaryEncoder)
-    // rightSparkMaxConfig.closedLoop.SetFeedbackSensor(rev::spark::ClosedLoopConfig::FeedbackSensor::kPrimaryEncoder)
-    // leftSparkMaxConfig.closedLoop.Pid(0.0, 0.0, 0.0);
-    // rightSparkMaxConfig.closedLoop.Pid(0.0, 0.0, 0.0);
-
-    leftSparkMax.Configure(
-       leftSparkMaxConfig,
-       rev::spark::SparkBase::ResetMode::kResetSafeParameters, 
-       rev::spark::SparkMax::PersistMode::kPersistParameters
-    );
-    rightSparkMax.Configure(
-        rightSparkMaxConfig, 
-        rev::spark::SparkBase::ResetMode::kResetSafeParameters, 
-        rev::spark::SparkMax::PersistMode::kPersistParameters
-    );
-}
+void Calgae::doPersistentConfiguration() {}
 
 void Calgae::resetToMatchMode(Component::MatchMode lastMode, Component::MatchMode mode) {
     switch (mode) {
@@ -58,14 +35,6 @@ void Calgae::resetToMatchMode(Component::MatchMode lastMode, Component::MatchMod
 }
 
 void Calgae::sendFeedback() {
-    frc::SmartDashboard::PutNumber ("Left SparkMax Speed -1 to 1"         , leftSparkMax.Get()                      );
-    frc::SmartDashboard::PutNumber ("Left SparkMax Temp C"                , leftSparkMax.GetMotorTemperature()      );
-    frc::SmartDashboard::PutNumber ("Left SparkMax Rotation"              , leftSparkMax.GetEncoder().GetPosition() );
-    frc::SmartDashboard::PutNumber ("Left SparkMax Speed Vel"             , leftSparkMax.GetEncoder().GetVelocity() );
-    frc::SmartDashboard::PutNumber ("Right SparkMax Speed -1 to 1"        , rightSparkMax.Get()                     );
-    frc::SmartDashboard::PutNumber ("Right SparkMax Temp C"               , rightSparkMax.GetMotorTemperature()     );
-    frc::SmartDashboard::PutNumber ("Right SparkMax Position"             , rightSparkMax.GetEncoder().GetPosition());
-    frc::SmartDashboard::PutNumber ("Right SparkMax Speed Vel"            , rightSparkMax.GetEncoder().GetVelocity());
     frc::SmartDashboard::PutBoolean("Coral Retroreflective Raw"           , coralRetroreflective.Get()              );
     frc::SmartDashboard::PutBoolean("Coral Retroreflective"               , coralRetroreflectiveTripped()           );
     frc::SmartDashboard::PutBoolean("Algae Retroreflective Raw"           , algaeRetroreflective.Get()              );
@@ -107,6 +76,7 @@ void Calgae::process() {
 
             case MotorModes::kDONE_SHOOTING:
                 lastGamepieceState = lastGamepieceState::kHAD_NONE;
+                motorSpeed = MotorSpeed::kSTOPPED;
                 break;
             default:
                 motorSpeed = MotorSpeed::kSTOPPED; // Set the motors to stop because we shouldn't be intaking
@@ -171,13 +141,14 @@ bool Calgae::algaeRetroreflectiveTripped() {
 }
 
 void Calgae::stopMotors() {
-    leftSparkMax.Set(0);
-    rightSparkMax.Set(0);
+    leftMotor.SetSpeed(0);
+    rightMotor.SetSpeed(0);
 }
 
 void Calgae::runMotors(double speed) {
-    leftSparkMax.Set(speed);
-    rightSparkMax.Set(speed);
+    speed = std::clamp(speed, -1.0, 1.0);
+    leftMotor.SetSpeed(speed);
+    rightMotor.SetSpeed(speed);
 }
 
 Calgae::GamepieceState Calgae::updateGamepieceState() {
