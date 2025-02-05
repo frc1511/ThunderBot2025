@@ -56,8 +56,8 @@ class Elevator : public Component {
     Preset targetPreset = Elevator::Preset::kSTOP;
     double manualMovementSpeed = 0;
     bool manualControl = false;
-    // IN TURNS
-    const double targetTolerance = 1;
+    
+    const units::turn_t targetTolerance = 1_tr;
     bool sensorBroken = false;
     bool encoderZeroed = false;
 
