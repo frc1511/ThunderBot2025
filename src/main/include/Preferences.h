@@ -94,6 +94,15 @@ struct PreferencesControls
 };
 static PreferencesControls CONTROLS_PREFERENCE;
 
+struct PreferencesElevator {
+    PID_t PID;
+    double MAX_SPEED = 0.05;
+    PreferencesElevator() {
+        PID.Kp = 0.1;
+    }
+};
+
+static PreferencesElevator ELEVATOR_PREFERENCE;
 
 struct PreferencesTrajectory
 {

@@ -7,6 +7,8 @@ Controls::Controls(Drive* drive_)
 #define SPEED_REDUCTION .5
 
 void Controls::process() {
+    if (drive == nullptr)
+        return;
     #if 0
     wpi::array<SwerveModule*, 4>*  modules = drive->getSwerveModules();
     frc::SwerveModuleState state;

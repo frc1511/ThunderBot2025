@@ -4,7 +4,7 @@ Auto::Auto(Drive* drive)
     : drive(drive) {
 
 }
-void Auto::resetToMatchMode(MatchMode mode) {
+void Auto::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
     if (mode == MatchMode::AUTO) {
         step = 0;
         drive->calibrateIMU();

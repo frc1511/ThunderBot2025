@@ -16,7 +16,7 @@ limelight(_limelight)
     driveController.SetEnabled(true);
 
     //Initialize the field widget
-    frc::SmartDashboard::PutData("Field", &m_field);
+    // frc::SmartDashboard::PutData("Field", &m_field);
 }
 
 Drive::~Drive() 
