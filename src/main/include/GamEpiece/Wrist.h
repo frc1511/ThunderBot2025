@@ -21,20 +21,22 @@ class Wrist : public Component {
   private:
     enum Preset {
         kLOWEST,
-        kINTAKE,
-        kSHOOT_CORAL,
-        kSHOOT_ALGAE,
+        kSTATION,
+        kTROUGH,
+        kBRANCH2_3,
+        kBRANCH4,
         kHIGHEST,
-        kMAX
+        _enum_MAX
     };
     Preset currentPreset = Preset::kLOWEST;
 
-    units::degree_t Positions[Preset::kMAX] = {
-        0_deg,  // Lowest  position
-        25_deg, // Intake  position
-        40_deg, // Shoot Coral
-        55_deg, // Shoot Algae
-        100_deg // Highest position
+    units::degree_t Positions[Preset::_enum_MAX] = {
+        0_deg,   // Lowest position
+        35_deg,  // Station
+        35_deg,  // Trough
+        55_deg,  // Branch 2 & 3
+        75_deg,  // Branch 4
+        100_deg  // Highest position
     };
 
     double getRawEncoder();

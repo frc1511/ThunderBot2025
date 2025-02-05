@@ -171,8 +171,8 @@ bool Calgae::algaeRetroreflectiveTripped() {
 }
 
 void Calgae::stopMotors() {
-    leftSparkMax.Set(presetIntakeSpeeds[MotorSpeed::kSTOPPED]);
-    rightSparkMax.Set(presetIntakeSpeeds[MotorSpeed::kSTOPPED]);    
+    leftSparkMax.Set(0);
+    rightSparkMax.Set(0);
 }
 
 void Calgae::runMotors(double speed) {

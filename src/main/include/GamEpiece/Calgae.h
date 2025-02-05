@@ -94,7 +94,7 @@ class Calgae : public Component {
     /**
      * The variable storing what our last gamepiece state was
      */
-    enum Calgae::lastGamepieceState lastGamepieceState = lastGamepieceState::kHAD_NONE;
+    Calgae::lastGamepieceState lastGamepieceState = lastGamepieceState::kHAD_NONE;
 
     /**
      * Return the current sensed state of the gamepieces (which one we have)
@@ -109,7 +109,7 @@ class Calgae : public Component {
         kCORAL,
         kALGAE,
         kREGRAB,
-        kMAX
+        _enum_MAX
     };
 
     /**
@@ -120,7 +120,7 @@ class Calgae : public Component {
     /**
      * The set of intake speeds
      */
-    double presetIntakeSpeeds [MotorSpeed::kMAX] = {
+    double presetIntakeSpeeds [MotorSpeed::_enum_MAX] = {
         0.0,
         0.75, // Coral
         1, // Algae
@@ -130,7 +130,7 @@ class Calgae : public Component {
     /**
      * The set of shooter speeds
      */
-    double presetShooterSpeeds [MotorSpeed::kMAX] = {
+    double presetShooterSpeeds [MotorSpeed::_enum_MAX] = {
         0.0,
         -0.75, // Coral
         -1 // Algae
