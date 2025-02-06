@@ -16,11 +16,10 @@
 // Enable or disable portions of robot during development using these
 #define ENABLE_DRIVE
 // #define ENABLE_ELEVATOR
-// #define ENABLE_GAMEPIECE
+// #define ENABLE_CALGAE
 // Auto requires drive at present
 #ifdef ENABLE_DRIVE
 #define ENABLE_AUTO
-// #define ENABLE_CALGAE
 #endif
 // Real robot or testboard?
 #define IS_TESTBOARD
