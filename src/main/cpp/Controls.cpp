@@ -6,18 +6,11 @@ Controls::Controls(Drive* drive_, Calgae* calgae_, Wrist* wrist_):
     wrist(wrist_)
 {}
 
-#define SPEED_REDUCTION 1
+#define SPEED_REDUCTION .5
 
 void Controls::process() {
     // MARK: Drive
-
-
-
-
-
-
-
-    if (!CONTROLS_PREFERENCE.DRIVE_DISABLED) {
+    if ((!CONTROLS_PREFERENCE.DRIVE_DISABLED) && (drive != nullptr)) {
         double xPercent = driveController.GetLeftX();
         if (fabs(xPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
             xPercent = 0;
@@ -55,15 +48,8 @@ void Controls::process() {
         drive->driveFromPercents(yPercent * -SPEED_REDUCTION, xPercent * SPEED_REDUCTION, rotPercent * -SPEED_REDUCTION, flags);
     }
     // MARK: Aux
-
-
-
-
-
-
-
     #define CALGAE_SENSOR_BROKEN false// Replace with switchboard?
-    if (!CONTROLS_PREFERENCE.AUX_DISABLED) {
+    if ((!CONTROLS_PREFERENCE.AUX_DISABLED) && (calgae != nullptr)) {
 
         bool coralIntake = auxController.GetR2Button();
         bool algaeIntake = auxController.GetL2Button();

@@ -12,6 +12,19 @@
     ██║╚██████╔╝    ██║ ╚═╝ ██║██║  ██║██║     
     ╚═╝ ╚═════╝     ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝     
 */
+
+// Enable or disable portions of robot during development using these
+#define ENABLE_DRIVE
+// #define ENABLE_ELEVATOR
+// #define ENABLE_GAMEPIECE
+// Auto requires drive at present
+#ifdef ENABLE_DRIVE
+#define ENABLE_AUTO
+// #define ENABLE_CALGAE
+#endif
+// Real robot or testboard?
+#define IS_TESTBOARD
+
 #define CAN_DO_NOT_USE 1
 
 #define CAN_SWERVE_DRIVE_FL 1
@@ -31,9 +44,28 @@
 #define CAN_SWERVE_CANCODER_BL 12
 
 #define CAN_PIGEON 14
-
 #define CAN_LEFT_CALGAE 15
 #define CAN_RIGHT_CALGAE 16
+#define CAN_SHOOTER_RIGHT 17
+
+#define CAN_PIVOT_ARM 18
+#define CAN_PIVOT_ARM_BRAKE 19
+
+#define CAN_HANG_ARM_RIGHT 20
+#define CAN_HANG_ARM_LEFT 21
+
+
+#ifdef IS_TESTBOARD
+
+    #define CAN_LEFT_ELEVATOR 1
+    #define CAN_RIGHT_ELEVATOR 2
+
+#else
+
+    #define CAN_LEFT_ELEVATOR 16
+    #define CAN_RIGHT_ELEVATOR 15
+
+#endif
 
 #define CAN_SLOT_17 17
 #define CAN_SLOT_18 18
@@ -56,6 +88,17 @@
 #define DIO_CORAL_RETROREFLECTIVE 2
 #define DIO_SLOT_3 3
 #define DIO_WRIST_ENCODER 4
+
+#ifdef IS_TESTBOARD
+    #define DIO_CORAL_RETROREFLECTIVE 9
+    #define DIO_ELEVATOR_TOP_LIMITSWITCH 1
+    #define DIO_ELEVATOR_BOTTOM_LIMITSWITCH 2
+#else
+    #define DIO_CORAL_RETROREFLECTIVE 1
+    #define DIO_ELEVATOR_TOP_LIMITSWITCH 2
+    #define DIO_ELEVATOR_BOTTOM_LIMITSWITCH 3
+#endif
+
 #define DIO_SLOT_5 5
 #define DIO_SLOT_6 6
 #define DIO_SLOT_7 7

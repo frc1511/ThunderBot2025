@@ -8,13 +8,17 @@
 
 #include "Basic/Component.h"
 #include "Drive/Drive.h"
+#include "Auto/Auto.h"
 #include "Controls.h"
 #include "GamEpiece/Calgae.h"
 #include "GamEpiece/Wrist.h"
+#include "Elevator.h"
+
 
 class Robot : public frc::TimedRobot {
   public:
 	Robot();
+	void RobotInit() override;
 	void RobotPeriodic() override;
 
 	void AutonomousInit() override;
@@ -34,13 +38,15 @@ class Robot : public frc::TimedRobot {
   private:
 	void reset(Component::MatchMode mode);
 	Component::MatchMode lastMode = Component::MatchMode::DISABLED;
-	Drive drive {&limelight};
-	Calgae calgae;
-	Wrist wrist;
-	Controls controls {&drive, &calgae, &wrist};
-    Limelight limelight;
 
-	std::vector<Component*> allComponents {
-    	&drive, &calgae, &wrist, &controls, &limelight
-   };
+	Limelight limelight;
+
+	Drive *drive;
+	Calgae *calgae;
+	Elevator *elevator;
+	Controls *controls;
+  Wrist *wrist;
+	Auto *auto_;
+
+	std::vector<Component*> allComponents; 
 };

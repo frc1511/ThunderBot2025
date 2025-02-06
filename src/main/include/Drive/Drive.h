@@ -18,15 +18,19 @@
 #include <frc/controller/ProfiledPIDController.h>
 #include <frc/controller/HolonomicDriveController.h>
 
+#include <frc/smartdashboard/Field2d.h>
+
 #include <ctre/phoenix6/Pigeon2.hpp>
 
 #include <frc/smartdashboard/Field2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 #include "Basic/Component.h"
-#include "Basic/iomap.h"
+#include "Basic/IOMap.h"
 #include "preferences.h"
 #include "swerveModule.h"
+#include "Drive/CSVTrajectory.h"
+#include "Auto/Action.h"
 #include "Limelight.h"
 
 class Drive : public Component {
@@ -51,7 +55,7 @@ public:
     void driveWithVelocities(units::meters_per_second_t xVel, units::meters_per_second_t yVel, units::radians_per_second_t angVel, unsigned flags);
     
     void sendFeedback();
-    void doPersistentConfiguration();
+    void doPersistentConfiguration() override;
 
     /// MARK: Field Centric
 
@@ -90,6 +94,15 @@ public:
      * Resets all drive PID controllers.
      */
     void resetPIDControllers();
+
+    /// MARK: Trajecory
+    
+    /**
+     * Runs a trajectory.
+     */
+    void runTrajectory(const CSVTrajectory* trajectory, const std::map<u_int32_t, Action*>& actionMap);
+
+    void setupInitialTrajectoryPosition(const CSVTrajectory* trajectory);
 
     /// TODO: REMOVE
     wpi::array<SwerveModule*, 4>* getSwerveModules();
@@ -130,10 +143,10 @@ private:
 
 
     wpi::array<frc::Translation2d, 4> locations {
-        frc::Translation2d(-DRIVE_PREFERENCES.ROBOT_WIDTH/2, +DRIVE_PREFERENCES.ROBOT_LENGTH/2), // Front left.
-        frc::Translation2d(+DRIVE_PREFERENCES.ROBOT_WIDTH/2, +DRIVE_PREFERENCES.ROBOT_LENGTH/2), // Front right.
-        frc::Translation2d(-DRIVE_PREFERENCES.ROBOT_WIDTH/2, -DRIVE_PREFERENCES.ROBOT_LENGTH/2), // Back left.
-        frc::Translation2d(+DRIVE_PREFERENCES.ROBOT_WIDTH/2, -DRIVE_PREFERENCES.ROBOT_LENGTH/2), // Back right.
+        frc::Translation2d(+DRIVE_PREFERENCES.ROBOT_LENGTH/2, +DRIVE_PREFERENCES.ROBOT_WIDTH/2), // FRONT LEFT.
+        frc::Translation2d(-DRIVE_PREFERENCES.ROBOT_LENGTH/2, +DRIVE_PREFERENCES.ROBOT_WIDTH/2), // BACK LEFT.
+        frc::Translation2d(-DRIVE_PREFERENCES.ROBOT_LENGTH/2, -DRIVE_PREFERENCES.ROBOT_WIDTH/2), // BACK RIGHT.
+        frc::Translation2d(+DRIVE_PREFERENCES.ROBOT_LENGTH/2, -DRIVE_PREFERENCES.ROBOT_WIDTH/2), // FRONT RIGHT.
     };
     /**
      * The helper class that it used to convert chassis speeds into swerve
@@ -148,13 +161,11 @@ private:
 
     // The swerve modules on the robot.
     wpi::array<SwerveModule*, 4> swerveModules { // ENCODER OFFSETS: 1/12/2025 ALPHA BOT
-        new SwerveModule(CAN_SWERVE_DRIVE_FL, CAN_SWERVE_ROTATION_FL, CAN_SWERVE_CANCODER_FL, 0_deg),
-        new SwerveModule(CAN_SWERVE_DRIVE_BL, CAN_SWERVE_ROTATION_BL, CAN_SWERVE_CANCODER_BL, 0_deg),
-        new SwerveModule(CAN_SWERVE_DRIVE_FR, CAN_SWERVE_ROTATION_FR, CAN_SWERVE_CANCODER_FR, 0_deg),
-        new SwerveModule(CAN_SWERVE_DRIVE_BR, CAN_SWERVE_ROTATION_BR, CAN_SWERVE_CANCODER_BR, 0_deg),
+        new SwerveModule(CAN_SWERVE_DRIVE_FL, CAN_SWERVE_ROTATION_FL, CAN_SWERVE_CANCODER_FL, -113.46_deg),
+        new SwerveModule(CAN_SWERVE_DRIVE_BL, CAN_SWERVE_ROTATION_BL, CAN_SWERVE_CANCODER_BL, 109.16_deg),
+        new SwerveModule(CAN_SWERVE_DRIVE_BR, CAN_SWERVE_ROTATION_BR, CAN_SWERVE_CANCODER_BR, -47.98_deg + 180_deg),
+        new SwerveModule(CAN_SWERVE_DRIVE_FR, CAN_SWERVE_ROTATION_FR, CAN_SWERVE_CANCODER_FR, -128.32_deg + 180_deg),
     };
-    
-
 
     /// MARK: Field Centric
 
@@ -182,21 +193,8 @@ private:
 
     bool imuCalibrated = false;
 
-    frc::Pose2d targetPose;
 
-    
-    // PID Controller for X and Y axis drivetrain movement.
-    frc::PIDController xPIDController { DRIVE_PREFERENCES.PID_XY.Kp, DRIVE_PREFERENCES.PID_XY.Ki, DRIVE_PREFERENCES.PID_XY.Kd },
-                       yPIDController { DRIVE_PREFERENCES.PID_XY.Kp, DRIVE_PREFERENCES.PID_XY.Ki, DRIVE_PREFERENCES.PID_XY.Kd };
-
-    // PID Controller for angular drivetrain movement.
-    frc::ProfiledPIDController<units::radians> trajectoryThetaPIDController {
-        DRIVE_PREFERENCES.PID_THETA.Kp, DRIVE_PREFERENCES.PID_THETA.Ki, DRIVE_PREFERENCES.PID_THETA.Ki,
-        frc::TrapezoidProfile<units::radians>::Constraints(DRIVE_PREFERENCES.DRIVE_AUTO_MAX_ANG_VEL, DRIVE_PREFERENCES.DRIVE_AUTO_MAX_ANG_ACCEL)
-    };
-
-    // The drive controller that will handle the drivetrain movement.
-    frc::HolonomicDriveController driveController;
+ 
 
     /**
      * Returns the states of the swerve modules. (velocity and rotatation)
@@ -214,7 +212,46 @@ private:
      */
     void updateOdometry();
 
-    frc::Field2d m_field;
+    /// MARK: Trajectory
+
+
+    frc::Pose2d targetPose;
+
+
+    // PID Controller for X and Y axis drivetrain movement.
+    frc::PIDController xPIDController { DRIVE_PREFERENCES.PID_XY.Kp, DRIVE_PREFERENCES.PID_XY.Ki, DRIVE_PREFERENCES.PID_XY.Kd },
+                       yPIDController { DRIVE_PREFERENCES.PID_XY.Kp, DRIVE_PREFERENCES.PID_XY.Ki, DRIVE_PREFERENCES.PID_XY.Kd };
+
+    // PID Controller for angular drivetrain movement.
+    frc::ProfiledPIDController<units::radians> trajectoryThetaPIDController {
+        DRIVE_PREFERENCES.PID_THETA.Kp, DRIVE_PREFERENCES.PID_THETA.Ki, DRIVE_PREFERENCES.PID_THETA.Kd,
+        frc::TrapezoidProfile<units::radians>::Constraints(DRIVE_PREFERENCES.DRIVE_AUTO_MAX_ANG_VEL, DRIVE_PREFERENCES.DRIVE_AUTO_MAX_ANG_ACCEL)
+    };
+    
+   // The drive controller that will handle the drivetrain movement.
+    frc::HolonomicDriveController driveController;
+    
+    // The trajectory that is currently being run.
+    const CSVTrajectory* trajectory = nullptr;
+
+    // The available actions.
+    const std::map<u_int32_t, Action*>* trajectoryActions = nullptr;
+
+    // Actions that are completed.
+    std::vector<u_int32_t> doneTrajectoryActions;
+
+    // The current action.
+    std::map<units::second_t, u_int32_t>::const_iterator trajectoryActionIter;
+
+    frc::Timer trajectoryTimer;
+
+    frc::Field2d feedbackField {};
+    frc::Field2d trajectoryField {};
+    
+    /**
+     * Executes the instructions for when the robot is running a trajectory.
+     */
+    void execTrajectory();
 
     /// MARK: Limelight
 

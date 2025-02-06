@@ -29,9 +29,10 @@ public:
 
     void stop();
     void setTurningMotor(units::radian_t angle);
+    void setDriveMotor(units::meters_per_second_t velocity);
+    
 private:
 
-    void setDriveMotor(units::meters_per_second_t velocity);
 
     units::radian_t getRawCANcoderRotation();
     units::radian_t getCANcoderRotation();

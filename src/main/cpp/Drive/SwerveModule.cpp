@@ -9,12 +9,17 @@ SwerveModule::SwerveModule(int driveID, int turningID, int canCoderID, units::de
   absEncoderOffset(offset),
   turnRequest(ctre::phoenix6::controls::PositionVoltage{0_tr}.WithSlot(0)),
   driveRequest(ctre::phoenix6::controls::VelocityVoltage{(units::turns_per_second_t)0}.WithSlot(0))
-{
 
+{
 }
 
 void SwerveModule::doPersistentConfiguration()
 {
+    // Can Coder
+    ctre::phoenix6::configs::MagnetSensorConfigs magnetConfig;
+    magnetConfig.SensorDirection = ctre::phoenix6::signals::SensorDirectionValue::CounterClockwise_Positive;
+    canCoder.GetConfigurator().Apply(magnetConfig);
+
     // Turning Motor
     ctre::phoenix6::configs::Slot0Configs turningPIDConfig {};
     turningPIDConfig.kP = SWERVE_PREFERENCE.TURN_MOTOR.PID.Kp;
@@ -24,6 +29,10 @@ void SwerveModule::doPersistentConfiguration()
     turningPIDConfig.kS = SWERVE_PREFERENCE.TURN_MOTOR.PID.Ks;
 
     turningMotor.GetConfigurator().Apply(turningPIDConfig);
+
+    ctre::phoenix6::configs::MotorOutputConfigs turningMotorOutput {};
+    turningMotorOutput.Inverted = true;
+    turningMotor.GetConfigurator().Apply(turningMotorOutput);
 
     ctre::phoenix6::configs::CurrentLimitsConfigs turningCurrentLimit {};
     turningCurrentLimit.WithSupplyCurrentLimit(SWERVE_PREFERENCE.TURN_MOTOR.MAX_AMPERAGE);
@@ -46,6 +55,14 @@ void SwerveModule::doPersistentConfiguration()
     drivePIDConfig.kS = SWERVE_PREFERENCE.DRIVE_MOTOR.PID.Ks;
 
     driveMotor.GetConfigurator().Apply(drivePIDConfig);
+    ctre::phoenix6::configs::MotorOutputConfigs driveMotorOutput {};
+    driveMotorOutput.Inverted = true;
+    
+    /// TODO: Add me to a function
+    driveMotorOutput.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake); // Brake Mode Here!!!! 
+    
+    driveMotor.GetConfigurator().Apply(driveMotorOutput);
+
 
     ctre::phoenix6::configs::CurrentLimitsConfigs driveCurrentLimit {};
     driveCurrentLimit.WithSupplyCurrentLimit(SWERVE_PREFERENCE.DRIVE_MOTOR.MAX_AMPERAGE);
@@ -70,6 +87,9 @@ void SwerveModule::setState(frc::SwerveModuleState state)
          */
         optimizedState.Optimize(currentState.angle);
     }
+
+    // Cosine Compensation; Don't drive full bore when facing the wrong way
+    optimizedState.speed *= (optimizedState.angle - currentState.angle).Cos();
 
     /**
      * Only handle turning when the robot is actually driving (Stops the modules
@@ -129,7 +149,7 @@ units::turn_t SwerveModule::getTurningMotorPosition()
     return turningMotor.GetPosition().GetValue();
 }
 
-frc::SwerveModuleState SwerveModule::getState()
+frc::SwerveModuleState SwerveModule::getState()                                                              
 {
     // The velocity and rotation of the swerve module.
     return { getDriveVelocity(), getCANcoderRotation() };
