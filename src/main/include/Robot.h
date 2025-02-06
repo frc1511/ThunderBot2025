@@ -43,9 +43,9 @@ class Robot : public frc::TimedRobot {
 
 	Drive *drive;
 	Calgae *calgae;
+	Wrist *wrist;
 	Elevator *elevator;
 	Controls *controls;
-  Wrist *wrist;
 	Auto *auto_;
 
 	std::vector<Component*> allComponents; 
