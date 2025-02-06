@@ -10,8 +10,10 @@
 #include "Drive/Drive.h"
 #include "Auto/Auto.h"
 #include "Controls.h"
-#include "Gamepiece.h"
+#include "GamEpiece/Calgae.h"
+#include "GamEpiece/Wrist.h"
 #include "Elevator.h"
+
 
 class Robot : public frc::TimedRobot {
   public:
@@ -40,7 +42,8 @@ class Robot : public frc::TimedRobot {
 	Limelight limelight;
 
 	Drive *drive;
-	Gamepiece *gamepiece;
+	Calgae *calgae;
+	Wrist *wrist;
 	Elevator *elevator;
 	Controls *controls;
 	Auto *auto_;

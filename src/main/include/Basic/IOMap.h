@@ -16,7 +16,7 @@
 // Enable or disable portions of robot during development using these
 #define ENABLE_DRIVE
 // #define ENABLE_ELEVATOR
-// #define ENABLE_GAMEPIECE
+// #define ENABLE_CALGAE
 // Auto requires drive at present
 #ifdef ENABLE_DRIVE
 #define ENABLE_AUTO
@@ -43,8 +43,6 @@
 #define CAN_SWERVE_CANCODER_BL 12
 
 #define CAN_PIGEON 14
-#define CAN_SHOOTER_INTAKE 15
-#define CAN_SHOOTER_LEFT 16
 #define CAN_SHOOTER_RIGHT 17
 
 #define CAN_PIVOT_ARM 18
@@ -66,17 +64,15 @@
 
 #endif
 
-
-
 #define CAN_SLOT_17 17
 #define CAN_SLOT_18 18
 #define CAN_SLOT_19 19
 #define CAN_SLOT_20 20
 #define CAN_SLOT_21 21
 
-#define PWM_SLOT_0 0
-#define PWM_SLOT_1 1
-#define PWM_SLOT_2 2
+#define PWM_RIGHT_CALGAE 0
+#define PWM_LEFT_CALGAE 1
+#define PWM_WRIST 2
 #define PWM_SLOT_3 3
 #define PWM_SLOT_4 4
 #define PWM_SLOT_5 5
@@ -86,6 +82,8 @@
 #define PWM_SLOT_9 9
 
 #define DIO_ALGAE_RETROREFLECTIVE 0
+#define DIO_WRIST_ENCODER 4
+
 #ifdef IS_TESTBOARD
     #define DIO_CORAL_RETROREFLECTIVE 9
     #define DIO_ELEVATOR_TOP_LIMITSWITCH 1
@@ -95,7 +93,7 @@
     #define DIO_ELEVATOR_TOP_LIMITSWITCH 2
     #define DIO_ELEVATOR_BOTTOM_LIMITSWITCH 3
 #endif
-#define DIO_SLOT_4 4
+
 #define DIO_SLOT_5 5
 #define DIO_SLOT_6 6
 #define DIO_SLOT_7 7
