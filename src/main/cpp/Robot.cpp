@@ -32,7 +32,9 @@ Robot::Robot() :
 #ifdef ENABLE_AUTO
 	auto_ = new Auto(drive);
 #endif
-	controls = new Controls(drive, calgae, wrist);
+	gamepiece = new Gamepiece(calgae, wrist, elevator);
+	allComponents.push_back(gamepiece);
+	controls = new Controls(drive, gamepiece, calgae, wrist);
 }
 
 void Robot::RobotInit() {

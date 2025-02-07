@@ -132,6 +132,9 @@ void Calgae::resetHadGamepiece() {
     lastGamepieceState = lastGamepieceState::kHAD_NONE;
 }
 
+bool Calgae::atSpeed() {
+    return true; // TODO: Implement
+}
 bool Calgae::coralRetroreflectiveTripped() {
     return !coralRetroreflective.Get();
 }

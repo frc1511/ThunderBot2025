@@ -43,6 +43,8 @@ class Calgae : public Component {
      */
     void resetHadGamepiece();
 
+    bool atSpeed();
+
   private:
     /**
      * Get calculated state (non-raw) of the Coral Retroreflective sensor

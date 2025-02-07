@@ -12,31 +12,37 @@
 
 class Wrist : public Component {
   public:
+    Wrist();
+
     void process();
 
     void doPersistentConfiguration();
 
     void sendFeedback();
 
-  private:
     enum Preset {
-        kLOWEST,
+        kGROUND,
         kSTATION,
         kTROUGH,
         kBRANCH2_3,
         kBRANCH4,
-        kHIGHEST,
+        kPROCESSOR,
         _enum_MAX
     };
-    Preset currentPreset = Preset::kLOWEST;
+
+    void toPreset(Preset preset);
+
+    bool atPreset();
+  private:
+    Preset currentPreset = Preset::kGROUND;
 
     units::degree_t Positions[Preset::_enum_MAX] = {
-        0_deg,   // Lowest position
+        0_deg,   // Ground
         35_deg,  // Station
         35_deg,  // Trough
         55_deg,  // Branch 2 & 3
         75_deg,  // Branch 4
-        100_deg  // Highest position
+        0_deg,   // Processor
     };
 
     double getRawEncoder();

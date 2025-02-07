@@ -33,7 +33,7 @@ class Elevator : public Component {
         kL2,
         kL3,
         kL4,
-        kMAX,
+        _enum_MAX,
     };
     void goToPreset(Preset preset);
     // if manual this returns true
@@ -42,7 +42,7 @@ class Elevator : public Component {
     void setSensorBroken(bool isBroken);
     
   private:
-    units::turn_t Position[Preset::kMAX] {
+    units::turn_t Position[Preset::_enum_MAX] {
         0_tr,     // Stopped (Does not move to 0 turns)
         20_tr, // Ground
         200_tr, // Processor

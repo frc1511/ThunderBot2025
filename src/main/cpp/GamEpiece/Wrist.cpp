@@ -1,15 +1,18 @@
 #include "GamEpiece/Wrist.h"
 
+Wrist::Wrist() {
+    PIDController.Reset(getEncoderDegrees());
+    PIDController.DisableContinuousInput(); // No 360 rotate. :(
+    PIDController.SetTolerance(WRIST_PREFERENCE.ANGLE_TOLERANCE);
+}
+
 void Wrist::process() {
     units::degree_t degrees = getEncoderDegrees();
     double speed = PIDController.Calculate(degrees);
     setSpeed(speed);
 }
 
-void Wrist::doPersistentConfiguration() {
-    PIDController.Reset(getEncoderDegrees());
-    PIDController.DisableContinuousInput(); // No 360 rotate. :(
-}
+void Wrist::doPersistentConfiguration() {}
 
 void Wrist::sendFeedback() {
     frc::SmartDashboard::PutNumber ("Wrist Encoder Raw",     getRawEncoder());
@@ -18,6 +21,14 @@ void Wrist::sendFeedback() {
     frc::SmartDashboard::PutNumber ("Wrist Target Position", Positions[currentPreset].value());
     frc::SmartDashboard::PutNumber ("Wrist Motor Speed",     motor.GetSpeed());
     frc::SmartDashboard::PutBoolean("Wrist At Goal",         PIDController.AtGoal());
+}
+
+void Wrist::toPreset(Wrist::Preset preset) {
+    currentPreset = preset;
+}
+
+bool Wrist::atPreset() {
+    return PIDController.AtSetpoint();
 }
 
 double Wrist::getRawEncoder() {
@@ -35,10 +46,10 @@ void Wrist::setTarget(Preset preset) {
 
 void Wrist::setSpeed(double speed) {
     speed = std::clamp(speed, -WRIST_PREFERENCE.MAX_SPEED, WRIST_PREFERENCE.MAX_SPEED);
-    if (speed < 0 && getEncoderDegrees() < Positions[Preset::kLOWEST]) {
+    if (speed < 0 && getEncoderDegrees() < WRIST_PREFERENCE.LOWEST_ANGLE) {
         speed = 0;
     }
-    if (speed > 0 && getEncoderDegrees() > Positions[Preset::kHIGHEST]) {
+    if (speed > 0 && getEncoderDegrees() > WRIST_PREFERENCE.HIGHEST_ANGLE) {
         speed = 0;
     }
     motor.SetSpeed(speed);
@@ -46,8 +57,8 @@ void Wrist::setSpeed(double speed) {
 
 std::string Wrist::presetAsString() {
     switch (currentPreset) {
-    case Preset::kLOWEST:
-        return "Lowest";
+    case Preset::kGROUND:
+        return "Ground";
     case Preset::kSTATION:
         return "Station";
     case Preset::kTROUGH:
@@ -56,8 +67,8 @@ std::string Wrist::presetAsString() {
         return "Branch 2&3";
     case Preset::kBRANCH4:
         return "Branch 4";
-    case Preset::kHIGHEST:
-        return "Highest";
+    case Preset::kPROCESSOR:
+        return "Processor";
     default:
        return "ERROR: Unknown/Incorrect";
     }

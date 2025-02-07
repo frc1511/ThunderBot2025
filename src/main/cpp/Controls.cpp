@@ -1,9 +1,10 @@
 #include "Controls.h"
 
-Controls::Controls(Drive* drive_, Calgae* calgae_, Wrist* wrist_):
+Controls::Controls(Drive* drive_, Gamepiece* gamepiece_, Calgae* calgae_, Wrist* wrist_):
     drive(drive_),
     calgae(calgae_),
-    wrist(wrist_)
+    wrist(wrist_),
+    gamepiece(gamepiece_)
 {}
 
 #define SPEED_REDUCTION .5
@@ -58,18 +59,25 @@ void Controls::process() {
         bool shootDone = auxController.GetR1ButtonReleased();
 
         if (coralIntake) {
+            gamepiece->calgaeAutopilot = false;
             calgae->setMotorMode(Calgae::MotorModes::kCORAL_INTAKE);
         } else if (algaeIntake) {
+            gamepiece->calgaeAutopilot = false;
             calgae->setMotorMode(Calgae::MotorModes::kALGAE_INTAKE);
         } else if (shoot) {
+            gamepiece->calgaeAutopilot = false;
             if (!CALGAE_SENSOR_BROKEN) calgae->setMotorMode(Calgae::MotorModes::kSHOOT);
             else calgae->setMotorMode(Calgae::MotorModes::kSHOOT_OVERRIDE);
         } else if (shootDone) {
+            gamepiece->calgaeAutopilot = false;
             calgae->setMotorMode(Calgae::MotorModes::kDONE_SHOOTING);
         } else {
-            calgae->setMotorMode(Calgae::MotorModes::kNONE);
+            if (!gamepiece->calgaeAutopilot) {
+                calgae->setMotorMode(Calgae::MotorModes::kNONE);
+            }
         }
         if (resetHadGamepiece) {
+            gamepiece->calgaeAutopilot = false;
             calgae->resetHadGamepiece();
         }
     }

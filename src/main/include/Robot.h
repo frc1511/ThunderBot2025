@@ -10,6 +10,7 @@
 #include "Drive/Drive.h"
 #include "Auto/Auto.h"
 #include "Controls.h"
+#include "GamEpiece/Gamepiece.h"
 #include "GamEpiece/Calgae.h"
 #include "GamEpiece/Wrist.h"
 #include "Elevator.h"
@@ -47,6 +48,7 @@ class Robot : public frc::TimedRobot {
 	Elevator *elevator;
 	Controls *controls;
 	Auto *auto_;
+	Gamepiece* gamepiece;
 
 	std::vector<Component*> allComponents; 
 };
