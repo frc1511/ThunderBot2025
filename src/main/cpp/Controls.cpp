@@ -73,7 +73,7 @@ void Controls::process() {
             calgae->setMotorMode(Calgae::MotorModes::kDONE_SHOOTING);
         } else {
             if (!gamepiece->calgaeAutopilot) {
-                calgae->setMotorMode(Calgae::MotorModes::kNONE);
+                calgae->setMotorMode(Calgae::MotorModes::kSTOP);
             }
         }
         if (resetHadGamepiece) {

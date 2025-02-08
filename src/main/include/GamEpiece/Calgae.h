@@ -4,7 +4,7 @@
 #include "Basic/IOMap.h"
 #include "Preferences.h"
 
-#include <frc/PWM.h>
+#include <frc/motorcontrol/PWMSparkMax.h>
 #include <frc/DigitalInput.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
@@ -25,7 +25,7 @@ class Calgae : public Component {
      * The set of possible motor modes
      */
     enum MotorModes {
-        kNONE,
+        kSTOP,
         kCORAL_INTAKE,
         kALGAE_INTAKE,
         kSHOOT,
@@ -74,28 +74,22 @@ class Calgae : public Component {
     /**
      * Mode set by controls through setMotorMode()
      */
-    Calgae::MotorModes motorMode = MotorModes::kNONE;
+    Calgae::MotorModes motorMode = MotorModes::kSTOP;
 
     /**
      * Possible states for the gamepiece (based on the sensors)
      */
     enum GamepieceState {
-        kNO_GP,
-        kHAS_CORAL,
-        kHAS_ALGAE
-    };
-
-    enum lastGamepieceState {
-        kHAD_NONE,
-        kHAD_CORAL,
-        kHAD_ALGAE, 
+        kNONE,
+        kCORAL,
+        kALGAE, 
         kSENSOR_BROKEN
     };
 
     /**
      * The variable storing what our last gamepiece state was
      */
-    Calgae::lastGamepieceState lastGamepieceState = lastGamepieceState::kHAD_NONE;
+    Calgae::GamepieceState lastGamepieceState = GamepieceState::kNONE;
 
     /**
      * Return the current sensed state of the gamepieces (which one we have)
@@ -107,9 +101,9 @@ class Calgae : public Component {
      */
     enum MotorSpeed {
         kSTOPPED,
-        kCORAL,
-        kALGAE,
-        kREGRAB,
+        kCORAL_SPEED,
+        kALGAE_SPEED,
+        kREGRAB_SPEED,
         _enum_MAX
     };
 
@@ -137,8 +131,7 @@ class Calgae : public Component {
         CALGAE_PREFERENCE.MOTOR_SPEED_SHOOT_ALGAE, // Algae
     };
 
-    frc::PWM rightMotor {PWM_RIGHT_CALGAE};
-    frc::PWM leftMotor {PWM_LEFT_CALGAE};
+    frc::PWMSparkMax motor {PWM_CALGAE};
 
     frc::DigitalInput coralRetroreflective {DIO_CORAL_RETROREFLECTIVE};
     frc::DigitalInput algaeRetroreflective {DIO_ALGAE_RETROREFLECTIVE};

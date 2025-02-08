@@ -70,8 +70,8 @@
 #define CAN_SLOT_20 20
 #define CAN_SLOT_21 21
 
-#define PWM_RIGHT_CALGAE 0
-#define PWM_LEFT_CALGAE 1
+#define PWM_CALGAE 0
+#define PWM_SLOT_1 1
 #define PWM_WRIST 2
 #define PWM_SLOT_3 3
 #define PWM_SLOT_4 4
