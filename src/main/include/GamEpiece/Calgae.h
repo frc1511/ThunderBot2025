@@ -43,6 +43,8 @@ class Calgae : public Component {
      */
     void resetHadGamepiece();
 
+    bool hasGamepiece();
+
     bool atSpeed();
 
   private:
@@ -99,7 +101,7 @@ class Calgae : public Component {
     /**
      * Return the current sensed state of the gamepieces (which one we have)
      */
-    Calgae::GamepieceState updateGamepieceState();
+    void updateGamepieceState();
 
     /**
      * The possible speed settings (does not differentiate intake versus shoot, rather, it differentiates based on gamepiece)
@@ -135,6 +137,8 @@ class Calgae : public Component {
         CALGAE_PREFERENCE.MOTOR_SPEED_SHOOT_CORAL, // Coral
         CALGAE_PREFERENCE.MOTOR_SPEED_SHOOT_ALGAE, // Algae
     };
+
+    enum Calgae::GamepieceState currentGamepieceState = GamepieceState::kNONE;
 
     frc::PWMSparkMax motor {PWM_CALGAE};
 

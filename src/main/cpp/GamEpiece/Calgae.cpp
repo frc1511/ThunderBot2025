@@ -19,7 +19,7 @@ void Calgae::resetToMatchMode(Component::MatchMode lastMode, Component::MatchMod
         lastGamepieceState = GamepieceState::kCORAL; // "I don't see why not." -Noah, "Huh?" -Trevor
         break;
     case Component::MatchMode::TELEOP:
-        lastGamepieceState = updateGamepieceState();
+        lastGamepieceState = currentGamepieceState;
         break;
     default:
         motorSpeed = MotorSpeed::kSTOPPED;
@@ -39,9 +39,7 @@ void Calgae::sendFeedback() {
     frc::SmartDashboard::PutString ("Motor Target Speed"                  , motorSpeedToString()                    );
 }
 
-void Calgae::process() {    
-    Calgae::GamepieceState currentGamepieceState = updateGamepieceState();
-
+void Calgae::process() {
     motorSpeed = MotorSpeed::kSTOPPED; // In case we make it through the below logic without getting a speed
 
     if (currentGamepieceState == GamepieceState::kNONE) { // If we don't have a gamepiece, so intake or nothing
@@ -149,8 +147,8 @@ void Calgae::runMotors(double speed) {
     motor.Set(speed);
 }
 
-Calgae::GamepieceState Calgae::updateGamepieceState() {
-    enum Calgae::GamepieceState currentGamepieceState = GamepieceState::kNONE;
+void Calgae::updateGamepieceState() {
+    currentGamepieceState = GamepieceState::kNONE;
     if (algaeRetroreflectiveTripped() && coralRetroreflectiveTripped()) {
         printf("SENSOR ERROR: Coral and Algae Triggered Together\n");
         currentGamepieceState = GamepieceState::kALGAE; // Prioritize algae for faster size
@@ -159,7 +157,18 @@ Calgae::GamepieceState Calgae::updateGamepieceState() {
     } else if (coralRetroreflectiveTripped()) {
         currentGamepieceState = GamepieceState::kCORAL;
     }
-    return currentGamepieceState;
+}
+
+bool Calgae::hasGamepiece() {
+    switch (currentGamepieceState)
+    {
+    case kALGAE:
+        return true;
+    case kCORAL:
+        return true;
+    default:
+        return false;
+    }
 }
 
 std::string Calgae::lastGamepieceStateToString() {

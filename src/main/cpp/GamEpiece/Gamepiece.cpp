@@ -91,6 +91,10 @@ bool Gamepiece::isAtPreset() {
     return true;
 }
 
+bool Gamepiece::hasGamepiece() {
+    return calgae->hasGamepiece();
+}
+
 std::string Gamepiece::targetPresetAsString() {
     switch (targetPreset) {
     case Preset::kSTOP: return "Stop";

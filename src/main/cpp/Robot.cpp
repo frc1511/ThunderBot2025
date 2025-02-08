@@ -79,7 +79,7 @@ void Robot::TestInit() {
 		component->doPersistentConfiguration();
 	}
 
-	printf("Persistantt config done boi \n");
+	printf("Persistent Configurations Applied \n");
 }
 
 void Robot::TestPeriodic() {

@@ -31,6 +31,8 @@ class Gamepiece : public Component {
 
     bool isAtPreset();
 
+    bool hasGamepiece();
+
     bool calgaeAutopilot = false;
     bool wristAutopilot = false;
     bool elevatorAutopilot = false;
