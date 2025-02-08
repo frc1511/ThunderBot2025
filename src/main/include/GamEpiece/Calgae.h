@@ -72,6 +72,11 @@ class Calgae : public Component {
     std::string lastGamepieceStateToString();
 
     /**
+     * Convert the motorSpeed to a string for smartdashboard purposes
+     */
+    std::string motorSpeedToString();
+
+    /**
      * Mode set by controls through setMotorMode()
      */
     Calgae::MotorModes motorMode = MotorModes::kSTOP;

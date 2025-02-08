@@ -5,6 +5,8 @@
 #include "Calgae.h"
 #include "Wrist.h"
 
+#include <frc/smartdashboard/SmartDashboard.h>
+
 class Gamepiece : public Component {
   public:
     Gamepiece(Calgae* calgae_, Wrist* wrist_, Elevator* elevator_);
@@ -33,6 +35,8 @@ class Gamepiece : public Component {
     bool wristAutopilot = false;
     bool elevatorAutopilot = false;
   private:
+    std::string targetPresetAsString();
+
     Calgae* calgae;
     Wrist* wrist;
     Elevator* elevator;

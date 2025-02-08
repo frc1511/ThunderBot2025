@@ -12,7 +12,12 @@ void Gamepiece::process() {
 
 void Gamepiece::doPersistentConfiguration() {}
 
-void Gamepiece::sendFeedback() {}
+void Gamepiece::sendFeedback() {
+    frc::SmartDashboard::PutBoolean("Calgae Autopilot",   calgaeAutopilot);
+    frc::SmartDashboard::PutBoolean("Wrist Autopilot",    wristAutopilot);
+    frc::SmartDashboard::PutBoolean("Elevator Autopilot", elevatorAutopilot);
+    frc::SmartDashboard::PutString ("Calgae Autopilot",   targetPresetAsString());
+}
 
 void Gamepiece::moveToPreset(Preset preset) {
     targetPreset = preset;
@@ -84,4 +89,18 @@ bool Gamepiece::isAtPreset() {
         if (!elevator->atPreset())
             return false;
     return true;
+}
+
+std::string Gamepiece::targetPresetAsString() {
+    switch (targetPreset) {
+    case Preset::kSTOP: return "Stop";
+    case Preset::kGROUND: return "Ground";
+    case Preset::kPROCESSOR: return "Processor";
+    case Preset::kCORAL_STATION: return "Coral Station";
+    case Preset::kL1: return "L1 (Trough)";
+    case Preset::kL2: return "L2";
+    case Preset::kL3: return "L3";
+    case Preset::kL4: return "L4";
+    default: return "Error reading motorSpeed";
+    }
 }

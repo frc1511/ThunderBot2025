@@ -35,6 +35,8 @@ void Calgae::sendFeedback() {
     frc::SmartDashboard::PutBoolean("Algae Retroreflective Raw"           , algaeRetroreflective.Get()              );
     frc::SmartDashboard::PutBoolean("Algae Retroreflective"               , algaeRetroreflectiveTripped()           );
     frc::SmartDashboard::PutString ("Last Gamepiece"                      , lastGamepieceStateToString()            );
+    frc::SmartDashboard::PutBoolean("Algae Retroreflective"               , algaeRetroreflectiveTripped()           );
+    frc::SmartDashboard::PutString ("Motor Target Speed"                  , motorSpeedToString()                    );
 }
 
 void Calgae::process() {    
@@ -166,5 +168,15 @@ std::string Calgae::lastGamepieceStateToString() {
     case GamepieceState::kCORAL: return "Algae";
     case GamepieceState::kALGAE: return "Coral";
     default: return "Error reading lastGamepieceState";
+    }
+}
+
+std::string Calgae::motorSpeedToString() {
+    switch (motorSpeed) {
+    case MotorSpeed::kSTOPPED: return "Stopped";
+    case MotorSpeed::kCORAL_SPEED: return "Algae";
+    case MotorSpeed::kALGAE_SPEED: return "Coral";
+    case MotorSpeed::kREGRAB_SPEED: return "Regrab";
+    default: return "Error reading motorSpeed";
     }
 }
