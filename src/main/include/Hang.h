@@ -22,16 +22,8 @@ class Hang : public Component {
     ~Hang();
     void doPersistentConfiguration();
 
-    enum Movement {
-       EXTENDED, // when we want to hang
-       PARTLY_EXTENDED, // As in, not in the way of the elevator
-       NOT_EXTENDED // just for the start of the match
-    };
-
     void reset();
     void process();
-//     void debug(Feedback* feedback);
-//     //void lights(Lights* lights);
 
     enum motorState {
         IDLE,
@@ -44,9 +36,7 @@ class Hang : public Component {
     /**
      *  Moves the mechanism to the target position 
      */
-    void move(Movement direction);
-
-    void setSolenoid(bool onOff);
+    void setSolenoidOnOff(bool onOff);
 
     void setMotorState(motorState state);
     void setMotorStateSafe(motorState state);
@@ -61,25 +51,26 @@ class Hang : public Component {
     bool atMaxHeight();
     bool atMinHeight();
 
-    bool isPawlOpen();
+    bool isRelayOn();
+
     bool isReflectiveSensorTripped();
+    bool isPawlOpen();
+
+    void sendFeedback() override;
 
     enum SolenoidStates {
         ON = frc::Relay::Value::kOn,
         OFF = frc::Relay::Value::kOff,
     };
 
-    void setSolenoids(Hang::SolenoidStates state);
+    void setSolenoidState(Hang::SolenoidStates state);
 
     std::string getSolenoidStateString();
 
-    std::string getMotorModeString();
-
-    bool isRelayOn();
+    // std::string getMotorModeString();
 
     std::string ConvertTemperatureToString(double temp);
 
-    void sendFeedback() override;
 
     motorState MotorState = motorState::IDLE;
 

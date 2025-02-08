@@ -33,10 +33,11 @@ void Hang::process() {
         case AWAITING_CHECK:
             motor.Set(0);
             if (backtrackingCheckTimer.Get() >= 0.3_s) {
-                if (atMaxHeight()) {
+                if (isRelayOn()) {
                     if (isPawlOpen()) {
                         backtrackingCheckTimer.Stop();
                         MotorState = motorState::BACKTRACKING;
+                        setSolenoidOnOff(SolenoidStates::OFF);
                         targetEncoderRotation = getMotorPosition() + BACKTRACK_ROTATIONS;
                     } else {
                         backtrackingCheckTimer.Stop();
@@ -50,13 +51,13 @@ void Hang::process() {
             break;
         case IDLE:
             motor.Set(0);
-            if (atMaxRotations() && isPawlOpen()) {
+            if (isRelayOn() && isPawlOpen()) {
                 backtrackingCheckTimer.Restart();
                 MotorState = motorState::AWAITING_CHECK;
             }
             break;
         case MOVING_FORWARD:
-            if (atMaxRotations() && !isPawlOpen() && getMotorPosition() >= -PREFERENCE_HANG.MAX_POSTION) {
+            if (isRelayOn() && !isPawlOpen() && getMotorPosition() >= -PREFERENCE_HANG.MAX_POSTION) {
                 motor.Set(-PREFERENCE_CONTROLS.MAX_HANG_UP_SPEED);
             } else {
                 motor.Set(0);
@@ -74,12 +75,24 @@ void Hang::process() {
 }
 
 void Hang::backtrack() {
-    if (getMotorPosition() >= targetEncoderRotation) {
+    if (getMotorPosition() <= targetEncoderRotation) {
         MotorState = motorState::AWAITING_CHECK;
         backtrackingCheckTimer.Restart();
-        setSolenoid(true);
+        setSolenoidOnOff(true);
     } else {
-        motor.Set(-0.1);
+        motor.Set(0.1);
+    }
+}
+
+void Hang::setSolenoidOnOff(bool onOff) {
+    SolenoidStates currentState = getSolenoidState();
+    SolenoidStates nextState = SolenoidStates::OFF;
+    if (onOff) {
+        if (currentState == SolenoidStates::ON) {
+            nextState = SolenoidStates::ON;
+        } else {
+            nextState = SolenoidStates::OFF;
+        }
     }
 }
 
@@ -93,17 +106,6 @@ void Hang::setMotorStateSafe(motorState state) {
     }
 }
 
-void Hang::setSolenoid(bool onOff) {
-    SolenoidStates currentState = getSolenoidState();
-    SolenoidStates nextState = SolenoidStates::OFF;
-    if (onOff) {
-        if (currentState == SolenoidStates::ON) {
-            nextState = SolenoidStates::ON;
-        } else {
-            nextState = SolenoidStates::OFF;
-        }
-    }
-}
 
 void Hang::setMotorSpeed(double speed) {
     if (isRelayOn() && isPawlOpen()) {
@@ -137,14 +139,28 @@ bool Hang::atMinPosition() // for deep hang
     getMotorPosition() <= minEncoderRotations;
 }
 
-bool Hang::atMaxHeight() // for shallow
-{
+// bool Hang::atMaxHeight() // for shallow
+// {
 
+// }
+
+// bool Hang::atMinHeight() // for shallow
+// {
+//     isReflectiveSensorTripped();
+
+// }
+
+bool Hang::isRelayOn() {
+    SolenoidStates state = (SolenoidStates)solenoidRelay.Get();
+    return (state == SolenoidStates::ON);
 }
 
-bool Hang::atMinHeight() // for shallow
-{
+bool Hang::isReflectiveSensorTripped(){
+    return !reflectiveSensor.Get();
+}
 
+bool Hang::isPawlOpen(){
+    return beamBreakSensor.Get(); // Pawl will be open when true
 }
 
 // std::string Hang::getMotorModeString() {
@@ -158,12 +174,12 @@ bool Hang::atMinHeight() // for shallow
 void Hang::sendFeedback() {
     frc::SmartDashboard::PutNumber("Hang__Position", getMotorPosition());
     frc::SmartDashboard::PutNumber("Hang_MotorTempC", motor.GetMotorTemperature());
-    frc::SmartDashboard::PutString("Hang_motorMode", getMotorModeString());
+    // frc::SmartDashboard::PutString("Hang_motorMode", getMotorModeString());
     frc::SmartDashboard::PutString("Hang_MotorState", getMotorStateString(MotorState));
     frc::SmartDashboard::PutNumber("Hang__Timer", backtrackingCheckTimer.Get().value());
 }
 
-void Hang::setSolenoids(Hang::SolenoidStates state) {
+void Hang::setSolenoidState(Hang::SolenoidStates state) {
     solenoidRelay.Set((frc::Relay::Value)state);
 }
 
@@ -206,18 +222,6 @@ std::string Hang::getSolenoidStateString() {
     return solenoidState;
 }
 
-bool Hang::isRelayOn() {
-    SolenoidStates state = (SolenoidStates)solenoidRelay.Get();
-    return (state == SolenoidStates::ON);
-}
-
-bool Hang::isReflectiveSensorTripped(){
-    return !reflectiveSensor.Get();
-}
-
-bool Hang::isPawlOpen(){
-    return beamBreakSensor.Get(); // Pawl will be open when true
-}
 
 std::string Hang::ConvertTemperatureToString(double temp_c) {
     double temp_f = temp_c * 1.8 + 32;
