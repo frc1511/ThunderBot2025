@@ -33,6 +33,9 @@ class Wrist : public Component {
     void toPreset(Preset preset);
 
     bool atPreset();
+
+    void setEncoderBroken(bool isBroken);
+
   private:
     Preset currentPreset = Preset::kGROUND;
 
@@ -58,6 +61,7 @@ class Wrist : public Component {
     frc::PWM motor {PWM_WRIST}; // The wrist motor
 
     frc::DutyCycleEncoder encoder {DIO_WRIST_ENCODER}; // The through bore encoder
+    bool encoderBroken = false;
 
     frc::ProfiledPIDController<units::degrees> PIDController {
         WRIST_PREFERENCE.PID.Kp, WRIST_PREFERENCE.PID.Ki, WRIST_PREFERENCE.PID.Kd,

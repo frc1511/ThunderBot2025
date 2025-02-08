@@ -4,9 +4,13 @@ Wrist::Wrist() {
     PIDController.Reset(getEncoderDegrees());
     PIDController.DisableContinuousInput(); // No 360 rotate. :(
     PIDController.SetTolerance(WRIST_PREFERENCE.ANGLE_TOLERANCE);
+
+    encoder.SetAssumedFrequency(975.6_Hz); // From REV specs
+    encoder.SetConnectedFrequencyThreshold(100); // NOTE: We should ensure that this one is correct
 }
 
 void Wrist::process() {
+    // TODO: Build in controller override to use encoderBroken
     units::degree_t degrees = getEncoderDegrees();
     double speed = PIDController.Calculate(degrees);
     setSpeed(speed);
@@ -29,6 +33,14 @@ void Wrist::toPreset(Wrist::Preset preset) {
 
 bool Wrist::atPreset() {
     return PIDController.AtSetpoint();
+}
+
+void Wrist::setEncoderBroken(bool isBroken) {
+    if (encoder.IsConnected() && !isBroken) {
+        encoderBroken = false;
+    } else {
+        encoderBroken = true;
+    }
 }
 
 double Wrist::getRawEncoder() {
