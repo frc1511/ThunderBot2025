@@ -24,6 +24,7 @@ class Gamepiece : public Component {
         kL2,
         kL3,
         kL4,
+        kNET,
         _enum_MAX,
     };
 

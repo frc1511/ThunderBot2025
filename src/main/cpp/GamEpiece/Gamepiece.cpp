@@ -66,6 +66,7 @@ void Gamepiece::moveToPreset(Preset preset) {
         case Gamepiece::kL2:            elevator->goToPreset(Elevator::Preset::kL2);            break;
         case Gamepiece::kL3:            elevator->goToPreset(Elevator::Preset::kL3);            break;
         case Gamepiece::kL4:            elevator->goToPreset(Elevator::Preset::kL4);            break;
+        case Gamepiece::kNET:           elevator->goToPreset(Elevator::Preset::kNET);           break;
         case Gamepiece::kPROCESSOR:     elevator->goToPreset(Elevator::Preset::kPROCESSOR);     break;
         // kSTOP preset should be handled by controls
         default:
@@ -105,6 +106,7 @@ std::string Gamepiece::targetPresetAsString() {
     case Preset::kL2: return "L2";
     case Preset::kL3: return "L3";
     case Preset::kL4: return "L4";
+    case Preset::kNET: return "Net";
     default: return "Error reading motorSpeed";
     }
 }

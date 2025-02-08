@@ -26,13 +26,14 @@ class Elevator : public Component {
   public:
     enum Preset { //need measurements for the height of these sections, RN we have guesstimates with no units. ~G
         kSTOP,
-        kGROUND,
+        kGROUND, 
         kPROCESSOR,
         kCORAL_STATION,
         kL1,
         kL2,
         kL3,
         kL4,
+        kNET,
         _enum_MAX,
     };
     void goToPreset(Preset preset);
@@ -50,7 +51,8 @@ class Elevator : public Component {
         300_tr, // L1
         400_tr, // L2
         500_tr, // L3
-        600_tr  // L4
+        600_tr, // L4
+        600_tr  // Net
     };
 
     Preset targetPreset = Elevator::Preset::kSTOP;

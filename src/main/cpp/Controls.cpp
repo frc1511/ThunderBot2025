@@ -7,8 +7,6 @@ Controls::Controls(Drive* drive_, Gamepiece* gamepiece_, Calgae* calgae_, Wrist*
     gamepiece(gamepiece_)
 {}
 
-#define SPEED_REDUCTION .5
-
 void Controls::process() {
     // MARK: Drive
     if (drive != nullptr) {
@@ -21,12 +19,12 @@ void Controls::process() {
         double rotPercent = driveController.GetRightX();
         if (fabs(rotPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
             rotPercent = 0;
-        bool lockX = driveController.GetL2ButtonPressed();
-        bool lockY = driveController.GetR2ButtonPressed();
-        bool lockRot = driveController.GetR3ButtonPressed();
-        bool persistentConfig = driveController.GetCircleButtonPressed();
-        bool resetIMU = driveController.GetTriangleButtonPressed();
-        bool brickMode = driveController.GetCrossButton();
+        bool lockX = fabs(driveController.GetLeftTriggerAxis()) > CONTROLS_PREFERENCE.AXIS_DEADZONE;
+        bool lockY = fabs(driveController.GetRightTriggerAxis()) > CONTROLS_PREFERENCE.AXIS_DEADZONE;
+        bool lockRot = driveController.GetRightStickButtonPressed();
+        bool persistentConfig = driveController.GetBButtonPressed();
+        bool resetIMU = driveController.GetYButtonPressed();
+        bool brickMode = driveController.GetAButton();
         if (persistentConfig) {
             drive->doPersistentConfiguration();
         }
@@ -46,17 +44,39 @@ void Controls::process() {
             drive->resetOdometry();
 
         // SWAP: 90_deg offset for drive
-        drive->driveFromPercents(yPercent * -SPEED_REDUCTION, xPercent * SPEED_REDUCTION, rotPercent * -SPEED_REDUCTION, flags);
+        float finalSpeedReduction = 1 - speedReduction;
+        drive->driveFromPercents(yPercent * -finalSpeedReduction, xPercent * finalSpeedReduction, rotPercent * -finalSpeedReduction, flags);
     }
     // MARK: Aux
+    if (gamepiece != nullptr) {
+        bool toGround = auxController.GetPOV(180);
+        bool toProcessor = auxController.GetPOV(270);
+        bool toCoralStation = auxController.GetPOV(90);
+        bool toL1 = auxController.GetAButton();
+        bool toL2 = auxController.GetBButton();
+        bool toL3 = auxController.GetXButton();
+        bool toL4 = auxController.GetYButton();
+        bool toNet = auxController.GetPOV(0);
+        bool neuralyze = auxController.GetBackButton(); // Flash leds/signal light/limelight for Human Player attention acquisition
+
+        // Prioritize Highest
+        if (toNet)                 { gamepiece->moveToPreset(Gamepiece::Preset::kNET);
+        } else if (toL4)           { gamepiece->moveToPreset(Gamepiece::Preset::kL4);
+        } else if (toL3)           { gamepiece->moveToPreset(Gamepiece::Preset::kL3);
+        } else if (toL2)           { gamepiece->moveToPreset(Gamepiece::Preset::kL2);
+        } else if (toL1)           { gamepiece->moveToPreset(Gamepiece::Preset::kL1);
+        } else if (toCoralStation) { gamepiece->moveToPreset(Gamepiece::Preset::kCORAL_STATION);
+        } else if (toProcessor)    { gamepiece->moveToPreset(Gamepiece::Preset::kPROCESSOR);
+        } else if (toGround)       { gamepiece->moveToPreset(Gamepiece::Preset::kGROUND); }
+    }
+
     #define CALGAE_SENSOR_BROKEN false// Replace with switchboard?
     if (calgae != nullptr) {
-
-        bool coralIntake = auxController.GetR2Button();
-        bool algaeIntake = auxController.GetL2Button();
-        bool shoot = auxController.GetR1Button();
-        bool resetHadGamepiece = auxController.GetL1ButtonPressed();
-        bool shootDone = auxController.GetR1ButtonReleased();
+        bool coralIntake = fabs(auxController.GetRightTriggerAxis()) > CONTROLS_PREFERENCE.AXIS_DEADZONE; //fabs is extraneous but might as well 
+        bool algaeIntake = fabs(auxController.GetLeftTriggerAxis()) > CONTROLS_PREFERENCE.AXIS_DEADZONE;
+        bool shoot = auxController.GetRightBumperButton();
+        bool resetHadGamepiece = auxController.GetLeftBumperButtonPressed();
+        bool shootDone = auxController.GetRightBumperButtonReleased();
 
         if (coralIntake) {
             gamepiece->calgaeAutopilot = false;
