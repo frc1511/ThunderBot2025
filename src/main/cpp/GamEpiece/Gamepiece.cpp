@@ -16,7 +16,7 @@ void Gamepiece::sendFeedback() {
     frc::SmartDashboard::PutBoolean("Calgae Autopilot",   calgaeAutopilot);
     frc::SmartDashboard::PutBoolean("Wrist Autopilot",    wristAutopilot);
     frc::SmartDashboard::PutBoolean("Elevator Autopilot", elevatorAutopilot);
-    frc::SmartDashboard::PutString ("Calgae Autopilot",   targetPresetAsString());
+    frc::SmartDashboard::PutString ("Target Preset",      targetPresetAsString());
 }
 
 void Gamepiece::moveToPreset(Preset preset) {
