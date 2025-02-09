@@ -75,7 +75,8 @@ void Controls::process() {
         bool toL3 = auxController.GetXButton();
         bool toL4 = auxController.GetYButton();
         bool toNet = auxController.GetPOV() == 0;
-        blinkyBlinky->neuralyze = auxController.GetBackButton(); // Flash leds/signal light/limelight for Human Player attention acquisition
+        if (blinkyBlinky != nullptr)
+            blinkyBlinky->neuralyze = auxController.GetBackButton(); // Flash leds/signal light/limelight for Human Player attention acquisition
 
         // Prioritize Highest
         if (toNet)                 { gamepiece->moveToPreset(Gamepiece::Preset::kNET);
