@@ -10,9 +10,9 @@ Controls::Controls(Drive* drive_, Gamepiece* gamepiece_, Calgae* calgae_, Wrist*
 
 void Controls::process() {
     // MARK: Drive
-    if (drive != nullptr) {
+    if (drive != nullptr && driveController.IsConnected()) {
         // Drive limiting based on elevator position
-        double speedReduction = 0;
+        double speedReduction = 0.0;
         
         if (elevator != nullptr) {
             // Percentage from L3 -> NET
@@ -24,6 +24,8 @@ void Controls::process() {
                 speedReduction = elevatorPercent;
             }
         }
+
+        // drive->setAccelerationReduction(accelerationReduction);
 
         double xPercent = driveController.GetLeftX();
         if (fabs(xPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
@@ -63,7 +65,7 @@ void Controls::process() {
         drive->driveFromPercents(yPercent * -finalSpeedReduction, xPercent * finalSpeedReduction, rotPercent * -finalSpeedReduction, flags);
     }
     // MARK: Aux
-    if (gamepiece != nullptr) {
+    if (gamepiece != nullptr && auxController.IsConnected()) {
         bool toGround = auxController.GetPOV(180);
         bool toProcessor = auxController.GetPOV(270);
         bool toCoralStation = auxController.GetPOV(90);
@@ -86,7 +88,7 @@ void Controls::process() {
     }
 
     #define CALGAE_SENSOR_BROKEN false// Replace with switchboard?
-    if (calgae != nullptr) {
+    if (calgae != nullptr && auxController.IsConnected()) {
         bool coralIntake = fabs(auxController.GetRightTriggerAxis()) > CONTROLS_PREFERENCE.AXIS_DEADZONE; //fabs is extraneous but might as well 
         bool algaeIntake = fabs(auxController.GetLeftTriggerAxis()) > CONTROLS_PREFERENCE.AXIS_DEADZONE;
         bool shoot = auxController.GetRightBumperButton();

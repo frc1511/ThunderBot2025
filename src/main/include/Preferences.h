@@ -42,6 +42,8 @@ struct DrivePreferences {
     units::degrees_per_second_t DRIVE_MANUAL_MAX_ANG_VEL = 240_deg_per_s; // 540
     units::radians_per_second_squared_t DRIVE_MANUAL_MAX_ANG_ACCEL = 4.5_rad_per_s_sq; // 9.42
 
+    units::meters_per_second_squared_t MAX_ACCEL = 0.01_mps_sq;
+
     DrivePreferences()
     {
         PID_XY.Kp = 7.5;

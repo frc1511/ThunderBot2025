@@ -31,6 +31,7 @@ public:
     void setTurningMotor(units::radian_t angle);
     void setDriveMotor(units::meters_per_second_t velocity);
     
+    void setAccelerationReduction(double reduction);
 private:
 
 
@@ -56,4 +57,6 @@ private:
     
     ctre::phoenix6::controls::PositionVoltage turnRequest;
     ctre::phoenix6::controls::VelocityVoltage driveRequest;
+
+    double accelReduction = 0;
 };

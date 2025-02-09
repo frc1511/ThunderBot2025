@@ -15,7 +15,6 @@ class Controls : public Component {
 
     void process();
  private:
-    float speedReduction = 0;
 
     Drive* drive;
     Calgae* calgae;

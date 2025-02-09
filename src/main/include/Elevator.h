@@ -66,7 +66,7 @@ class Elevator : public Component {
     bool sensorBroken = false;
     bool encoderZeroed = false;
 
-    double getPosition();
+    units::turn_t getPosition();
     double computeSpeedForPreset();
 
     rev::spark::SparkMax leftSparkMax {CAN_LEFT_ELEVATOR, rev::spark::SparkLowLevel::MotorType::kBrushless};
