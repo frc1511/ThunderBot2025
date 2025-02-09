@@ -34,7 +34,11 @@ Robot::Robot() :
 #endif
 	gamepiece = new Gamepiece(calgae, wrist, elevator);
 	allComponents.push_back(gamepiece);
-	controls = new Controls(drive, gamepiece, calgae, wrist, elevator);
+#ifdef ENABLE_BLINKY_BLINKY
+	blinkyBlinky = new BlinkyBlinky(gamepiece);
+	allComponents.push_back(blinkyBlinky);
+#endif
+	controls = new Controls(drive, gamepiece, calgae, wrist, elevator, blinkyBlinky);
 }
 
 void Robot::RobotInit() {
@@ -72,7 +76,11 @@ void Robot::TeleopPeriodic() {
 void Robot::DisabledInit() {
     reset(Component::MatchMode::DISABLED);
 }
-void Robot::DisabledPeriodic() {}
+void Robot::DisabledPeriodic() {
+	#ifdef ENABLE_BLINKY_BLINKY
+	blinkyBlinky->process();
+	#endif
+}
 
 void Robot::TestInit() {
     reset(Component::MatchMode::TEST);

@@ -1,11 +1,12 @@
 #include "Controls.h"
 
-Controls::Controls(Drive* drive_, Gamepiece* gamepiece_, Calgae* calgae_, Wrist* wrist_, Elevator* elevator_):
+Controls::Controls(Drive* drive_, Gamepiece* gamepiece_, Calgae* calgae_, Wrist* wrist_, Elevator* elevator_, BlinkyBlinky* blinkyBlinky_):
     drive(drive_),
     calgae(calgae_),
     wrist(wrist_),
     elevator(elevator_),
-    gamepiece(gamepiece_)
+    gamepiece(gamepiece_),
+    blinkyBlinky(blinkyBlinky_)
 {
     sendAlertsTimer.Start();
 }
@@ -69,15 +70,15 @@ void Controls::process() {
 
     // MARK: Aux
     if (gamepiece != nullptr && auxController.IsConnected()) {
-        bool toGround = auxController.GetPOV(180);
-        bool toProcessor = auxController.GetPOV(270);
-        bool toCoralStation = auxController.GetPOV(90);
+        bool toGround = auxController.GetPOV() == 180;
+        bool toProcessor = auxController.GetPOV(0) == 270;
+        bool toCoralStation = auxController.GetPOV(0) == 90;
         bool toL1 = auxController.GetAButton();
         bool toL2 = auxController.GetBButton();
         bool toL3 = auxController.GetXButton();
         bool toL4 = auxController.GetYButton();
-        bool toNet = auxController.GetPOV(0);
-        bool neuralyze = auxController.GetBackButton(); // Flash leds/signal light/limelight for Human Player attention acquisition
+        bool toNet = auxController.GetPOV() == 0;
+        blinkyBlinky->neuralyze = auxController.GetBackButton(); // Flash leds/signal light/limelight for Human Player attention acquisition
 
         // Prioritize Highest
         if (toNet)                 { gamepiece->moveToPreset(Gamepiece::Preset::kNET);

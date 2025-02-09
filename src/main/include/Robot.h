@@ -14,6 +14,7 @@
 #include "GamEpiece/Calgae.h"
 #include "GamEpiece/Wrist.h"
 #include "Elevator.h"
+#include "BlinkyBlinky.h"
 
 
 class Robot : public frc::TimedRobot {
@@ -49,6 +50,7 @@ class Robot : public frc::TimedRobot {
 	Controls *controls;
 	Auto *auto_;
 	Gamepiece* gamepiece;
+	BlinkyBlinky* blinkyBlinky;
 
 	std::vector<Component*> allComponents; 
 };

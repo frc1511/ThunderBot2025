@@ -11,10 +11,11 @@
 #include "Elevator.h"
 #include "GamEpiece/Gamepiece.h"
 #include "Libraries/elasticlib.h"
+#include "BlinkyBlinky.h"
 
 class Controls : public Component {
   public:
-    Controls(Drive* drive_, Gamepiece* gamepiece_, Calgae* calgae_, Wrist* wrist_, Elevator* elevator_);
+    Controls(Drive* drive_, Gamepiece* gamepiece_, Calgae* calgae_, Wrist* wrist_, Elevator* elevator_, BlinkyBlinky* blinkyBlinky_);
 
     void process();
     void sendFeedback();
@@ -25,6 +26,7 @@ class Controls : public Component {
     Wrist* wrist;
     Elevator* elevator;
     Gamepiece* gamepiece;
+    BlinkyBlinky* blinkyBlinky;
 
     elastic::Notification driveDisabledAlert = {.level = elastic::NotificationLevel::WARNING,
                                                 .title = "Drive Disabled",
