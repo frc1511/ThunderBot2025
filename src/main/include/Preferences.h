@@ -142,3 +142,11 @@ struct PreferencesTrajectory
     units::meter_t FIELD_Y = 8.05_m;
 };
 static PreferencesTrajectory TRAJECTORY_PREFERENCE;
+
+// #define for array, it won't accept the preferences value
+#define BLINKY_BLINKY_LED_TOTAL 24
+struct PreferencesBlinkyBlinky
+{
+    size_t LED_TOTAL = BLINKY_BLINKY_LED_TOTAL;
+};
+static PreferencesBlinkyBlinky BLINKY_BLINKY_PREFERENCE;

@@ -93,7 +93,10 @@ bool Gamepiece::isAtPreset() {
 }
 
 bool Gamepiece::hasGamepiece() {
-    return calgae->hasGamepiece();
+    if (calgae != nullptr) {
+        return calgae->hasGamepiece();
+    }
+    return true;
 }
 
 std::string Gamepiece::targetPresetAsString() {
