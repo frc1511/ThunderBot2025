@@ -42,6 +42,8 @@ struct DrivePreferences {
     units::degrees_per_second_t DRIVE_MANUAL_MAX_ANG_VEL = 240_deg_per_s; // 540
     units::radians_per_second_squared_t DRIVE_MANUAL_MAX_ANG_ACCEL = 4.5_rad_per_s_sq; // 9.42
 
+    units::meters_per_second_squared_t MAX_ACCEL = 0.01_mps_sq;
+
     DrivePreferences()
     {
         PID_XY.Kp = 7.5;
@@ -91,8 +93,38 @@ static PreferencesSwerve SWERVE_PREFERENCE;
 struct PreferencesControls
 {
     double AXIS_DEADZONE = .2;
+
+    double kGROUND = 0.0; 
+    double kPROCESSOR = 0.0;
+    double kCORAL_STATION = 0.0;
+    double kL1 = 0.0;
+    double kL2 = 0.0;
+    double kL3 = 0.5;
+    double kL4 = 0.5;
+    double kNET = 0.5;
 };
 static PreferencesControls CONTROLS_PREFERENCE;
+
+struct PreferencesCalgae {
+    double MOTOR_SPEED_STOPPED = 0.0;
+    double MOTOR_SPEED_INTAKE_CORAL = 0.75;
+    double MOTOR_SPEED_SHOOT_CORAL = -0.75;
+    double MOTOR_SPEED_INTAKE_ALGAE = 1.0;
+    double MOTOR_SPEED_SHOOT_ALGAE = -1.0;
+    double MOTOR_SPEED_INTAKE_REGRAB = 0.5;
+};
+static PreferencesCalgae CALGAE_PREFERENCE;
+
+struct PreferencesWrist {
+    PID_t PID;
+    double MAX_SPEED = 1;
+    units::degree_t ANGLE_TOLERANCE = 1_deg;
+    units::degree_t LOWEST_ANGLE = -35_deg;
+    units::degree_t HIGHEST_ANGLE = 115_deg;
+    PreferencesWrist() {
+    }
+};
+static PreferencesWrist WRIST_PREFERENCE;
 
 struct PreferencesElevator {
     PID_t PID;

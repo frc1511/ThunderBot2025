@@ -381,6 +381,12 @@ void Drive::setupInitialTrajectoryPosition(const CSVTrajectory *trajectory)
     resetOdometry(frc::Pose2d(initPose.X(), initPose.Y(), initPose.Rotation().Degrees()));
 }
 
+void Drive::setAccelerationReduction(double reduction) {
+    for (SwerveModule* module : swerveModules) {
+        module->setAccelerationReduction(reduction);
+    }
+}
+
 void Drive::execTrajectory() {
     units::second_t time(trajectoryTimer.Get());
 

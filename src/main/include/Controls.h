@@ -1,16 +1,27 @@
 #pragma once
 
-#include <frc/PS4Controller.h>
+#include <frc/XboxController.h> // For Logitech Gamepad F310
+
 #include "Basic/Component.h"
 #include "Drive/Drive.h"
+#include "GamEpiece/Calgae.h"
+#include "GamEpiece/Wrist.h"
+#include "Elevator.h"
+#include "GamEpiece/Gamepiece.h"
 
 class Controls : public Component {
   public:
-    Controls(Drive* drive_);
+    Controls(Drive* drive_, Gamepiece* gamepiece_, Calgae* calgae_, Wrist* wrist_, Elevator* elevator_);
 
-    virtual void process();
-private:
+    void process();
+ private:
+
     Drive* drive;
+    Calgae* calgae;
+    Wrist* wrist;
+    Elevator* elevator;
+    Gamepiece* gamepiece;
 
-    frc::PS4Controller driveController {0};
+    frc::XboxController driveController {0};
+    frc::XboxController auxController {1};
 };

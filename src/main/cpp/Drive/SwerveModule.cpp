@@ -133,9 +133,13 @@ void SwerveModule::setTurningMotor(units::radian_t angle)
 void SwerveModule::setDriveMotor(units::meters_per_second_t velocity)
 {
     const units::turns_per_second_t tps = units::turns_per_second_t(velocity.value() * SWERVE_PREFERENCE.DRIVE_MOTOR.METERS_TO_TURNS);
-    
+    // driveRequest.Acceleration = units::turns_per_second_squared_t((1 - accelReduction) * DRIVE_PREFERENCES.MAX_ACCEL.value() * SWERVE_PREFERENCE.DRIVE_MOTOR.METERS_TO_TURNS);
     driveMotor.SetControl(driveRequest.WithVelocity(tps));
 }
+
+void SwerveModule::setAccelerationReduction(double reduction) {
+    accelReduction = reduction;
+};
 
 void SwerveModule::stop() {
     turningMotor.Set(0.0);

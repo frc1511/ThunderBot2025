@@ -8,7 +8,8 @@ Robot::Robot() :
 				lastMode(Component::MatchMode::DISABLED),
 				limelight(),
 				drive(nullptr),
-				gamepiece(nullptr),
+				calgae(nullptr),
+				wrist(nullptr),
 				elevator(nullptr),
 				controls(nullptr),
 				auto_(nullptr),
@@ -19,8 +20,10 @@ Robot::Robot() :
 	allComponents.push_back(drive);
 #endif
 #ifdef ENABLE_GAMEPIECE
-	gamepiece = new Gamepiece();
-	allComponents.push_back(gamepiece);
+	calgae = new Calgae();
+	wrist = new Wrist();
+	allComponents.push_back(wrist);
+	allComponents.push_back(calgae);
 #endif
 #ifdef ENABLE_ELEVATOR
 	elevator = new Elevator();
@@ -29,7 +32,9 @@ Robot::Robot() :
 #ifdef ENABLE_AUTO
 	auto_ = new Auto(drive);
 #endif
-	controls = new Controls(drive);
+	gamepiece = new Gamepiece(calgae, wrist, elevator);
+	allComponents.push_back(gamepiece);
+	controls = new Controls(drive, gamepiece, calgae, wrist, elevator);
 }
 
 void Robot::RobotInit() {
@@ -74,7 +79,7 @@ void Robot::TestInit() {
 		component->doPersistentConfiguration();
 	}
 
-	printf("Persistantt config done boi \n");
+	printf("Persistent Configurations Applied \n");
 }
 
 void Robot::TestPeriodic() {

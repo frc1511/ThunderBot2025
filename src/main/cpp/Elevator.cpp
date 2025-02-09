@@ -73,8 +73,16 @@ bool Elevator::getUpperLimit() {
     return !upperLimitSwitch.Get();
 }
 
-double Elevator::getPosition() {
-    return (leftEncoder.GetPosition() + rightEncoder.GetPosition()) / 2;
+Elevator::Preset Elevator::getCurrentPreset() {
+    return targetPreset;
+}
+
+units::turn_t Elevator::getPosition() {
+    return units::turn_t((leftEncoder.GetPosition() + rightEncoder.GetPosition()) / 2);
+}
+
+double getHeightAsPercent() {
+    
 }
 
 void Elevator::goToPreset(Preset target) {
@@ -91,7 +99,7 @@ bool Elevator::atPreset() { //detects if at preset
     if ((units::turn_t)fabs(getPosition()) - Position[targetPreset] < targetTolerance) { // If the diff from our preset is less than our tol, we at the preset
         return true;
     }
-    // if we arent at our preset, we arent at our preset
+    // if we aren't at our preset, we aren't at our preset
     return false;
 }
 
@@ -110,7 +118,7 @@ double Elevator::computeSpeedForPreset() {
     }
 
     units::turn_t position = Position[targetPreset];
-    PIDOutput = PIDController.Calculate((units::turn_t)getPosition(), position);
+    PIDOutput = PIDController.Calculate(getPosition(), position);
     return PIDOutput;
 }
 
