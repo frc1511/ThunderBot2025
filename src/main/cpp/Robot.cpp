@@ -34,7 +34,7 @@ Robot::Robot() :
 #endif
 	gamepiece = new Gamepiece(calgae, wrist, elevator);
 	allComponents.push_back(gamepiece);
-	controls = new Controls(drive, gamepiece, calgae, wrist);
+	controls = new Controls(drive, gamepiece, calgae, wrist, elevator);
 }
 
 void Robot::RobotInit() {

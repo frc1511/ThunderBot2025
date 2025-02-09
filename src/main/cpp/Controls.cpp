@@ -1,15 +1,27 @@
 #include "Controls.h"
 
-Controls::Controls(Drive* drive_, Gamepiece* gamepiece_, Calgae* calgae_, Wrist* wrist_):
+Controls::Controls(Drive* drive_, Gamepiece* gamepiece_, Calgae* calgae_, Wrist* wrist_, Elevator* elevator_):
     drive(drive_),
     calgae(calgae_),
     wrist(wrist_),
+    elevator(elevator_),
     gamepiece(gamepiece_)
 {}
 
 void Controls::process() {
     // MARK: Drive
     if (drive != nullptr) {
+        // Drive limiting based on elevator position
+        double speedReduction = 0;
+        // Percentage from L3 -> NET
+        double elevatorPercent = (elevator->getPosition() - elevator->Position[Elevator::Preset::kL3].value()) / elevator->Position[Elevator::Preset::kNET].value();
+        // Current minus Start interval (Now - Start Limiting Position) to the power of (log change of base, check in calculator, graphed here https://www.desmos.com/calculator/ck22fodlsf)
+        elevatorPercent = pow(elevatorPercent - elevator->Position[Elevator::Preset::kL3].value(),
+                             (log(elevator->Position[Elevator::Preset::kNET].value())/log(elevator->Position[Elevator::Preset::kNET].value()-elevator->Position[Elevator::Preset::kL3].value())));
+        if (elevatorPercent > 0) {
+            speedReduction = elevatorPercent;
+        }
+
         double xPercent = driveController.GetLeftX();
         if (fabs(xPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
             xPercent = 0;

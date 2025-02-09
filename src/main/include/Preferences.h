@@ -91,6 +91,15 @@ static PreferencesSwerve SWERVE_PREFERENCE;
 struct PreferencesControls
 {
     double AXIS_DEADZONE = .2;
+
+    double kGROUND = 0.0; 
+    double kPROCESSOR = 0.0;
+    double kCORAL_STATION = 0.0;
+    double kL1 = 0.0;
+    double kL2 = 0.0;
+    double kL3 = 0.5;
+    double kL4 = 0.5;
+    double kNET = 0.5;
 };
 static PreferencesControls CONTROLS_PREFERENCE;
 

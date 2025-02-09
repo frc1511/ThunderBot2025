@@ -73,8 +73,16 @@ bool Elevator::getUpperLimit() {
     return !upperLimitSwitch.Get();
 }
 
+Elevator::Preset Elevator::getCurrentPreset() {
+    return targetPreset;
+}
+
 double Elevator::getPosition() {
     return (leftEncoder.GetPosition() + rightEncoder.GetPosition()) / 2;
+}
+
+double getHeightAsPercent() {
+    
 }
 
 void Elevator::goToPreset(Preset target) {

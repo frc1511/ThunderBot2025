@@ -10,6 +10,8 @@
 #include <frc/controller/ProfiledPIDController.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
+class Controls;
+
 class Elevator : public Component {
   public:
     void process() override;
@@ -41,11 +43,12 @@ class Elevator : public Component {
     bool atPreset();
     void manualMovement(double speed);
     void setSensorBroken(bool isBroken);
-    
+
+    Preset getCurrentPreset();
   private:
     units::turn_t Position[Preset::_enum_MAX] {
-        0_tr,     // Stopped (Does not move to 0 turns)
-        20_tr, // Ground
+        0_tr,   // Stopped (Does not move to 0 turns)
+        20_tr,  // Ground
         200_tr, // Processor
         350_tr, // Coral Station
         300_tr, // L1
@@ -80,4 +83,5 @@ class Elevator : public Component {
       frc::TrapezoidProfile<units::turn>::Constraints(ELEVATOR_PREFERENCE.PID.MaxVel, ELEVATOR_PREFERENCE.PID.MaxAccel)
     };
     // If Elevator sensor is broken, have code that can do its best without the sensor/stop the robot 
+    friend class Controls;
 };
