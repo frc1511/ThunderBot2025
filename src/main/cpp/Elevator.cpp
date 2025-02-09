@@ -96,7 +96,7 @@ bool Elevator::atPreset() { //detects if at preset
     if (!encoderZeroed) // if we are at the bottom we are not at our preset
         return false;
 
-    if (units::turn_t(fabs(double(getPosition() - Position[targetPreset]))) < targetTolerance) { // If the diff from our preset is less than our tol, we at the preset
+    if ((units::turn_t)fabs(getPosition()) - Position[targetPreset] < targetTolerance) { // If the diff from our preset is less than our tol, we at the preset
         return true;
     }
     // if we aren't at our preset, we aren't at our preset
