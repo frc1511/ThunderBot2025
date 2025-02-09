@@ -14,7 +14,7 @@
 */
 
 // Enable or disable portions of robot during development using these
-#define ENABLE_DRIVE
+// #define ENABLE_DRIVE
 // #define ENABLE_ELEVATOR
 // #define ENABLE_CALGAE
 // Auto requires drive at present

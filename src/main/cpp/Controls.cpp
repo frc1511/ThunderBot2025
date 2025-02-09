@@ -6,7 +6,9 @@ Controls::Controls(Drive* drive_, Gamepiece* gamepiece_, Calgae* calgae_, Wrist*
     wrist(wrist_),
     elevator(elevator_),
     gamepiece(gamepiece_)
-{}
+{
+    sendAlertsTimer.Start();
+}
 
 void Controls::process() {
     // MARK: Drive
@@ -64,6 +66,7 @@ void Controls::process() {
         float finalSpeedReduction = 1 - speedReduction;
         drive->driveFromPercents(yPercent * -finalSpeedReduction, xPercent * finalSpeedReduction, rotPercent * -finalSpeedReduction, flags);
     }
+
     // MARK: Aux
     if (gamepiece != nullptr && auxController.IsConnected()) {
         bool toGround = auxController.GetPOV(180);
@@ -117,5 +120,30 @@ void Controls::process() {
             gamepiece->calgaeAutopilot = false;
             calgae->resetHadGamepiece();
         }
+    }
+}
+
+void Controls::sendFeedback() {
+    static bool driveDisableAlertShown = false;
+    static bool auxDisableAlertShown = false;
+    static bool shouldShowDriveAlert = false;
+    frc::SmartDashboard::PutNumber("Alert Timer", sendAlertsTimer.Get().value());
+    if (!auxDisableAlertShown && (calgae == nullptr || !auxController.IsConnected())) {
+        elastic::SendNotification(auxDisabledAlert);
+        auxDisableAlertShown = true;
+    }
+
+    if (!driveDisableAlertShown && (drive == nullptr || !driveController.IsConnected())) {
+        elastic::SendNotification(driveDisabledAlert);
+        driveDisableAlertShown = true;
+    }
+
+    if (sendAlertsTimer.HasElapsed(0.8_s) && shouldShowDriveAlert) {
+        driveDisableAlertShown = false;
+        shouldShowDriveAlert = false;
+    } else if (sendAlertsTimer.HasElapsed(1.6_s)) {
+        auxDisableAlertShown = false; 
+        shouldShowDriveAlert = true;
+        sendAlertsTimer.Restart();
     }
 }

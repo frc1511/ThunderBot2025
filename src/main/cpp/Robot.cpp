@@ -42,6 +42,7 @@ void Robot::RobotInit() {
 		auto_->autoSelectorInit();
 }
 void Robot::RobotPeriodic() {
+	controls->sendFeedback();
 	for (Component* component : allComponents) {
 	 	component->sendFeedback();
 	}
