@@ -21,7 +21,8 @@ void BlinkyBlinky::process() {
 
     bool overridePatterns = false;
 
-    if (!isDisabled) {
+    // If it's enabled and no "other thing" happened outside of blinkyBlinky that set the current mode (like switchboard led disable)
+    if (!isDisabled && currentMode == Mode::UNSET) {
         // MARK: Triple Flash for GP Intake
         if (gamepiece->hasGamepiece() && !flashFinished) {
             flash(6, 3);
@@ -30,9 +31,23 @@ void BlinkyBlinky::process() {
             flashFinished = false;
         }
 
+        // MARK: NEURALYZE
         if (neuralyze) {
             flash(2, -1);
             overridePatterns = true;
+        }
+
+        if (gamepiece->calgae->hasCoral()) {
+            ledBuffer.fill(LEDData(255, 0, 100));
+            overridePatterns = true;
+        }
+        
+        if (gamepiece->calgae->hasAlgae()) {
+            ledBuffer.fill(LEDData(0, 255, 255));
+            overridePatterns = true;
+        }
+        if (overridePatterns == false) {
+            currentMode = Mode::RAINBOW;
         }
     }
 
@@ -58,6 +73,8 @@ void BlinkyBlinky::process() {
     }
 
     leds.SetData(ledBuffer);
+
+    currentMode = Mode::UNSET;
 }
 
 void BlinkyBlinky::applyPercentOverLeds(std::function<frc::AddressableLED::LEDData(double)> func) {

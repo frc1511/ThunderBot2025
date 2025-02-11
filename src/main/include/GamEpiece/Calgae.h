@@ -44,8 +44,11 @@ class Calgae : public Component {
     void resetHadGamepiece();
 
     bool hasGamepiece();
+    bool hasCoral();
+    bool hasAlgae();
 
     bool atSpeed();
+
 
   private:
     /**

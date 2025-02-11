@@ -37,12 +37,12 @@ class Gamepiece : public Component {
     bool calgaeAutopilot = false;
     bool wristAutopilot = false;
     bool elevatorAutopilot = false;
-  private:
-    std::string targetPresetAsString();
 
     Calgae* calgae;
     Wrist* wrist;
     Elevator* elevator;
+  private:
+    std::string targetPresetAsString();
 
     Preset targetPreset = Preset::kSTOP;
 };

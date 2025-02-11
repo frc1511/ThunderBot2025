@@ -171,6 +171,14 @@ bool Calgae::hasGamepiece() {
     }
 }
 
+bool Calgae::hasCoral() {
+    return currentGamepieceState == Calgae::GamepieceState::kCORAL;
+}
+
+bool Calgae::hasAlgae() {
+    return currentGamepieceState == Calgae::GamepieceState::kALGAE;
+}
+
 std::string Calgae::lastGamepieceStateToString() {
     switch (lastGamepieceState) {
     case GamepieceState::kNONE: return "None";

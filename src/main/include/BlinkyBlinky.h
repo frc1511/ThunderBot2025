@@ -16,6 +16,7 @@ class BlinkyBlinky : public Component {
     void resetToMatchMode(MatchMode priorMode, MatchMode mode);
 
     enum class Mode {
+      UNSET,
       OFF,
       RAINBOW
     };
