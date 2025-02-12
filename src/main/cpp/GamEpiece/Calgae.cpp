@@ -128,7 +128,7 @@ void Calgae::resetHadGamepiece() {
 }
 
 bool Calgae::atSpeed() {
-    return true; // TODO: Implement
+    return true; // TODO: Implement NOTE: This might not be neccessary (or even possible, as interfacing with the motor for PID seems difficult without an encoder, let someone know if otherwise)
 }
 bool Calgae::coralRetroreflectiveTripped() {
     return !coralRetroreflective.Get();

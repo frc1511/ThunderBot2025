@@ -26,7 +26,6 @@ struct PID_t
     }
 };
 
-
 const units::inch_t WHEEL_DISTANCE_FROM_FRAME = 2.625_in;
 
 struct DrivePreferences {
@@ -102,6 +101,8 @@ struct PreferencesControls
     double kL3 = 0.5;
     double kL4 = 0.5;
     double kNET = 0.5;
+
+    static const bool wristEncoderBroken = false;
 };
 static PreferencesControls CONTROLS_PREFERENCE;
 

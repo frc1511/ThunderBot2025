@@ -1,6 +1,7 @@
 #pragma once
 
 #include <frc/XboxController.h> // For Logitech Gamepad F310
+#include <frc/GenericHID.h>
 #include <frc/Timer.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
@@ -19,6 +20,7 @@ class Controls : public Component {
 
     void process();
     void sendFeedback();
+    void utilizeSwitchBoard();
  private:
 
     Drive* drive;
@@ -41,4 +43,5 @@ class Controls : public Component {
 
     frc::XboxController driveController {0};
     frc::XboxController auxController {1};
+    frc::GenericHID switchBoard {2};
 };

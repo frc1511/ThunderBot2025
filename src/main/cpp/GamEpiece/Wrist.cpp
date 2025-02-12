@@ -10,10 +10,11 @@ Wrist::Wrist() {
 }
 
 void Wrist::process() {
-    // TODO: Build in controller override to use encoderBroken
+    if (!encoderBroken) {
     units::degree_t degrees = getEncoderDegrees();
     double speed = PIDController.Calculate(degrees);
     setSpeed(speed);
+    }
 }
 
 void Wrist::doPersistentConfiguration() {}
