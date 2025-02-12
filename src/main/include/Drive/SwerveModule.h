@@ -32,6 +32,8 @@ public:
     void setDriveMotor(units::meters_per_second_t velocity);
     
     void setAccelerationReduction(double reduction);
+
+    void setDriveMotorsNeutralMode(ctre::phoenix6::signals::NeutralModeValue neutralMode);
 private:
 
 

@@ -149,3 +149,14 @@ void Controls::sendFeedback() {
         sendAlertsTimer.Restart();
     }
 }
+
+void Controls::utilizeSwitchBoard() {
+    if (!switchBoard.IsConnected()) {
+        printf("Switch Board Not Connected to port 2\n");
+        return;
+    }
+
+    bool wristMotorBroken = switchBoard.GetRawButton(2);
+
+    wrist->setEncoderBroken(wristMotorBroken);
+}
