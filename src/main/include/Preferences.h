@@ -90,6 +90,7 @@ static PreferencesSwerve SWERVE_PREFERENCE;
 struct PreferencesControls
 {
     double AXIS_DEADZONE = .2;
+
 };
 static PreferencesControls CONTROLS_PREFERENCE;
 
@@ -102,3 +103,14 @@ struct PreferencesElevator {
 };
 
 static PreferencesElevator ELEVATOR_PREFERENCE;
+
+struct PreferencesHang
+{
+    double MAX_POSITION = 1;
+    double MAX_HANG_SPEED_UP = 0.5; // TODO: CHANGE LATER
+    double MAX_HANG_SPEED_DOWN = -0.5;
+    double BACKTRACKING_SPEED = -0.1;
+    double BACKTRACKING_DISTANCE = 1;
+};
+
+static PreferencesHang HANG_PREFERENCE;

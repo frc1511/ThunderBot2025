@@ -33,7 +33,7 @@
 #define CAN_PIGEON 14
 
 
-#define IS_TESTBOARD
+// #define IS_TESTBOARD
 #ifdef IS_TESTBOARD
 
     #define CAN_LEFT_ELEVATOR 3
@@ -53,7 +53,7 @@
 #define CAN_SLOT_17 17
 #define CAN_SLOT_18 18
 #define CAN_SLOT_19 19
-#define CAN_SLOT_20 20
+#define CAN_HANG 20
 #define CAN_SLOT_21 21
 
 #define PWM_SLOT_0 0
@@ -72,13 +72,13 @@
 #define DIO_ELEVATOR_TOP_LIMITSWITCH 1 // 1 on test board
 #define DIO_ELEVATOR_BOTTOM_LIMITSWITCH 2 // 2 on test board
 #define DIO_SLOT_4 4
-#define DIO_SLOT_5 5
-#define DIO_SLOT_6 6
+#define DIO_HANG_SOLENOID_UP 5
+#define DIO_HANG_HUNG 6
 #define DIO_SLOT_7 7
 #define DIO_SLOT_8 8
 #define DIO_SLOT_9 9
 
-#define RELAY_SLOT_0 0
+#define RELAY_HANG 0
 #define RELAY_SLOT_1 1
 #define RELAY_SLOT_2 2
 #define RELAY_SLOT_3 3
