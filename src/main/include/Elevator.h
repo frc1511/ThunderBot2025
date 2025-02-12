@@ -44,6 +44,8 @@ class Elevator : public Component {
     void manualMovement(double speed);
     void setSensorBroken(bool isBroken);
 
+    double getPercentHeight();
+
     Preset getCurrentPreset();
   private:
     units::turn_t Position[Preset::_enum_MAX] {

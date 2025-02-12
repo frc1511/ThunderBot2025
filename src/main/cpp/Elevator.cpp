@@ -73,6 +73,12 @@ bool Elevator::getUpperLimit() {
     return !upperLimitSwitch.Get();
 }
 
+double Elevator::getPercentHeight() {
+    double percentHeight = getPosition()/Position[Preset::kNET];
+    return percentHeight;
+}
+
+
 Elevator::Preset Elevator::getCurrentPreset() {
     return targetPreset;
 }
