@@ -106,9 +106,6 @@ public:
 
     void setAccelerationReduction(double reduction);
 
-    /// TODO: REMOVE
-    wpi::array<SwerveModule*, 4>* getSwerveModules();
-
 private:
     void executeVelocityData();
     void setModuleStates(frc::ChassisSpeeds speeds);

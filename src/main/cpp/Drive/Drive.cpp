@@ -116,10 +116,6 @@ void Drive::doPersistentConfiguration()
     }
 }
 
-wpi::array<SwerveModule*,4>* Drive::getSwerveModules()
-{
-    return &swerveModules;
-}
 void Drive::driveFromPercents(double xPct, double yPct, double rotPct, unsigned flags)
 {
     /**
