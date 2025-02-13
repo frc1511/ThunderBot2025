@@ -111,6 +111,7 @@ struct PreferencesHang
     double MAX_HANG_SPEED_DOWN = -0.5;
     double BACKTRACKING_SPEED = -0.1;
     double BACKTRACKING_DISTANCE = 1;
+    units::second_t DISENGAGE_DURATION = 0.3_s;
 };
 
 static PreferencesHang HANG_PREFERENCE;

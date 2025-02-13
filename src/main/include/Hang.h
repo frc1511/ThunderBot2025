@@ -9,6 +9,7 @@
 #include "Basic/Component.h"
 #include <frc/DigitalInput.h>
 #include <frc/Relay.h>
+#include <frc/Timer.h>
 
 class Hang : public Component {
   public:
@@ -29,13 +30,24 @@ class Hang : public Component {
     enum class SolenoidState {
         UP,
         DOWN,
-        DISENGAGING
     };
 
-
+    enum class SolenoidAction {
+        NONE,
+        KEEP_UP,
+        DISENGAGING,
+        CHECKING_UP_STATE
+    };
   private:
+    void updateRealSolenoidState();
+    void setSolenoidState(SolenoidState state);
+    double getMotorPosition();
+    
     ControlMode currentMode = ControlMode::STOPPED;
-    SolenoidState solenoidState = SolenoidState::DOWN;
+    
+    SolenoidAction solenoidAction = SolenoidAction::NONE;
+    SolenoidState realSolenoidState = SolenoidState::DOWN;
+    SolenoidState desiredSolenoidState = SolenoidState::DOWN;
 
     frc::Relay relay {RELAY_HANG, frc::Relay::Direction::kBothDirections};
 
@@ -45,6 +57,8 @@ class Hang : public Component {
     frc::DigitalInput hangHungSensor {DIO_HANG_HUNG};
 
     double backtrackingStart = 0.0;
+
+    frc::Timer disengageTimer;
 
     void setMotorSpeed(double speed);
 };
