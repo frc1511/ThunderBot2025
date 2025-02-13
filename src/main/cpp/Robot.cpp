@@ -4,28 +4,70 @@
 
 #include "Robot.h"
 
-Robot::Robot() {}
+Robot::Robot() :
+				lastMode(Component::MatchMode::DISABLED),
+				limelight(),
+				drive(nullptr),
+				calgae(nullptr),
+				wrist(nullptr),
+				elevator(nullptr),
+				controls(nullptr),
+				auto_(nullptr),
+				allComponents()
+{
+#ifdef ENABLE_DRIVE
+	drive = new Drive(&limelight);
+	allComponents.push_back(drive);
+#endif
+#ifdef ENABLE_GAMEPIECE
+	calgae = new Calgae();
+	wrist = new Wrist();
+	allComponents.push_back(wrist);
+	allComponents.push_back(calgae);
+#endif
+#ifdef ENABLE_ELEVATOR
+	elevator = new Elevator();
+	allComponents.push_back(elevator);
+#endif
+#ifdef ENABLE_AUTO
+	auto_ = new Auto(drive);
+#endif
+	gamepiece = new Gamepiece(calgae, wrist, elevator);
+	allComponents.push_back(gamepiece);
+#ifdef ENABLE_BLINKY_BLINKY
+	blinkyBlinky = new BlinkyBlinky(gamepiece);
+	allComponents.push_back(blinkyBlinky);
+#endif
+	controls = new Controls(drive, gamepiece, calgae, wrist, elevator, blinkyBlinky);
+}
+
+void Robot::RobotInit() {
+	if (auto_)
+		auto_->autoSelectorInit();
+}
 void Robot::RobotPeriodic() {
-  // AddPeriodic([&] {
-    for (Component* component : allComponents) {
+	controls->sendFeedback();
+	for (Component* component : allComponents) {
 	 	component->sendFeedback();
 	}
-  // }, 20_ms);
 }
 
 void Robot::AutonomousInit() {
     reset(Component::MatchMode::AUTO);
 }
 void Robot::AutonomousPeriodic() {
-	for (Component* component : allComponents) {
+	if (auto_)
+		auto_->process();
+	
+	for (Component* component : allComponents)
 		component->process();
-	}
 }
 
 void Robot::TeleopInit() {
     reset(Component::MatchMode::TELEOP);
 }
 void Robot::TeleopPeriodic() {
+	controls->process();
 	for (Component* component : allComponents) {
 		component->process();
 	}
@@ -34,7 +76,11 @@ void Robot::TeleopPeriodic() {
 void Robot::DisabledInit() {
     reset(Component::MatchMode::DISABLED);
 }
-void Robot::DisabledPeriodic() {}
+void Robot::DisabledPeriodic() {
+	#ifdef ENABLE_BLINKY_BLINKY
+	blinkyBlinky->process();
+	#endif
+}
 
 void Robot::TestInit() {
     reset(Component::MatchMode::TEST);
@@ -42,10 +88,12 @@ void Robot::TestInit() {
 		component->doPersistentConfiguration();
 	}
 
+	printf("Persistent Configurations Applied \n");
 }
+
 void Robot::TestPeriodic() {
 //#define ELEVATOR_TESTING
-#ifdef ELEVATOR_TESTING
+#if defined(ENABLE_ELEVATOR) && defined(ELEVATOR_TESTING)
 	static Elevator::Preset testPresets[] = {
 		Elevator::kGROUND,
 		Elevator::kL4,
@@ -76,8 +124,11 @@ void Robot::SimulationInit() {}
 void Robot::SimulationPeriodic() {}
 
 void Robot::reset(Component::MatchMode mode) {
+	if (auto_)
+		auto_->resetToMatchMode(lastMode, mode);
+	controls->resetToMatchMode(lastMode, mode);
 	for (Component* component : allComponents) {
-		component->callResetToMode(lastMode);
+		component->resetToMatchMode(lastMode, mode);
 	}
 
 	lastMode = mode;

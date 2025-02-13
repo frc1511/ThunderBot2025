@@ -96,9 +96,18 @@
     "variant": "cpp"
   },
   "cSpell.words": [
+    "Blinky",
+    "CALGAE",
+    "dtheta",
     "gamepiece",
+    "gamepieces",
+    "intaking",
+    "neccessary",
+    "neuralyze",
     "Odometry",
+    "REGRAB",
     "Retroreflective",
-    "sooo"
+    "sooo",
+    "TELEOP"
   ]
 }

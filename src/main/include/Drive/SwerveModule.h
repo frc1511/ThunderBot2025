@@ -14,7 +14,7 @@
 #include "Basic/Component.h"
 #include "Preferences.h"
 
-class SwerveModule : public Component {
+class SwerveModule {
 public:
     SwerveModule(int driveID, int turningID, int canCoderID, units::degree_t offset);
     void doPersistentConfiguration();
@@ -29,9 +29,13 @@ public:
 
     void stop();
     void setTurningMotor(units::radian_t angle);
+    void setDriveMotor(units::meters_per_second_t velocity);
+    
+    void setAccelerationReduction(double reduction);
+
+    void setDriveMotorsNeutralMode(ctre::phoenix6::signals::NeutralModeValue neutralMode);
 private:
 
-    void setDriveMotor(units::meters_per_second_t velocity);
 
     units::radian_t getRawCANcoderRotation();
     units::radian_t getCANcoderRotation();
@@ -55,4 +59,6 @@ private:
     
     ctre::phoenix6::controls::PositionVoltage turnRequest;
     ctre::phoenix6::controls::VelocityVoltage driveRequest;
+
+    double accelReduction = 0;
 };
