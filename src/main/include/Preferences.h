@@ -103,6 +103,7 @@ struct PreferencesControls
     double kNET = 0.5;
 
     static const bool wristEncoderBroken = false;
+
 };
 static PreferencesControls CONTROLS_PREFERENCE;
 
@@ -151,3 +152,15 @@ struct PreferencesBlinkyBlinky
     size_t LED_TOTAL = BLINKY_BLINKY_LED_TOTAL;
 };
 static PreferencesBlinkyBlinky BLINKY_BLINKY_PREFERENCE;
+
+struct PreferencesHang
+{
+    double MAX_POSITION = 1;
+    double MAX_HANG_SPEED_UP = 0.5; // TODO: CHANGE LATER
+    double MAX_HANG_SPEED_DOWN = -0.5;
+    double BACKTRACKING_SPEED = -0.1;
+    double BACKTRACKING_DISTANCE = 1;
+    units::second_t DISENGAGE_DURATION = 0.3_s;
+};
+
+static PreferencesHang HANG_PREFERENCE;
