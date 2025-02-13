@@ -1,12 +1,13 @@
 #include "Controls.h"
 
-Controls::Controls(Drive* drive_, Gamepiece* gamepiece_, Calgae* calgae_, Wrist* wrist_, Elevator* elevator_, BlinkyBlinky* blinkyBlinky_):
+Controls::Controls(Drive* drive_, Gamepiece* gamepiece_, Calgae* calgae_, Wrist* wrist_, Elevator* elevator_, BlinkyBlinky* blinkyBlinky_, Hang* hang_):
     drive(drive_),
     calgae(calgae_),
     wrist(wrist_),
     elevator(elevator_),
     gamepiece(gamepiece_),
-    blinkyBlinky(blinkyBlinky_)
+    blinkyBlinky(blinkyBlinky_),
+    hang(hang_)
 {
     sendAlertsTimer.Start();
 }
@@ -121,6 +122,20 @@ void Controls::process() {
         if (resetHadGamepiece) {
             gamepiece->calgaeAutopilot = false;
             calgae->resetHadGamepiece();
+        }
+    }
+
+    if (hang != nullptr && auxController.IsConnected()) {
+        double hangPercent = auxController.GetLeftY();
+        if (fabs(hangPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE) {
+            hangPercent = 0;
+            hang->setControlMode(Hang::ControlMode::STOPPED);
+        }
+
+        if (hangPercent > 0) {
+            hang->setControlMode(Hang::ControlMode::GOING_UP);
+        } else if (hangPercent < 0) {
+            hang->setControlMode(Hang::ControlMode::GOING_DOWN);
         }
     }
 }

@@ -13,6 +13,7 @@ Robot::Robot() :
 				elevator(nullptr),
 				controls(nullptr),
 				auto_(nullptr),
+				hang(nullptr),
 				allComponents()
 {
 #ifdef ENABLE_DRIVE
@@ -32,13 +33,16 @@ Robot::Robot() :
 #ifdef ENABLE_AUTO
 	auto_ = new Auto(drive);
 #endif
+#ifdef ENABLE_HANG
+	hang = new Hang(hang);
+#endif
 	gamepiece = new Gamepiece(calgae, wrist, elevator);
 	allComponents.push_back(gamepiece);
 #ifdef ENABLE_BLINKY_BLINKY
 	blinkyBlinky = new BlinkyBlinky(gamepiece);
 	allComponents.push_back(blinkyBlinky);
 #endif
-	controls = new Controls(drive, gamepiece, calgae, wrist, elevator, blinkyBlinky);
+	controls = new Controls(drive, gamepiece, calgae, wrist, elevator, blinkyBlinky, hang);
 }
 
 void Robot::RobotInit() {
