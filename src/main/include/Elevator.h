@@ -20,11 +20,11 @@ class Elevator : public Component {
     void doPersistentConfiguration() override;
     void sendFeedback() override;
 
+    bool getLowerLimit();
+    bool getUpperLimit();
   private:
     bool atMaxHeight();
     bool atMinHeight();
-    bool getLowerLimit();
-    bool getUpperLimit();
   public:
     enum Preset { //need measurements for the height of these sections, RN we have guesstimates with no units. ~G
         kSTOP,

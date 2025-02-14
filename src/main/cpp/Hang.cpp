@@ -1,7 +1,6 @@
 #include "Hang.h"
 
-Hang::Hang()
-: encoder(motor.GetEncoder()) {}
+void Hang() {}
 
 void Hang::process() {
     updateRealSolenoidState();

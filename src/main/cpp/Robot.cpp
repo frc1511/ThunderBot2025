@@ -35,7 +35,7 @@ Robot::Robot() :
 	gamepiece = new Gamepiece(calgae, wrist, elevator);
 	allComponents.push_back(gamepiece);
 #ifdef ENABLE_BLINKY_BLINKY
-	blinkyBlinky = new BlinkyBlinky(gamepiece);
+	blinkyBlinky = new BlinkyBlinky(gamepiece, nullptr); // TODO: Don't forget this! 🚀
 	allComponents.push_back(blinkyBlinky);
 #endif
 	controls = new Controls(drive, gamepiece, calgae, wrist, elevator, blinkyBlinky);

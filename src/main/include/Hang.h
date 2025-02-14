@@ -2,11 +2,11 @@
 
 #include "Basic/IOMap.h"
 #include "Preferences.h"
+#include "Basic/Component.h"
 
 #include <rev/config/SparkMaxConfig.h>
 #include <rev/SparkMax.h>
 #include <rev/SparkRelativeEncoder.h>
-#include "Basic/Component.h"
 #include <frc/DigitalInput.h>
 #include <frc/Relay.h>
 #include <frc/Timer.h>
@@ -52,7 +52,7 @@ class Hang : public Component {
     frc::Relay relay {RELAY_HANG, frc::Relay::Direction::kBothDirections};
 
     rev::spark::SparkMax motor {CAN_HANG, rev::spark::SparkLowLevel::MotorType::kBrushless};
-    rev::spark::SparkRelativeEncoder encoder;
+    rev::spark::SparkRelativeEncoder encoder {motor.GetEncoder()};
     frc::DigitalInput solenoidUpSensor {DIO_HANG_SOLENOID_UP};
     frc::DigitalInput hangHungSensor {DIO_HANG_HUNG};
 

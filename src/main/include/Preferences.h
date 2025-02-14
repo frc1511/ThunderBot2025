@@ -146,10 +146,18 @@ struct PreferencesTrajectory
 static PreferencesTrajectory TRAJECTORY_PREFERENCE;
 
 // #define for array, it won't accept the preferences value
-#define BLINKY_BLINKY_LED_TOTAL 24
+#define BLINKY_BLINKY_LED_TOTAL 42
+#define BLINKY_BLINKY_LED_SIDE_TOTAL 19
+#define BLINKY_BLINKY_LED_STATUS_TOTAL 4
 struct PreferencesBlinkyBlinky
 {
     size_t LED_TOTAL = BLINKY_BLINKY_LED_TOTAL;
+    size_t LED_SIDE_STRIP_TOTAL = BLINKY_BLINKY_LED_SIDE_TOTAL;
+    size_t LED_STATUS_STRIP_TOTAL = BLINKY_BLINKY_LED_STATUS_TOTAL;
+    int CAGE_STATUS_ID = 0; // This does not mean the first LED, this is the first LED in the status bar
+    int ELEVATOR_STATUS_ID = 1;
+    int CORAL_STATUS_ID = 2;
+    int ALGAE_STATUS_ID = 3;
 };
 static PreferencesBlinkyBlinky BLINKY_BLINKY_PREFERENCE;
 
