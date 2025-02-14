@@ -54,6 +54,7 @@ void Robot::RobotPeriodic() {
 
 void Robot::AutonomousInit() {
     reset(Component::MatchMode::AUTO);
+	Alert::sendAlerts();
 }
 void Robot::AutonomousPeriodic() {
 	if (auto_)
@@ -65,6 +66,7 @@ void Robot::AutonomousPeriodic() {
 
 void Robot::TeleopInit() {
     reset(Component::MatchMode::TELEOP);
+	Alert::sendAlerts();
 }
 void Robot::TeleopPeriodic() {
 	controls->process();

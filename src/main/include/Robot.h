@@ -15,7 +15,7 @@
 #include "GamEpiece/Wrist.h"
 #include "Elevator.h"
 #include "BlinkyBlinky.h"
-
+#include "Alerts.h"
 
 class Robot : public frc::TimedRobot {
   public:
