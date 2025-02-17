@@ -23,19 +23,6 @@ void BlinkyBlinky::process() {
     bool overridePatterns = false;
     // If it's enabled and no "other thing" happened outside of blinkyBlinky that set the current mode (like switchboard led disable)
     if (!isDisabled && currentMode == Mode::UNSET) {
-        // MARK: Triple Flash for GP Intake
-        if (gamepiece->hasGamepiece() && !flashFinished) {
-            flash(6, 3);
-            overridePatterns = true;
-        } else if (!gamepiece->hasGamepiece()) {
-            flashFinished = false;
-        }
-
-        // MARK: NEURALYZE
-        if (neuralyze) {
-            flash(2, -1);
-            overridePatterns = true;
-        }
         if (gamepiece->elevator != nullptr) {
             // Elevator Sides
             if (!gamepiece->elevator->atPreset() && gamepiece->elevator->getCurrentPreset() != Elevator::Preset::kSTOP) {
@@ -66,9 +53,11 @@ void BlinkyBlinky::process() {
 
         if (gamepiece->calgae != nullptr) {
             if (gamepiece->calgae->hasCoral()) {
-                sideBuffer.fill(LEDData(250, 0, 220));                                              // Pink
                 statusBuffer[BLINKY_BLINKY_PREFERENCE.CORAL_STATUS_ID] = LEDData(0, 255, 0);        // Green
-                overridePatterns = true;
+                if (!overridePatterns) { // Something else is not already overriding
+                    sideBuffer.fill(LEDData(250, 0, 220));                                          // Pink
+                    overridePatterns = true;
+                }
             } else {
                 statusBuffer[BLINKY_BLINKY_PREFERENCE.CORAL_STATUS_ID] = LEDData(255, 0, 0);        // Red
             }
@@ -91,8 +80,22 @@ void BlinkyBlinky::process() {
                 statusBuffer[BLINKY_BLINKY_PREFERENCE.CAGE_STATUS_ID] = LEDData(255, 0, 0);         // Red
             } else {
                 statusBuffer[BLINKY_BLINKY_PREFERENCE.CAGE_STATUS_ID] = LEDData(0, 0, 255);         // Blue
+            }
         }
-    }
+
+        // MARK: Triple Flash for GP Intake
+        if (gamepiece->hasGamepiece() && !flashFinished) {
+            flash(6, 3);
+            overridePatterns = true;
+        } else if (!gamepiece->hasGamepiece()) {
+            flashFinished = false;
+        }
+
+        // MARK: NEURALYZE
+        if (neuralyze) {
+            flash(2, -1);
+            overridePatterns = true;
+        }
 
         if (overridePatterns == false) {
             currentMode = Mode::RAINBOW;
