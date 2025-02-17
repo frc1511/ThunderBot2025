@@ -148,7 +148,9 @@ void Controls::utilizeSwitchBoard() {
         return;
     }
 
-    bool wristMotorBroken = switchBoard.GetRawButton(2);
+    bool disableLimelight = switchBoard.GetRawButton(1);
+    limelight->setFunctioningState(disableLimelight);
 
+    bool wristMotorBroken = switchBoard.GetRawButton(2);
     wrist->setEncoderBroken(wristMotorBroken);
 }

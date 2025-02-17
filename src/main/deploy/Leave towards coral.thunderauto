@@ -1,0 +1,171 @@
+{
+  "settings": {
+    "auto_export": true,
+    "auto_save": false,
+    "drive_ctrl": 0,
+    "field": {
+      "img": "2025",
+      "img_type": 1
+    },
+    "robot_length": 0.8064500093460083,
+    "robot_width": 0.7111999988555908
+  },
+  "state": {
+    "actions": [],
+    "paths": [
+      [
+        "GoToCoralStation1",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 4.726230144500732,
+              "h1": 1.5846375226974487,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 3.1415927410125732,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 3.6322710514068604,
+              "x": 7.576943397521973,
+              "y": 4.409300327301025
+            },
+            {
+              "actions": 0,
+              "h0": 0.10795746743679047,
+              "h1": 3.2495501041412354,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 2.2165682315826416,
+              "stop": false,
+              "w0": 0.556000828742981,
+              "w1": 0.5,
+              "x": 1.1773544549942017,
+              "y": 7.112645626068115
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "GoToCoralStation2",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 1.5711827278137207,
+              "h1": 4.712775707244873,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 3.1415927410125732,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 3.667299747467041,
+              "x": 7.555131435394287,
+              "y": 3.66583251953125
+            },
+            {
+              "actions": 0,
+              "h0": 6.150304794311523,
+              "h1": 3.0087122917175293,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 4.066617012023926,
+              "stop": false,
+              "w0": 0.4521730840206146,
+              "w1": 0.5,
+              "x": 1.2669918537139893,
+              "y": 1.001997470855713
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "CoralFromReefLeft",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 5.1157941818237305,
+              "h1": 1.9742013216018677,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 4.188790321350098,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 1.37874436378479,
+              "x": 5.103957176208496,
+              "y": 5.105899810791016
+            },
+            {
+              "actions": 0,
+              "h0": 5.357885837554932,
+              "h1": 2.2162928581237793,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 2.181661605834961,
+              "stop": false,
+              "w0": 0.9323592782020569,
+              "w1": 1.0,
+              "x": 1.1922941207885742,
+              "y": 7.112645626068115
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "new_path",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 3.1415927410125732,
+              "h1": 0.0,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 1.0,
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "actions": 0,
+              "h0": 3.1415927410125732,
+              "h1": 0.0,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 1.0,
+              "x": 5.0,
+              "y": 0.0
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ]
+    ],
+    "waypoint_links": []
+  }
+}

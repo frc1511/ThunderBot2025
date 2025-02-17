@@ -32,6 +32,7 @@ class Controls : public Component {
     Gamepiece* gamepiece;
     BlinkyBlinky* blinkyBlinky;
     Hang* hang;
+    Limelight* limelight;
 
     frc::XboxController driveController {0};
     frc::XboxController auxController {1};

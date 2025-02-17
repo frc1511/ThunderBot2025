@@ -70,11 +70,27 @@ double Parser::parseNumber(Iter& currIter, Iter endIter) {
 
   bool do_more = *currIter == '.' || *currIter == 'e';
   
-  if (currIter == endIter || !do_more) {
-    return std::stoi(intStr) * sign;
+  try
+  {
+    if (currIter == endIter || !do_more) {
+      return std::stoi(intStr) * sign;
+    }
+  }
+  catch(const std::exception& e)
+  {
+    printf("Error line 76: %s \n", e.what());
+  }
+  
+  double num = 0;
+  try
+  {
+    num = std::stoi(intStr);
+  }
+  catch(const std::exception& e)
+  {
+    printf("Error line 87: %s \n", e.what());
   }
 
-  double num = std::stoi(intStr);
 
   // Parse the decimal part.
   if (*currIter == '.') {

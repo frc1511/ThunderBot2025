@@ -1,23 +1,19 @@
 #pragma once
 
 #include "LimelightHelpers.h"
-#include "Basic/Component.h"
+#include "Preferences.h"
 
 #include <frc/DriverStation.h>
 #include <units/Time.h>
 
-class Limelight : public Component {
+class Limelight{
   public:
-    Limelight();
-    ~Limelight();
+    std::pair<bool, LimelightHelpers::PoseEstimate> getEstimatedBotPose();
 
-    void process();
-    void doPersistentConfiguration();
-    void resetToMatchMode(MatchMode mode);
-    void sendFeedback();
-
-    LimelightHelpers::PoseEstimate getEstimatedBotPose();
+    void setFunctioningState(bool isFunctioning_);
   private:
     LimelightHelpers::PoseEstimate limelightMeasurement;
     frc::DriverStation::Alliance allianceColor = frc::DriverStation::GetAlliance().value();
+    
+    bool isFunctioning = true;
 };

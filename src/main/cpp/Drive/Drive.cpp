@@ -298,7 +298,7 @@ frc::Pose2d Drive::getEstimatedPose() {
 
 frc::Rotation2d Drive::getRotation() {
     // The raw rotation from the IMU.
-    return frc::Rotation2d(-pigeon.GetYaw().GetValue());
+    return frc::Rotation2d(pigeon.GetYaw().GetValue());
 }
 
 void Drive::resetPIDControllers() {
@@ -322,12 +322,18 @@ void Drive::updateOdometry() {
 
     LimelightHelpers::SetRobotOrientation("", poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0);
 
-    LimelightHelpers::PoseEstimate limelightMeasurement = limelight->getEstimatedBotPose();
+    std::pair<bool, LimelightHelpers::PoseEstimate> limelightResult = limelight->getEstimatedBotPose();
 
-    poseEstimator.SetVisionMeasurementStdDevs({0.7, 0.7, 9999999.0});
+    bool limelightReliable = limelightResult.first;
+    LimelightHelpers::PoseEstimate mt1 = limelightResult.second;
+
+    frc::SmartDashboard::PutBoolean("limelight reliable", limelightReliable);
+
+    if (!limelightReliable) return;
+    poseEstimator.SetVisionMeasurementStdDevs({0.3, 0.3, 0.3});
     poseEstimator.AddVisionMeasurement(
-        limelightMeasurement.pose,
-        limelightMeasurement.timestampSeconds
+        mt1.pose,
+        mt1.timestampSeconds
     );
 }
 
@@ -387,49 +393,46 @@ void Drive::setAccelerationReduction(double reduction) {
 void Drive::execTrajectory() {
     units::second_t time(trajectoryTimer.Get());
 
-    int actionRes = 0;
-    bool execAction = false;
+    bool actionExecuting = false;
+    bool actionExecuted = false;
 
     // If we've got another action to go.
-    // if (trajectoryActionIter != trajectory->getActions().cend()) {
-    //     const auto& [action_time, actions] = *trajectoryActionIter;
-
-    //     // Check if it's time to execute the action.
-    //     if (time >= action_time) {
-    //         execAction = true;
-
-    //         // Loop through the available actions.
-    //         for (auto it(trajectoryActions->cbegin()); it != trajectoryActions->cend(); ++it) {
-    //             const auto& [id, action] = *it;
-
-    //             // Narrow the list down to only actions that have not been completed yet.
-    //             if (std::find(doneTrajectoryActions.cbegin(), doneTrajectoryActions.cend(), id) == doneTrajectoryActions.cend()) {
-    //                 // If the action's bit is set in the bit field.
-    //                 if (actions & id) {
-    //                     // Execute the action.
-    //                     Action::Result res = action->process();
-
-    //                     // If the action has completed.
-    //                     if (res == Action::Result::DONE) {
-    //                         // Remember that it's done.
-    //                         doneTrajectoryActions.push_back(id);
-    //                     }
-
-    //                     actionRes += res;
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
+    if (trajectoryActionIter != trajectory->getActions().cend()) {
+        const auto& [action_time, actions] = *trajectoryActionIter;
+        // Check if it's time to execute the action.
+        if (time >= action_time) {
+            actionExecuted = true;
+            // Loop through the available actions.
+            for (auto it(trajectoryActions->cbegin()); it != trajectoryActions->cend(); ++it) {
+                const auto& [id, action] = *it;
+                // Narrow the list down to only actions that have not been completed yet.
+                if (std::find(doneTrajectoryActions.cbegin(), doneTrajectoryActions.cend(), id) == doneTrajectoryActions.cend()) {
+                    // If the action's bit is set in the bit field.
+                    if (actions & id) {
+                        // Execute the action.
+                        Action::Result res = action->process();
+                        // If the action has completed.
+                        if (res == Action::Result::DONE) {
+                            // Remember that it's done.
+                            doneTrajectoryActions.push_back(id);
+                        }
+                        
+                        if (!actionExecuting)
+                            actionExecuting = res == Action::Result::WORKING;
+                    }
+                }
+            }
+        }
+    }
 
     // Stop the trajectory because an action is still running.
-    if (actionRes) {
+    if (actionExecuting) {
         trajectoryTimer.Stop();
     }
     // Continue/Resume the trajectory because the actions are done.
     else {
         // Increment the action if an action was just finished.
-        if (execAction) {
+        if (actionExecuted) {
             ++trajectoryActionIter;
             doneTrajectoryActions.clear();
         }
@@ -446,7 +449,7 @@ void Drive::execTrajectory() {
     CSVTrajectory::State state(trajectory->sample(time));
 
     // Don't be moving if an action is being worked on.
-    if (actionRes) {
+    if (actionExecuting) {
         state.velocity = 0_mps;
     }
 
@@ -483,8 +486,6 @@ void Drive::execTrajectory() {
             state.pose.Rotation()
         )
     );
-    
-    velocities.omega *= -1;
 
     trajectoryField.SetRobotPose(state.pose);
 

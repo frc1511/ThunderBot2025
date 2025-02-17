@@ -1,39 +1,145 @@
 #include "Auto/Auto.h"
 
-Auto::Auto(Drive* drive)
-    : drive(drive) {
-
+Auto::Auto(Drive *drive_, Limelight *limelight_)
+    : drive(drive_),
+      limelight(limelight_) {
 }
 void Auto::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
     if (mode == MatchMode::AUTO) {
         step = 0;
         drive->calibrateIMU();
+            /// Separate Red and Blue paths are not required
+        if (auto ally = frc::DriverStation::GetAlliance())
+        {
+            if (ally.value() == frc::DriverStation::Alliance::kRed)
+            {
+                printf("Red Alliance\n");
+                paths = &redPaths;    
+            }
+            if (ally.value() == frc::DriverStation::Alliance::kBlue)
+            {
+                printf("Blue Alliance\n");
+                paths = &bluePaths;    
+            }
+        }
+        else
+        {
+            printf("No alliance selected\n");
+        }
     }
 }
 void Auto::process() { //called during auto
-    /// Seperate Red and Blue paths are not required
-    if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
-        paths = &redPaths;
-    }
-    else {
-        paths = &bluePaths;
-    }
-
     switch (mode) { //find what auto mode you are using and do it
         using enum AutoMode;
         case DO_NOTHING:
             doNothing();
             break;
-        case TEST:
+        case _TEST:
             test();
+            break;
+        case _SQUARE:
+            square();
+            break;
+        case LEAVE:
+            leave();
+            break;
+        case LEAVE_GO_TO_LEFT_CORAL:
+            leaveLeftCoral();
+            break;
+        case LEAVE_GO_TO_RIGHT_CORAL:
+            leaveRightCoral();
+            break;
+        case L1Center:
+            L1CoralCenter();
+            break;
+        case L1Left:
+            L1CoralLeft();
+            break;
+        case L1Right:
+            L1CoralRight();
             break;
     }
 }
 
-void Auto::test() { //test auto, leave, grab a note, and shoot
+void Auto::test() {
     if (step == 0) {
-        drive->setupInitialTrajectoryPosition(&paths->at(Path::TEST));
-        drive->runTrajectory(&paths->at(Path::TEST), actions);
+        drive->setupInitialTrajectoryPosition(&paths->at(Path::_TEST));
+        drive->runTrajectory(&paths->at(Path::_TEST), actions);
+        step++;
+    } else if (step == 1 && drive->isFinished()) {
+        printf("Finished Drive!\n");
+        step++;
+    }
+}
+
+void Auto::leave() {
+    limelight->setFunctioningState(false);
+    if (step == 0) {
+        drive->setupInitialTrajectoryPosition(&paths->at(Path::LEAVE));
+        drive->runTrajectory(&paths->at(Path::LEAVE), actions);
+        step++;
+    } else if (step == 1 && drive->isFinished()) {
+        printf("Finished Drive!\n");
+        step++;
+    }
+}
+
+void Auto::leaveLeftCoral() {
+    if (step == 0) {
+        drive->setupInitialTrajectoryPosition(&paths->at(Path::LEAVE_GO_TO_LEFT_CORAL));
+        drive->runTrajectory(&paths->at(Path::LEAVE_GO_TO_LEFT_CORAL), actions);
+        step++;
+    } else if (step == 1 && drive->isFinished()) {
+        printf("Finished Drive!\n");
+        step++;
+    }
+}
+
+void Auto::leaveRightCoral() {
+    if (step == 0) {
+        drive->setupInitialTrajectoryPosition(&paths->at(Path::LEAVE_GO_TO_RIGHT_CORAL));
+        drive->runTrajectory(&paths->at(Path::LEAVE_GO_TO_RIGHT_CORAL), actions);
+        step++;
+    } else if (step == 1 && drive->isFinished()) {
+        printf("Finished Drive!\n");
+        step++;
+    }
+}
+
+void Auto::L1CoralCenter() {
+    if (step == 0) {
+        drive->setupInitialTrajectoryPosition(&paths->at(Path::L1Center));
+        drive->runTrajectory(&paths->at(Path::L1Center), actions);
+        step++;
+    } else if (step == 1 && drive->isFinished()) {
+        step++;
+    }
+}
+
+void Auto::L1CoralLeft() {
+    if (step == 0) {
+        drive->setupInitialTrajectoryPosition(&paths->at(Path::L1Left));
+        drive->runTrajectory(&paths->at(Path::L1Left), actions);
+        step++;
+    } else if (step == 1 && drive->isFinished()) {
+        step++;
+    }
+}
+
+void Auto::L1CoralRight() {
+    if (step == 0) {
+        drive->setupInitialTrajectoryPosition(&paths->at(Path::L1Right));
+        drive->runTrajectory(&paths->at(Path::L1Right), actions);
+        step++;
+    } else if (step == 1 && drive->isFinished()) {
+        step++;
+    }
+}
+
+void Auto::square() {
+    if (step == 0) {
+        drive->setupInitialTrajectoryPosition(&paths->at(Path::_SQUARE));
+        drive->runTrajectory(&paths->at(Path::_SQUARE), actions);
         step++;
     } else if (step == 1 && drive->isFinished()) {
         printf("Finished Drive!\n");
@@ -49,6 +155,7 @@ void Auto::doNothing() {
         //I still disagree with ishan - peter(2023)
         //it does something because this function exists and can be called as an action for the robot - ben d(2024)
         //also for just this year we made it do stuff - also ben d(2024)
+        //Very necessary function! ~Gracie
 
     // Good function.
     // Very good function. - jeff downs
@@ -59,8 +166,11 @@ void Auto::doNothing() {
 }
 
 void Auto::autoSelectorInit() {
+    for (auto i : autoModeNames) {
+        autoSelector.AddOption(i.second, (int)i.first);
+    }
+
     autoSelector.SetDefaultOption("Do Nothing", (int)AutoMode::DO_NOTHING);
-    autoSelector.SetDefaultOption("TEST",       (int)AutoMode::TEST);
 }
 
 void Auto::sendFeedback() {
