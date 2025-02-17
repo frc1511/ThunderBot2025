@@ -87,6 +87,10 @@ bool Hang::isSolenoidUp() {
     return solenoidUpSensor.Get();
 }
 
+void Hang::setControlMode(ControlMode controlMode) {    
+    currentMode = controlMode;
+}
+
 void Hang::updateRealSolenoidState() {
     if (isSolenoidUp()) {
         realSolenoidState = SolenoidState::UP;

@@ -11,13 +11,14 @@
 #include "GamEpiece/Wrist.h"
 #include "Elevator.h"
 #include "GamEpiece/Gamepiece.h"
-#include "Libraries/elasticlib.h"
 #include "BlinkyBlinky.h"
+#include "Hang.h"
+#include "Libraries/elasticlib.h"
 #include "Alerts.h"
 
 class Controls : public Component {
   public:
-    Controls(Drive* drive_, Gamepiece* gamepiece_, Calgae* calgae_, Wrist* wrist_, Elevator* elevator_, BlinkyBlinky* blinkyBlinky_);
+    Controls(Drive* drive_, Gamepiece* gamepiece_, Calgae* calgae_, Wrist* wrist_, Elevator* elevator_, BlinkyBlinky* blinkyBlinky_, Hang* hang_);
 
     void process();
     void sendFeedback();
@@ -30,6 +31,7 @@ class Controls : public Component {
     Elevator* elevator;
     Gamepiece* gamepiece;
     BlinkyBlinky* blinkyBlinky;
+    Hang* hang;
 
     frc::XboxController driveController {0};
     frc::XboxController auxController {1};

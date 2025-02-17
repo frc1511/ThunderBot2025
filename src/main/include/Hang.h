@@ -38,6 +38,9 @@ class Hang : public Component {
         DISENGAGING,
         CHECKING_UP_STATE
     };
+
+  void setControlMode(ControlMode controlMode);
+
   private:
     void updateRealSolenoidState();
     void setSolenoidState(SolenoidState state);
