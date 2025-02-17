@@ -1,5 +1,5 @@
 #pragma once
-// Last Update: 1/12/2025 - 1:31 PM
+// Last Update: 1/17/2025 - 15:52 PM
 // https://wiki.penfieldrobotics.com/wiki/index.php?title=2025:Robot_IO_Map
 
 
@@ -48,14 +48,6 @@
 #define CAN_SWERVE_CANCODER_BL 12
 
 #define CAN_PIGEON 14
-#define CAN_SHOOTER_RIGHT 17
-
-#define CAN_PIVOT_ARM 18
-#define CAN_PIVOT_ARM_BRAKE 19
-
-#define CAN_HANG_ARM_RIGHT 20
-#define CAN_HANG_ARM_LEFT 21
-
 
 #ifdef IS_TESTBOARD
 
@@ -64,15 +56,15 @@
 
 #else
 
-    #define CAN_LEFT_ELEVATOR 16
     #define CAN_RIGHT_ELEVATOR 15
+    #define CAN_LEFT_ELEVATOR 16
 
 #endif
 
-#define CAN_SLOT_17 17
+#define CAN_HANG    17
 #define CAN_SLOT_18 18
 #define CAN_SLOT_19 19
-#define CAN_HANG    20
+#define CAN_SLOT_20 20
 #define CAN_SLOT_21 21
 
 #define PWM_CALGAE 0
