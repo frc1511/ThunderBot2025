@@ -10,10 +10,13 @@
 #include "Drive/Drive.h"
 #include "Auto/Auto.h"
 #include "Controls.h"
+#include "GamEpiece/Gamepiece.h"
 #include "GamEpiece/Calgae.h"
 #include "GamEpiece/Wrist.h"
 #include "Elevator.h"
-
+#include "BlinkyBlinky.h"
+#include "Hang.h"
+#include "Alerts.h"
 
 class Robot : public frc::TimedRobot {
   public:
@@ -47,6 +50,9 @@ class Robot : public frc::TimedRobot {
 	Elevator *elevator;
 	Controls *controls;
 	Auto *auto_;
+	Gamepiece* gamepiece;
+	BlinkyBlinky* blinkyBlinky;
+	Hang* hang;
 
 	std::vector<Component*> allComponents; 
 };

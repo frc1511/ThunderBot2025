@@ -104,8 +104,7 @@ public:
 
     void setupInitialTrajectoryPosition(const CSVTrajectory* trajectory);
 
-    /// TODO: REMOVE
-    wpi::array<SwerveModule*, 4>* getSwerveModules();
+    void setAccelerationReduction(double reduction);
 
 private:
     void executeVelocityData();

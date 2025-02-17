@@ -12,31 +12,40 @@
 
 class Wrist : public Component {
   public:
+    Wrist();
+
     void process();
 
     void doPersistentConfiguration();
 
     void sendFeedback();
 
-  private:
     enum Preset {
-        kLOWEST,
+        kGROUND,
         kSTATION,
         kTROUGH,
         kBRANCH2_3,
         kBRANCH4,
-        kHIGHEST,
+        kPROCESSOR,
         _enum_MAX
     };
-    Preset currentPreset = Preset::kLOWEST;
+
+    void toPreset(Preset preset);
+
+    bool atPreset();
+
+    void setEncoderBroken(bool isBroken);
+
+  private:
+    Preset currentPreset = Preset::kGROUND;
 
     units::degree_t Positions[Preset::_enum_MAX] = {
-        0_deg,   // Lowest position
+        0_deg,   // Ground
         35_deg,  // Station
         35_deg,  // Trough
         55_deg,  // Branch 2 & 3
         75_deg,  // Branch 4
-        100_deg  // Highest position
+        0_deg,   // Processor
     };
 
     double getRawEncoder();
@@ -52,6 +61,7 @@ class Wrist : public Component {
     frc::PWM motor {PWM_WRIST}; // The wrist motor
 
     frc::DutyCycleEncoder encoder {DIO_WRIST_ENCODER}; // The through bore encoder
+    bool encoderBroken = false;
 
     frc::ProfiledPIDController<units::degrees> PIDController {
         WRIST_PREFERENCE.PID.Kp, WRIST_PREFERENCE.PID.Ki, WRIST_PREFERENCE.PID.Kd,

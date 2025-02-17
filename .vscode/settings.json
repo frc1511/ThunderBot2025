@@ -93,14 +93,18 @@
     "typeindex": "cpp",
     "typeinfo": "cpp",
     "valarray": "cpp",
-    "variant": "cpp"
+    "variant": "cpp",
+    "*.inc": "cpp"
   },
   "cSpell.words": [
+    "Blinky",
     "CALGAE",
     "dtheta",
     "gamepiece",
     "gamepieces",
     "intaking",
+    "neccessary",
+    "neuralyze",
     "Odometry",
     "REGRAB",
     "Retroreflective",

@@ -10,6 +10,8 @@
 #include <frc/controller/ProfiledPIDController.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
+class Controls;
+
 class Elevator : public Component {
   public:
     void process() override;
@@ -18,39 +20,44 @@ class Elevator : public Component {
     void doPersistentConfiguration() override;
     void sendFeedback() override;
 
+    bool getLowerLimit();
+    bool getUpperLimit();
   private:
     bool atMaxHeight();
     bool atMinHeight();
-    bool getLowerLimit();
-    bool getUpperLimit();
   public:
     enum Preset { //need measurements for the height of these sections, RN we have guesstimates with no units. ~G
         kSTOP,
-        kGROUND,
+        kGROUND, 
         kPROCESSOR,
         kCORAL_STATION,
         kL1,
         kL2,
         kL3,
         kL4,
-        kMAX,
+        kNET,
+        _enum_MAX,
     };
     void goToPreset(Preset preset);
     // if manual this returns true
     bool atPreset();
     void manualMovement(double speed);
     void setSensorBroken(bool isBroken);
-    
+
+    double getPercentHeight();
+
+    Preset getCurrentPreset();
   private:
-    units::turn_t Position[Preset::kMAX] {
-        0_tr,     // Stopped (Does not move to 0 turns)
-        20_tr, // Ground
-        200_tr, // Processor
-        350_tr, // Coral Station
-        300_tr, // L1
-        400_tr, // L2
-        500_tr, // L3
-        600_tr  // L4
+    units::turn_t Position[Preset::_enum_MAX] {
+        0_tr,   // Stopped (Does not move to 0 turns)
+        6_tr,  // Ground
+        12_tr, // Processor
+        35_tr, // Coral Station
+        30_tr, // L1
+        40_tr, // L2
+        50_tr, // L3
+        60_tr, // L4
+        60_tr  // Net
     };
 
     Preset targetPreset = Elevator::Preset::kSTOP;
@@ -61,7 +68,7 @@ class Elevator : public Component {
     bool sensorBroken = false;
     bool encoderZeroed = false;
 
-    double getPosition();
+    units::turn_t getPosition();
     double computeSpeedForPreset();
 
     rev::spark::SparkMax leftSparkMax {CAN_LEFT_ELEVATOR, rev::spark::SparkLowLevel::MotorType::kBrushless};
@@ -78,4 +85,5 @@ class Elevator : public Component {
       frc::TrapezoidProfile<units::turn>::Constraints(ELEVATOR_PREFERENCE.PID.MaxVel, ELEVATOR_PREFERENCE.PID.MaxAccel)
     };
     // If Elevator sensor is broken, have code that can do its best without the sensor/stop the robot 
+    friend class Controls;
 };

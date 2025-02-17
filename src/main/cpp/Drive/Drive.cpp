@@ -94,6 +94,7 @@ void Drive::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
 void Drive::process()
 {
     updateOdometry();
+    return;
 
     switch (driveMode) {
         case DriveMode::STOPPED:
@@ -116,10 +117,6 @@ void Drive::doPersistentConfiguration()
     }
 }
 
-wpi::array<SwerveModule*,4>* Drive::getSwerveModules()
-{
-    return &swerveModules;
-}
 void Drive::driveFromPercents(double xPct, double yPct, double rotPct, unsigned flags)
 {
     /**
@@ -379,6 +376,12 @@ void Drive::setupInitialTrajectoryPosition(const CSVTrajectory *trajectory)
 {
     frc::Pose2d initPose(trajectory->getInitialPose());
     resetOdometry(frc::Pose2d(initPose.X(), initPose.Y(), initPose.Rotation().Degrees()));
+}
+
+void Drive::setAccelerationReduction(double reduction) {
+    for (SwerveModule* module : swerveModules) {
+        module->setAccelerationReduction(reduction);
+    }
 }
 
 void Drive::execTrajectory() {
