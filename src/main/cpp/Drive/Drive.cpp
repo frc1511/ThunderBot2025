@@ -410,9 +410,9 @@ void Drive::execTrajectory() {
                             // Remember that it's done.
                             doneTrajectoryActions.push_back(id);
                         }
-
+                        
                         if (!actionExecuting)
-                            actionExecuting = res;
+                            actionExecuting = res == Action::Result::WORKING;
                     }
                 }
             }

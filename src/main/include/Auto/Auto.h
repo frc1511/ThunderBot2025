@@ -29,9 +29,11 @@ private:
         _TEST                      = 1,
         _SQUARE                    = 2,
         LEAVE                      = 3,
-        LEAVE_GO_TO_UPPER_CORAL    = 4,
-        LEAVE_GO_TO_LOWER_CORAL    = 5,
-        L1                         = 6,
+        LEAVE_GO_TO_LEFT_CORAL     = 4,
+        LEAVE_GO_TO_RIGHT_CORAL    = 5,
+        L1Center                   = 6,
+        L1Left                     = 7,
+        L1Right                    = 8,
     };
     Drive *drive;
     Limelight *limelight;
@@ -41,9 +43,11 @@ private:
     // Match Autos
     void doNothing();
     void leave();
-    void leaveUpperCoral();
-    void leaveLowerCoral();
-    void L1Coral1();
+    void leaveLeftCoral();
+    void leaveRightCoral();
+    void L1CoralCenter();
+    void L1CoralLeft();
+    void L1CoralRight();
 
     // Debug Autos
     void test();
@@ -54,9 +58,11 @@ private:
         { AutoMode::_TEST,                   "zzz_Test"},
         { AutoMode::_SQUARE,                 "zzz_Square"},
         { AutoMode::LEAVE,                   "Leave"},
-        { AutoMode::LEAVE_GO_TO_UPPER_CORAL, "Leave go to UPPER coral station"},
-        { AutoMode::LEAVE_GO_TO_LOWER_CORAL, "Leave go to LOWER coral station"},
-        { AutoMode::L1,                      "1 Coral L1"},
+        { AutoMode::LEAVE_GO_TO_LEFT_CORAL,  "Leave go to LEFT coral station"},
+        { AutoMode::LEAVE_GO_TO_RIGHT_CORAL, "Leave go to RIGHT coral station"},
+        { AutoMode::L1Center,                "1 Coral L1 Center"},
+        { AutoMode::L1Left,                  "1 Coral L1 Left"},
+        { AutoMode::L1Right,                 "1 Coral L1 Right"},
     };
     int step = 0;
 
@@ -64,26 +70,32 @@ private:
         _TEST,
         _SQUARE,
         LEAVE,
-        LEAVE_GO_TO_UPPER_CORAL,
-        LEAVE_GO_TO_LOWER_CORAL,
-        L1,
+        LEAVE_GO_TO_LEFT_CORAL,
+        LEAVE_GO_TO_RIGHT_CORAL,
+        L1Center,
+        L1Left,
+        L1Right,
     };
     const std::map<Path, CSVTrajectory> bluePaths {
         { Path::_TEST,                   CSVTrajectory{ DEPLOY_DIR "match_winning_auto.csv", false } },
         { Path::_SQUARE,                 CSVTrajectory{ DEPLOY_DIR "square.csv",             false } },
         { Path:: LEAVE,                  CSVTrajectory{ DEPLOY_DIR "Leave.csv",              false } },
-        { Path::LEAVE_GO_TO_UPPER_CORAL, CSVTrajectory{ DEPLOY_DIR "GoToCoralStation1.csv",  false } },
-        { Path::LEAVE_GO_TO_LOWER_CORAL, CSVTrajectory{ DEPLOY_DIR "GoToCoralStation2.csv",  false } },
-        { Path::L1,                      CSVTrajectory{ DEPLOY_DIR "L1.csv",                 false } },
+        { Path::LEAVE_GO_TO_LEFT_CORAL,  CSVTrajectory{ DEPLOY_DIR "GoToCoralStation1.csv",  false } },
+        { Path::LEAVE_GO_TO_RIGHT_CORAL, CSVTrajectory{ DEPLOY_DIR "GoToCoralStation2.csv",  false } },
+        { Path::L1Center,                CSVTrajectory{ DEPLOY_DIR "L1Center.csv",           false } },
+        { Path::L1Left,                  CSVTrajectory{ DEPLOY_DIR "L1Left.csv",             false } },
+        { Path::L1Right,                 CSVTrajectory{ DEPLOY_DIR "L1Right.csv",            false } },
 
     };
     const std::map<Path, CSVTrajectory> redPaths {
         { Path::_TEST,                   CSVTrajectory{ DEPLOY_DIR "match_winning_auto.csv", true  } },
         { Path::_SQUARE,                 CSVTrajectory{ DEPLOY_DIR "square.csv",             true  } },
         { Path::LEAVE,                   CSVTrajectory{ DEPLOY_DIR "Leave.csv",              true  } },
-        { Path::LEAVE_GO_TO_UPPER_CORAL, CSVTrajectory{ DEPLOY_DIR "GoToCoralStation1.csv",  true  } },
-        { Path::LEAVE_GO_TO_LOWER_CORAL, CSVTrajectory{ DEPLOY_DIR "GoToCoralStation2.csv",  true  } },
-        { Path::L1,                      CSVTrajectory{ DEPLOY_DIR "L1.csv",                 true  } },
+        { Path::LEAVE_GO_TO_LEFT_CORAL,  CSVTrajectory{ DEPLOY_DIR "GoToCoralStation1.csv",  true  } },
+        { Path::LEAVE_GO_TO_RIGHT_CORAL, CSVTrajectory{ DEPLOY_DIR "GoToCoralStation2.csv",  true  } },
+        { Path::L1Center,                CSVTrajectory{ DEPLOY_DIR "L1Center.csv",           true } },
+        { Path::L1Left,                  CSVTrajectory{ DEPLOY_DIR "L1Left.csv",             true } },
+        { Path::L1Right,                 CSVTrajectory{ DEPLOY_DIR "L1Right.csv",            true } },
     };
     const std::map<Path, CSVTrajectory>* paths = nullptr;
 
@@ -91,6 +103,8 @@ private:
       public:
         ElevatorToL1() {}
         Action::Result process() override {
+            printf("I RAN ELEVATOR\n");
+            return Action::Result::DONE;
             // Elevator->gotToPreset();
             // Action::Result atPosition = Action::Result::WORKING;
             // if (Elevator->getAtTarget()) {
@@ -105,6 +119,8 @@ private:
       public:
         OuttakeCoral() {}
         Action::Result process() override {
+            printf("I RAN OUTTAKE CORAL\n");
+            return Action::Result::DONE;
             // calgae->setMotorMode(Calgae::MotorModes::kSHOOT);
             // Action::Result shootDone = Action::Result::WORKING;
             // if (calgae->shootDone()) {
@@ -116,7 +132,10 @@ private:
     };
     OuttakeCoral outtakeCoral;
 
-    std::map<u_int32_t, Action*> actions {{1, &elevatorToL1}, {2, &outtakeCoral}}; // Actions are in the constructor
+    std::map<u_int32_t, Action*> actions {
+        {1 << 0, &elevatorToL1}, 
+        {1 << 1, &outtakeCoral},
+    };
 
     std::string autoSelected;
 };
