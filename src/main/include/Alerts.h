@@ -5,6 +5,9 @@
 
 class Alert {
   public:
+
+// MARK: Component Disable Alerts
+
     inline static const elastic::Notification driveAlert = {.level = elastic::NotificationLevel::WARNING,
                                                 .title = "Drive Disabled",
                                                 .description = "Drive Disabled",
@@ -34,7 +37,7 @@ class Alert {
                                                 .description = "Drive Disabled",
                                                 .displayTime = 21_s,};
 
-    static void sendAlerts() {
+    static void sendComponentDisableAlerts() {
         // Check IOMap for these bad boys
         #ifndef ENABLE_DRIVE
             elastic::SendNotification(driveAlert);
@@ -57,5 +60,36 @@ class Alert {
         #ifndef ENABLE_BLINKY_BLINKY
             elastic::SendNotification(blinkyBlinkyAlert);
         #endif
+    }
+
+// MARK: Controller Alerts
+
+    inline static const elastic::Notification driveDisabledAlert = {.level = elastic::NotificationLevel::WARNING,
+                                                                    .title = "Drive Disabled",
+                                                                    .description = "Drive Disabled or Drive Controller Disconnected",
+                                                                    .displayTime = 10_s,};
+    inline static const elastic::Notification auxDisabledAlert   = {.level = elastic::NotificationLevel::WARNING,
+                                                                    .title = "Aux Disabled",
+                                                                    .description = "Aux Disabled or Aux Controller Disconnected",
+                                                                    .displayTime = 10_s,};
+
+    inline static bool driveDisableAlertShown = false;
+    inline static bool auxDisableAlertShown = false;
+
+    static void reAllowControllerAlerts() {
+        driveDisableAlertShown = false;
+        auxDisableAlertShown = false;
+    }
+
+    static void sendControllerDisableAndDisconnectedAlerts(bool auxConnected, bool driveConnected) {
+        if (!auxDisableAlertShown && !auxConnected) {
+            elastic::SendNotification(auxDisabledAlert);
+            auxDisableAlertShown = true;
+        }
+
+        if (!driveDisableAlertShown && !driveConnected) {
+            elastic::SendNotification(driveDisabledAlert);
+            driveDisableAlertShown = true;
+        }
     }
 };

@@ -49,8 +49,6 @@ class Calgae : public Component {
 
     bool atSpeed();
 
-
-  private:
     /**
      * Get calculated state (non-raw) of the Coral Retroreflective sensor
      */
@@ -60,6 +58,8 @@ class Calgae : public Component {
      * Get calculated state (non-raw) of the Algae Retroreflective sensor
      */
     bool algaeRetroreflectiveTripped();
+
+  private:
 
     /**
      * Stop all motors

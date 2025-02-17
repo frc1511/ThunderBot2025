@@ -50,14 +50,14 @@ class Elevator : public Component {
   private:
     units::turn_t Position[Preset::_enum_MAX] {
         0_tr,   // Stopped (Does not move to 0 turns)
-        20_tr,  // Ground
-        200_tr, // Processor
-        350_tr, // Coral Station
-        300_tr, // L1
-        400_tr, // L2
-        500_tr, // L3
-        600_tr, // L4
-        600_tr  // Net
+        6_tr,  // Ground
+        12_tr, // Processor
+        35_tr, // Coral Station
+        30_tr, // L1
+        40_tr, // L2
+        50_tr, // L3
+        60_tr, // L4
+        60_tr  // Net
     };
 
     Preset targetPreset = Elevator::Preset::kSTOP;

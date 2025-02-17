@@ -13,18 +13,21 @@
     ╚═╝ ╚═════╝     ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝     
 */
 
-// Enable or disable portions of robot during development using these
-// #define ENABLE_DRIVE
-// #define ENABLE_ELEVATOR
-// #define ENABLE_CALGAE
+/// Enable or disable portions of robot during development using these
+
+#define ENABLE_DRIVE
+#define ENABLE_ELEVATOR
+#define ENABLE_CALGAE
 #define ENABLE_BLINKY_BLINKY
+#define ENABLE_HANG
 
 // Auto requires drive at present
-#ifdef ENABLE_DRIVE
-    #define ENABLE_AUTO
-#endif
+// #ifdef ENABLE_DRIVE
+//     #define ENABLE_AUTO
+// #endif
+
 // Real robot or testboard?
-#define IS_TESTBOARD
+// #define IS_TESTBOARD
 
 #define CAN_DO_NOT_USE 1
 
@@ -69,12 +72,12 @@
 #define CAN_SLOT_17 17
 #define CAN_SLOT_18 18
 #define CAN_SLOT_19 19
-#define CAN_HANG 20
+#define CAN_HANG    20
 #define CAN_SLOT_21 21
 
 #define PWM_CALGAE 0
-#define PWM_SLOT_1 1
-#define PWM_WRIST 2
+#define PWM_BLINKY 1
+#define PWM_WRIST  2
 #define PWM_SLOT_3 3
 #define PWM_SLOT_4 4
 #define PWM_SLOT_5 5

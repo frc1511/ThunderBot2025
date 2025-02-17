@@ -34,7 +34,7 @@ class BlinkyBlinky : public Component {
     int flashTimer = 0;
 
     // Slot not confirmed
-    frc::AddressableLED leds {PWM_SLOT_9};
+    frc::AddressableLED leds {PWM_BLINKY};
     std::array<frc::AddressableLED::LEDData, BLINKY_BLINKY_LED_TOTAL> mainLEDBuffer;
     std::array<frc::AddressableLED::LEDData, BLINKY_BLINKY_LED_SIDE_TOTAL> sideBuffer;
     std::array<frc::AddressableLED::LEDData, BLINKY_BLINKY_LED_STATUS_TOTAL> statusBuffer;

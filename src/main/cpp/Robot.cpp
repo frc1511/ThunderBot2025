@@ -13,31 +13,43 @@ Robot::Robot() :
 				elevator(nullptr),
 				controls(nullptr),
 				auto_(nullptr),
+				hang(nullptr),
 				allComponents()
 {
 #ifdef ENABLE_DRIVE
 	drive = new Drive(&limelight);
 	allComponents.push_back(drive);
 #endif
-#ifdef ENABLE_GAMEPIECE
+
+#ifdef ENABLE_CALGAE
 	calgae = new Calgae();
 	wrist = new Wrist();
 	allComponents.push_back(wrist);
 	allComponents.push_back(calgae);
 #endif
+
 #ifdef ENABLE_ELEVATOR
 	elevator = new Elevator();
 	allComponents.push_back(elevator);
 #endif
+
 #ifdef ENABLE_AUTO
 	auto_ = new Auto(drive);
 #endif
+
 	gamepiece = new Gamepiece(calgae, wrist, elevator);
 	allComponents.push_back(gamepiece);
+
+#ifdef ENABLE_HANG
+	hang = new Hang();
+	allComponents.push_back(hang);
+#endif
+
 #ifdef ENABLE_BLINKY_BLINKY
-	blinkyBlinky = new BlinkyBlinky(gamepiece, nullptr); // TODO: Don't forget this! 🚀
+	blinkyBlinky = new BlinkyBlinky(gamepiece, hang);
 	allComponents.push_back(blinkyBlinky);
 #endif
+
 	controls = new Controls(drive, gamepiece, calgae, wrist, elevator, blinkyBlinky);
 }
 
@@ -54,7 +66,8 @@ void Robot::RobotPeriodic() {
 
 void Robot::AutonomousInit() {
     reset(Component::MatchMode::AUTO);
-	Alert::sendAlerts();
+	Alert::sendComponentDisableAlerts();
+	Alert::reAllowControllerAlerts();
 }
 void Robot::AutonomousPeriodic() {
 	if (auto_)
@@ -66,7 +79,8 @@ void Robot::AutonomousPeriodic() {
 
 void Robot::TeleopInit() {
     reset(Component::MatchMode::TELEOP);
-	Alert::sendAlerts();
+	Alert::sendComponentDisableAlerts();
+	Alert::reAllowControllerAlerts();
 }
 void Robot::TeleopPeriodic() {
 	controls->process();
@@ -120,6 +134,7 @@ void Robot::TestPeriodic() {
 	//elevator.manualMovement(0.05);
 	elevator.process();
 #endif
+	
 }
 
 void Robot::SimulationInit() {}

@@ -120,10 +120,12 @@ static PreferencesCalgae CALGAE_PREFERENCE;
 struct PreferencesWrist {
     PID_t PID;
     double MAX_SPEED = 1;
+    double OFFSET = 0.1724;
     units::degree_t ANGLE_TOLERANCE = 1_deg;
-    units::degree_t LOWEST_ANGLE = -35_deg;
-    units::degree_t HIGHEST_ANGLE = 115_deg;
+    units::degree_t LOWEST_ANGLE = 0_deg;
+    units::degree_t HIGHEST_ANGLE = 120_deg;
     PreferencesWrist() {
+        
     }
 };
 static PreferencesWrist WRIST_PREFERENCE;

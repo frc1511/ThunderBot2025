@@ -11,9 +11,9 @@ Wrist::Wrist() {
 
 void Wrist::process() {
     if (!encoderBroken) {
-    units::degree_t degrees = getEncoderDegrees();
-    double speed = PIDController.Calculate(degrees);
-    setSpeed(speed);
+        units::degree_t degrees = getEncoderDegrees();
+        double speed = PIDController.Calculate(degrees);
+        setSpeed(speed);
     }
 }
 
@@ -45,11 +45,11 @@ void Wrist::setEncoderBroken(bool isBroken) {
 }
 
 double Wrist::getRawEncoder() {
-    return encoder.Get() * 360; // 0-1 -> 0-360
+    return encoder.Get(); 
 }
 
 units::degree_t Wrist::getEncoderDegrees() {
-    return units::degree_t(getRawEncoder());
+    return units::degree_t((getRawEncoder() - WRIST_PREFERENCE.OFFSET) * 360); // 0-1 -> 0-360
 }
 
 void Wrist::setTarget(Preset preset) {
