@@ -1,6 +1,11 @@
 #include "Elevator.h" 
 void Elevator::process() {
     double motorSpeed = 0;
+    
+    rightSparkMax.Set(motorSpeed);
+    leftSparkMax.Set(motorSpeed);
+    return;
+    
     if (atMinHeight()) { // if elevator at the lower limit switch
         leftEncoder.SetPosition(0); // zero the encoders
         rightEncoder.SetPosition(0);

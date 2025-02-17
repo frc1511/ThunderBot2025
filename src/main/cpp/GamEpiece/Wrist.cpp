@@ -10,6 +10,9 @@ Wrist::Wrist() {
 }
 
 void Wrist::process() {
+    motor.SetSpeed(0);
+    return;
+    
     if (!encoderBroken) {
         units::degree_t degrees = getEncoderDegrees();
         double speed = PIDController.Calculate(degrees);

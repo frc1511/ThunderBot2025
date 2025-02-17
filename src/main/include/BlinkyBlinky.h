@@ -15,6 +15,7 @@ class BlinkyBlinky : public Component {
 
     void process();
     void resetToMatchMode(MatchMode priorMode, MatchMode mode);
+    void sendFeedback() override;
 
     enum class Mode {
       UNSET,
@@ -28,7 +29,7 @@ class BlinkyBlinky : public Component {
   
   private:
     bool isDisabled = true;
-
+    std::string currentSideStatus = "NONE";
 
     bool flashFinished = false;
     int flashTimer = 0;

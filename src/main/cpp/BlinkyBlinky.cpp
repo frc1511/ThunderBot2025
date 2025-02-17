@@ -29,7 +29,7 @@ void BlinkyBlinky::process() {
             // Elevator Sides
             if (!gamepiece->elevator->atPreset() && gamepiece->elevator->getCurrentPreset() != Elevator::Preset::kSTOP) {
                 double elevatorPercentHeight = gamepiece->elevator->getPercentHeight();
-                int litLEDS = floor(elevatorPercentHeight * BLINKY_BLINKY_PREFERENCE.LED_TOTAL);
+                int litLEDS = floor(elevatorPercentHeight * BLINKY_BLINKY_PREFERENCE.LED_SIDE_STRIP_TOTAL);
                 int sideBufferSize = (int)sideBuffer.size();
                 for (int i = 0; i < sideBufferSize; i++) {
                     if (i <= litLEDS) {
@@ -38,6 +38,7 @@ void BlinkyBlinky::process() {
                         sideBuffer[i] = LEDData(0, 0, 0);                                           // Black
                     }
                 }
+                currentSideStatus = "Elevator Percentage";
                 overridePatterns = true;
             }
         }
@@ -45,9 +46,26 @@ void BlinkyBlinky::process() {
         if (!overridePatterns && gamepiece->calgae != nullptr) { // Something else is not already overriding
             if (gamepiece->calgae->hasCoral()) {
                 sideBuffer.fill(LEDData(250, 0, 220));                                             // Pink
+                currentSideStatus = "Has Coral";
                 overridePatterns = true;
             } else if (gamepiece->calgae->hasAlgae()) {
                 sideBuffer.fill(LEDData(0, 255, 255));                                             // Cyan
+                currentSideStatus = "Has Algae";
+                overridePatterns = true;
+            }
+        }
+
+        if (hang != nullptr) {
+            if (hang->isHung()) {
+                static int blueWavePosition = 0;
+                applyPercentOverLeds([&](double percent) -> LEDData {
+                    LEDData color {};
+                    int brightness = (abs((percent - 0.5) * 100) + blueWavePosition) % 100;
+                    color.SetHSV(120, 255, brightness);
+                    return color;
+                });
+                blueWavePosition += 2;
+                currentSideStatus = "Hang Blue Wave";
                 overridePatterns = true;
             }
         }
@@ -56,6 +74,7 @@ void BlinkyBlinky::process() {
         if (gamepiece->hasGamepiece() && !flashFinished) {
             flash(6, 3);
             overridePatterns = true;
+            currentSideStatus = "GP Intake Flashes";
         } else if (!gamepiece->hasGamepiece()) {
             flashFinished = false;
         }
@@ -64,6 +83,7 @@ void BlinkyBlinky::process() {
         if (neuralyze) {
             flash(2, -1);
             overridePatterns = true;
+            currentSideStatus = "Neuralyze";
         }
 
         if (overridePatterns == false) {
@@ -148,13 +168,18 @@ void BlinkyBlinky::process() {
 
     int statusBufferSize = (int)statusBuffer.size();
     for (int i = 0; i < statusBufferSize; i++) {
-        mainLEDBuffer[BLINKY_BLINKY_PREFERENCE.LED_SIDE_STRIP_TOTAL + BLINKY_BLINKY_PREFERENCE.LED_STATUS_STRIP_TOTAL - i] = statusBuffer[i];
+        mainLEDBuffer[BLINKY_BLINKY_PREFERENCE.LED_SIDE_STRIP_TOTAL + BLINKY_BLINKY_PREFERENCE.LED_STATUS_STRIP_TOTAL - i - 1] = statusBuffer[i];
     }
     
     
     leds.SetData(mainLEDBuffer);
 
     currentMode = Mode::UNSET;
+}
+
+void BlinkyBlinky::sendFeedback() {
+    frc::SmartDashboard::PutString("BlinkyBlinky Side LED Status", currentSideStatus);
+    currentSideStatus = "NONE";
 }
 
 void BlinkyBlinky::applyPercentOverLeds(std::function<frc::AddressableLED::LEDData(double)> func) {
