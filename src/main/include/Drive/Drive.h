@@ -26,7 +26,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 #include "Basic/Component.h"
-#include "iomap.h"
+#include "Basic/IOMap.h"
 #include "preferences.h"
 #include "swerveModule.h"
 #include "Drive/CSVTrajectory.h"
@@ -104,8 +104,7 @@ public:
 
     void setupInitialTrajectoryPosition(const CSVTrajectory* trajectory);
 
-    /// TODO: REMOVE
-    wpi::array<SwerveModule*, 4>* getSwerveModules();
+    void setAccelerationReduction(double reduction);
 
 private:
     void executeVelocityData();

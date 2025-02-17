@@ -26,7 +26,6 @@ struct PID_t
     }
 };
 
-
 const units::inch_t WHEEL_DISTANCE_FROM_FRAME = 2.625_in;
 
 struct DrivePreferences {
@@ -41,6 +40,8 @@ struct DrivePreferences {
     units::meters_per_second_t DRIVE_MANUAL_MAX_VEL = 2.5_mps;
     units::degrees_per_second_t DRIVE_MANUAL_MAX_ANG_VEL = 240_deg_per_s; // 540
     units::radians_per_second_squared_t DRIVE_MANUAL_MAX_ANG_ACCEL = 4.5_rad_per_s_sq; // 9.42
+
+    units::meters_per_second_squared_t MAX_ACCEL = 0.01_mps_sq;
 
     DrivePreferences()
     {
@@ -91,9 +92,53 @@ static PreferencesSwerve SWERVE_PREFERENCE;
 struct PreferencesControls
 {
     double AXIS_DEADZONE = .2;
+
+    double kGROUND = 0.0; 
+    double kPROCESSOR = 0.0;
+    double kCORAL_STATION = 0.0;
+    double kL1 = 0.0;
+    double kL2 = 0.0;
+    double kL3 = 0.5;
+    double kL4 = 0.5;
+    double kNET = 0.5;
+
+    static const bool wristEncoderBroken = false;
+
 };
 static PreferencesControls CONTROLS_PREFERENCE;
 
+struct PreferencesCalgae {
+    double MOTOR_SPEED_STOPPED = 0.0;
+    double MOTOR_SPEED_INTAKE_CORAL = 0.75;
+    double MOTOR_SPEED_SHOOT_CORAL = -0.75;
+    double MOTOR_SPEED_INTAKE_ALGAE = 1.0;
+    double MOTOR_SPEED_SHOOT_ALGAE = -1.0;
+    double MOTOR_SPEED_INTAKE_REGRAB = 0.5;
+};
+static PreferencesCalgae CALGAE_PREFERENCE;
+
+struct PreferencesWrist {
+    PID_t PID;
+    double MAX_SPEED = 1;
+    double OFFSET = 0.1724;
+    units::degree_t ANGLE_TOLERANCE = 1_deg;
+    units::degree_t LOWEST_ANGLE = 0_deg;
+    units::degree_t HIGHEST_ANGLE = 120_deg;
+    PreferencesWrist() {
+        
+    }
+};
+static PreferencesWrist WRIST_PREFERENCE;
+
+struct PreferencesElevator {
+    PID_t PID;
+    double MAX_SPEED = 0.05;
+    PreferencesElevator() {
+        PID.Kp = 0.1;
+    }
+};
+
+static PreferencesElevator ELEVATOR_PREFERENCE;
 
 struct PreferencesTrajectory
 {
@@ -101,6 +146,34 @@ struct PreferencesTrajectory
     units::meter_t FIELD_Y = 8.05_m;
 };
 static PreferencesTrajectory TRAJECTORY_PREFERENCE;
+
+// #define for array, it won't accept the preferences value
+#define BLINKY_BLINKY_LED_TOTAL 42
+#define BLINKY_BLINKY_LED_SIDE_TOTAL 19
+#define BLINKY_BLINKY_LED_STATUS_TOTAL 4
+struct PreferencesBlinkyBlinky
+{
+    size_t LED_TOTAL = BLINKY_BLINKY_LED_TOTAL;
+    size_t LED_SIDE_STRIP_TOTAL = BLINKY_BLINKY_LED_SIDE_TOTAL;
+    size_t LED_STATUS_STRIP_TOTAL = BLINKY_BLINKY_LED_STATUS_TOTAL;
+    int CAGE_STATUS_ID = 0; // This does not mean the first LED, this is the first LED in the status bar
+    int ELEVATOR_STATUS_ID = 1;
+    int CORAL_STATUS_ID = 2;
+    int ALGAE_STATUS_ID = 3;
+};
+static PreferencesBlinkyBlinky BLINKY_BLINKY_PREFERENCE;
+
+struct PreferencesHang
+{
+    double MAX_POSITION = 1;
+    double MAX_HANG_SPEED_UP = 0.5; // TODO: CHANGE LATER
+    double MAX_HANG_SPEED_DOWN = -0.5;
+    double BACKTRACKING_SPEED = -0.1;
+    double BACKTRACKING_DISTANCE = 1;
+    units::second_t DISENGAGE_DURATION = 0.3_s;
+};
+
+static PreferencesHang HANG_PREFERENCE;
 
 
 struct PreferencesLimelight

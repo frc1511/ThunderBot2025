@@ -58,8 +58,7 @@ void SwerveModule::doPersistentConfiguration()
     ctre::phoenix6::configs::MotorOutputConfigs driveMotorOutput {};
     driveMotorOutput.Inverted = true;
     
-    /// TODO: Add me to a function
-    driveMotorOutput.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake); // Brake Mode Here!!!! 
+    setDriveMotorsNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
     
     driveMotor.GetConfigurator().Apply(driveMotorOutput);
 
@@ -133,8 +132,18 @@ void SwerveModule::setTurningMotor(units::radian_t angle)
 void SwerveModule::setDriveMotor(units::meters_per_second_t velocity)
 {
     const units::turns_per_second_t tps = units::turns_per_second_t(velocity.value() * SWERVE_PREFERENCE.DRIVE_MOTOR.METERS_TO_TURNS);
-    
+    // driveRequest.Acceleration = units::turns_per_second_squared_t((1 - accelReduction) * DRIVE_PREFERENCES.MAX_ACCEL.value() * SWERVE_PREFERENCE.DRIVE_MOTOR.METERS_TO_TURNS);
     driveMotor.SetControl(driveRequest.WithVelocity(tps));
+}
+
+void SwerveModule::setAccelerationReduction(double reduction) {
+    accelReduction = reduction;
+};
+
+void SwerveModule::setDriveMotorsNeutralMode(ctre::phoenix6::signals::NeutralModeValue neutralMode) {
+    ctre::phoenix6::configs::MotorOutputConfigs driveMotorOutput {};
+    driveMotorOutput.WithNeutralMode(neutralMode);
+    driveMotor.GetConfigurator().Apply(driveMotorOutput);
 }
 
 void SwerveModule::stop() {

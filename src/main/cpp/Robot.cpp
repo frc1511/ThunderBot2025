@@ -4,28 +4,86 @@
 
 #include "Robot.h"
 
+Robot::Robot() :
+				lastMode(Component::MatchMode::DISABLED),
+				limelight(),
+				drive(nullptr),
+				calgae(nullptr),
+				wrist(nullptr),
+				elevator(nullptr),
+				controls(nullptr),
+				auto_(nullptr),
+				hang(nullptr),
+				allComponents()
+{
+#ifdef ENABLE_DRIVE
+	drive = new Drive(&limelight);
+	allComponents.push_back(drive);
+#endif
+
+#ifdef ENABLE_CALGAE
+	calgae = new Calgae();
+	wrist = new Wrist();
+	allComponents.push_back(wrist);
+	allComponents.push_back(calgae);
+#endif
+
+#ifdef ENABLE_ELEVATOR
+	elevator = new Elevator();
+	allComponents.push_back(elevator);
+#endif
+
+#ifdef ENABLE_AUTO
+	auto_ = new Auto(drive);
+#endif
+	gamepiece = new Gamepiece(calgae, wrist, elevator);
+	allComponents.push_back(gamepiece);
+
+#ifdef ENABLE_HANG
+	hang = new Hang();
+	allComponents.push_back(hang);
+#endif
+
+#ifdef ENABLE_BLINKY_BLINKY
+	blinkyBlinky = new BlinkyBlinky(gamepiece, hang);
+	allComponents.push_back(blinkyBlinky);
+#endif
+
+	controls = new Controls(drive, gamepiece, calgae, wrist, elevator, blinkyBlinky, hang);
+}
+
 void Robot::RobotInit() {
-	auto_.autoSelectorInit();
+	if (auto_)
+		auto_->autoSelectorInit();
 }
 
 void Robot::RobotPeriodic() {
-   for (Component* component : allComponents) {
+	controls->sendFeedback();
+	for (Component* component : allComponents) {
 	 	component->sendFeedback();
 	}
 }
 
 void Robot::AutonomousInit() {
     reset(Component::MatchMode::AUTO);
+	Alert::sendComponentDisableAlerts();
+	Alert::reAllowControllerAlerts();
 }
 void Robot::AutonomousPeriodic() {
-	auto_.process();
-	drive.process();
+	if (auto_)
+		auto_->process();
+	
+	for (Component* component : allComponents)
+		component->process();
 }
 
 void Robot::TeleopInit() {
     reset(Component::MatchMode::TELEOP);
+	Alert::sendComponentDisableAlerts();
+	Alert::reAllowControllerAlerts();
 }
 void Robot::TeleopPeriodic() {
+	controls->process();
 	for (Component* component : allComponents) {
 		component->process();
 	}
@@ -34,7 +92,11 @@ void Robot::TeleopPeriodic() {
 void Robot::DisabledInit() {
     reset(Component::MatchMode::DISABLED);
 }
-void Robot::DisabledPeriodic() {}
+void Robot::DisabledPeriodic() {
+	#ifdef ENABLE_BLINKY_BLINKY
+	blinkyBlinky->process();
+	#endif
+}
 
 void Robot::TestInit() {
     reset(Component::MatchMode::TEST);
@@ -42,14 +104,46 @@ void Robot::TestInit() {
 		component->doPersistentConfiguration();
 	}
 
-	printf("Persistantt config done boi \n");
+	printf("Persistent Configurations Applied \n");
 }
-void Robot::TestPeriodic() {}
+
+void Robot::TestPeriodic() {
+//#define ELEVATOR_TESTING
+#if defined(ENABLE_ELEVATOR) && defined(ELEVATOR_TESTING)
+	static Elevator::Preset testPresets[] = {
+		Elevator::kGROUND,
+		Elevator::kL4,
+		Elevator::kL1,
+		Elevator::kL2,
+		Elevator::kL3,
+		Elevator::kGROUND,
+		Elevator::kSTOP
+	};
+	static int curTestPos = 0;
+	static frc::Timer stepWaitTimer;
+	elevator.goToPreset(testPresets[curTestPos]);
+	if (elevator.atPreset() && testPresets[curTestPos] != Elevator::kSTOP) {
+		if (stepWaitTimer.IsRunning() && stepWaitTimer.Get() > 5_s) {
+			stepWaitTimer.Stop();
+			stepWaitTimer.Reset();
+			curTestPos++;
+		} else {
+			stepWaitTimer.Start();
+		}
+	}
+	//elevator.manualMovement(0.05);
+	elevator.process();
+#endif
+	
+}
 
 void Robot::SimulationInit() {}
 void Robot::SimulationPeriodic() {}
 
 void Robot::reset(Component::MatchMode mode) {
+	if (auto_)
+		auto_->resetToMatchMode(lastMode, mode);
+	controls->resetToMatchMode(lastMode, mode);
 	for (Component* component : allComponents) {
 		component->resetToMatchMode(lastMode, mode);
 	}
