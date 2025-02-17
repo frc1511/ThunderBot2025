@@ -14,6 +14,7 @@
 #include "BlinkyBlinky.h"
 #include "Hang.h"
 #include "Libraries/elasticlib.h"
+#include "Alerts.h"
 
 class Controls : public Component {
   public:
@@ -31,17 +32,6 @@ class Controls : public Component {
     Gamepiece* gamepiece;
     BlinkyBlinky* blinkyBlinky;
     Hang* hang;
-
-    elastic::Notification driveDisabledAlert = {.level = elastic::NotificationLevel::WARNING,
-                                                .title = "Drive Disabled",
-                                                .description = "Drive Disabled or Drive Controller Disconnected",
-                                                .displayTime = 1.5_s,};
-    elastic::Notification auxDisabledAlert   = {.level = elastic::NotificationLevel::WARNING,
-                                                .title = "Aux Disabled",
-                                                .description = "Aux Disabled or Aux Controller Disconnected",
-                                                .displayTime = 1.5_s,};
-
-    frc::Timer sendAlertsTimer {}; 
 
     frc::XboxController driveController {0};
     frc::XboxController auxController {1};

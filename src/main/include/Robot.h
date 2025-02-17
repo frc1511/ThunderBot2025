@@ -16,7 +16,7 @@
 #include "Elevator.h"
 #include "BlinkyBlinky.h"
 #include "Hang.h"
-
+#include "Alerts.h"
 
 class Robot : public frc::TimedRobot {
   public:

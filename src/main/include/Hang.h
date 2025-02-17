@@ -2,11 +2,11 @@
 
 #include "Basic/IOMap.h"
 #include "Preferences.h"
+#include "Basic/Component.h"
 
 #include <rev/config/SparkMaxConfig.h>
 #include <rev/SparkMax.h>
 #include <rev/SparkRelativeEncoder.h>
-#include "Basic/Component.h"
 #include <frc/DigitalInput.h>
 #include <frc/Relay.h>
 #include <frc/Timer.h>

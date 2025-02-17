@@ -8,9 +8,7 @@ Controls::Controls(Drive* drive_, Gamepiece* gamepiece_, Calgae* calgae_, Wrist*
     gamepiece(gamepiece_),
     blinkyBlinky(blinkyBlinky_),
     hang(hang_)
-{
-    sendAlertsTimer.Start();
-}
+{}
 
 void Controls::process() {
     // MARK: Drive
@@ -141,28 +139,7 @@ void Controls::process() {
 }
 
 void Controls::sendFeedback() {
-    static bool driveDisableAlertShown = false;
-    static bool auxDisableAlertShown = false;
-    static bool shouldShowDriveAlert = false;
-    frc::SmartDashboard::PutNumber("Alert Timer", sendAlertsTimer.Get().value());
-    if (!auxDisableAlertShown && (calgae == nullptr || !auxController.IsConnected())) {
-        elastic::SendNotification(auxDisabledAlert);
-        auxDisableAlertShown = true;
-    }
-
-    if (!driveDisableAlertShown && (drive == nullptr || !driveController.IsConnected())) {
-        elastic::SendNotification(driveDisabledAlert);
-        driveDisableAlertShown = true;
-    }
-
-    if (sendAlertsTimer.HasElapsed(0.8_s) && shouldShowDriveAlert) {
-        driveDisableAlertShown = false;
-        shouldShowDriveAlert = false;
-    } else if (sendAlertsTimer.HasElapsed(1.6_s)) {
-        auxDisableAlertShown = false; 
-        shouldShowDriveAlert = true;
-        sendAlertsTimer.Restart();
-    }
+    Alert::sendControllerDisableAndDisconnectedAlerts(auxController.IsConnected(), driveController.IsConnected());
 }
 
 void Controls::utilizeSwitchBoard() {

@@ -1,10 +1,14 @@
 #include "Hang.h"
 
-void Hang() {}
+Hang::Hang() {}
+
+void Hang::doPersistentConfiguration() {
+
+}
 
 void Hang::process() {
     updateRealSolenoidState();
-
+    return;
     double speed = 0;
     switch (currentMode) {
     case ControlMode::STOPPED:
