@@ -42,7 +42,6 @@ void Calgae::sendFeedback() {
 void Calgae::process() {
     updateGamepieceState();
     motorSpeed = MotorSpeed::kSTOPPED; // In case we make it through the below logic without getting a speed
-    return;
 
     if (currentGamepieceState == GamepieceState::kNONE) { // If we don't have a gamepiece, so intake or nothing
         switch (motorMode) {
@@ -146,6 +145,7 @@ void Calgae::stopMotors() {
 
 void Calgae::runMotors(double speed) {
     speed = std::clamp(speed, -1.0, 1.0);
+    printf("Run at %lf\n", speed);
     motor.Set(speed);
 }
 

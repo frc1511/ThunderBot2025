@@ -201,7 +201,7 @@ void BlinkyBlinky::flash(int spacing, int flashCount) {
         sideBuffer.fill(LEDData(0, 0, 0));
     }
     flashTimer++;
-    if (flashTimer >= (spacing * flashCount) && flashCount != -1) {
+    if (flashTimer >= (spacing * (flashCount + 1)) && flashCount != -1) {
         flashFinished = true;
         flashTimer = 0;
     }

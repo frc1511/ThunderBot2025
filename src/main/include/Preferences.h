@@ -125,7 +125,7 @@ struct PreferencesWrist {
     units::degree_t LOWEST_ANGLE = 0_deg;
     units::degree_t HIGHEST_ANGLE = 120_deg;
     PreferencesWrist() {
-        
+        PID.Kp = 0.001;
     }
 };
 static PreferencesWrist WRIST_PREFERENCE;

@@ -91,7 +91,7 @@ void Controls::process() {
         } else if (toGround)       { gamepiece->moveToPreset(Gamepiece::Preset::kGROUND); }
     }
 
-    #define CALGAE_SENSOR_BROKEN false// Replace with switchboard?
+    // #define CALGAE_SENSOR_BROKEN false// Replace with switchboard?
     if (calgae != nullptr && auxController.IsConnected()) {
         bool coralIntake = fabs(auxController.GetRightTriggerAxis()) > CONTROLS_PREFERENCE.AXIS_DEADZONE; //fabs is extraneous but might as well 
         bool algaeIntake = fabs(auxController.GetLeftTriggerAxis()) > CONTROLS_PREFERENCE.AXIS_DEADZONE;
@@ -107,8 +107,11 @@ void Controls::process() {
             calgae->setMotorMode(Calgae::MotorModes::kALGAE_INTAKE);
         } else if (shoot) {
             gamepiece->calgaeAutopilot = false;
-            if (!CALGAE_SENSOR_BROKEN) calgae->setMotorMode(Calgae::MotorModes::kSHOOT);
-            else calgae->setMotorMode(Calgae::MotorModes::kSHOOT_OVERRIDE);
+            #ifndef CALGAE_SENSOR_BROKEN 
+                calgae->setMotorMode(Calgae::MotorModes::kSHOOT);
+            #else
+                calgae->setMotorMode(Calgae::MotorModes::kSHOOT_OVERRIDE);
+            #endif
         } else if (shootDone) {
             gamepiece->calgaeAutopilot = false;
             calgae->setMotorMode(Calgae::MotorModes::kDONE_SHOOTING);
