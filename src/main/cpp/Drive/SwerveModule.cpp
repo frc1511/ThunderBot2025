@@ -31,7 +31,7 @@ void SwerveModule::doPersistentConfiguration()
     turningMotor.GetConfigurator().Apply(turningPIDConfig);
 
     ctre::phoenix6::configs::MotorOutputConfigs turningMotorOutput {};
-    turningMotorOutput.Inverted = true;
+    turningMotorOutput.Inverted = ctre::phoenix6::signals::InvertedValue::Clockwise_Positive;
     turningMotor.GetConfigurator().Apply(turningMotorOutput);
 
     ctre::phoenix6::configs::CurrentLimitsConfigs turningCurrentLimit {};
@@ -40,6 +40,16 @@ void SwerveModule::doPersistentConfiguration()
     turningCurrentLimit.WithStatorCurrentLimit(SWERVE_PREFERENCE.TURN_MOTOR.MAX_AMPERAGE);
     turningCurrentLimit.WithStatorCurrentLimitEnable(true);
     turningMotor.GetConfigurator().Apply(turningCurrentLimit);
+
+    ctre::phoenix6::configs::FeedbackConfigs turningFeedback {};
+    turningFeedback.FeedbackRemoteSensorID = canCoder.GetDeviceID();
+    turningFeedback.FeedbackSensorSource = ctre::phoenix6::signals::FeedbackSensorSourceValue::FusedCANcoder;
+    turningFeedback.RotorToSensorRatio = 18.75;
+    turningMotor.GetConfigurator().Apply(turningFeedback);
+
+
+
+
 
     ctre::phoenix6::configs::ClosedLoopRampsConfigs ramp {};
     ramp.WithVoltageClosedLoopRampPeriod(SWERVE_PREFERENCE.DRIVE_RAMP_TIME);

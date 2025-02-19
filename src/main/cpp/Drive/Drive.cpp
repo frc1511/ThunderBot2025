@@ -94,7 +94,6 @@ void Drive::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
 void Drive::process()
 {
     updateOdometry();
-    return;
 
     switch (driveMode) {
         case DriveMode::STOPPED:

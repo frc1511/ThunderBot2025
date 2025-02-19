@@ -30,13 +30,13 @@ void Calgae::resetToMatchMode(Component::MatchMode lastMode, Component::MatchMod
 }
 
 void Calgae::sendFeedback() {
-    frc::SmartDashboard::PutBoolean("Coral Retroreflective Raw"           , coralRetroreflective.Get()              );
-    frc::SmartDashboard::PutBoolean("Coral Retroreflective"               , coralRetroreflectiveTripped()           );
-    frc::SmartDashboard::PutBoolean("Algae Retroreflective Raw"           , algaeRetroreflective.Get()              );
-    frc::SmartDashboard::PutBoolean("Algae Retroreflective"               , algaeRetroreflectiveTripped()           );
-    frc::SmartDashboard::PutString ("Last Gamepiece"                      , lastGamepieceStateToString()            );
-    frc::SmartDashboard::PutBoolean("Algae Retroreflective"               , algaeRetroreflectiveTripped()           );
-    frc::SmartDashboard::PutString ("Motor Target Speed"                  , motorSpeedToString()                    );
+    frc::SmartDashboard::PutBoolean("Calgae Coral Retroreflective Raw"           , coralRetroreflective.Get()              );
+    frc::SmartDashboard::PutBoolean("Calgae Coral Retroreflective"               , coralRetroreflectiveTripped()           );
+    frc::SmartDashboard::PutBoolean("Calgae Algae Retroreflective Raw"           , algaeRetroreflective.Get()              );
+    frc::SmartDashboard::PutBoolean("Calgae Algae Retroreflective"               , algaeRetroreflectiveTripped()           );
+    frc::SmartDashboard::PutString ("Calgae Last Gamepiece"                      , lastGamepieceStateToString()            );
+    frc::SmartDashboard::PutBoolean("Calgae Algae Retroreflective"               , algaeRetroreflectiveTripped()           );
+    frc::SmartDashboard::PutString ("Calgae Motor Target Speed"                  , motorSpeedToString()                    );
 }
 
 void Calgae::process() {

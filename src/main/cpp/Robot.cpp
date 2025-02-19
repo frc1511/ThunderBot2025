@@ -134,7 +134,10 @@ void Robot::TestPeriodic() {
 	//elevator.manualMovement(0.05);
 	elevator.process();
 #endif
-	
+	// if (gamepiece->elevator != nullptr) {
+	// 	gamepiece->elevator->manualMovement(0.05);
+	// 	gamepiece->elevator->process();
+	// }
 }
 
 void Robot::SimulationInit() {}

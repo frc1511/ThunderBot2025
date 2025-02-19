@@ -8,6 +8,7 @@
 #include <rev/config/SparkMaxConfig.h>
 #include <frc/DigitalInput.h>
 #include <frc/controller/ProfiledPIDController.h>
+#include <frc/controller/ElevatorFeedforward.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 class Controls;
@@ -84,6 +85,7 @@ class Elevator : public Component {
       ELEVATOR_PREFERENCE.PID.Kp, ELEVATOR_PREFERENCE.PID.Ki, ELEVATOR_PREFERENCE.PID.Kd,
       frc::TrapezoidProfile<units::turn>::Constraints(ELEVATOR_PREFERENCE.PID.MaxVel, ELEVATOR_PREFERENCE.PID.MaxAccel)
     };
+    // frc::ElevatorFeedforward feedForward {(units::volt_t)ELEVATOR_PREFERENCE.PID.Ks, (units::volt_t)ELEVATOR_PREFERENCE.PID.Kg, (units::compound_unit<units::volts, units::inverse<units::meters_per_second_squared_t>>)ELEVATOR_PREFERENCE.PID.Kv};
     // If Elevator sensor is broken, have code that can do its best without the sensor/stop the robot 
     friend class Controls;
 };

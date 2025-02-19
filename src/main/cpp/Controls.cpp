@@ -57,14 +57,14 @@ void Controls::process() {
         if (brickMode)
             flags |= Drive::ControlFlag::BRICK;
 
-        flags |= Drive::ControlFlag::FIELD_CENTRIC;
+        // flags |= Drive::ControlFlag::FIELD_CENTRIC;
 
         if (resetIMU)
             drive->resetOdometry();
 
         // SWAP: 90_deg offset for drive
         float finalSpeedReduction = 1 - speedReduction;
-        drive->driveFromPercents(yPercent * -finalSpeedReduction, xPercent * finalSpeedReduction, rotPercent * -finalSpeedReduction, flags);
+        drive->driveFromPercents(yPercent * finalSpeedReduction, xPercent * finalSpeedReduction, rotPercent * finalSpeedReduction, flags);
     }
 
     // MARK: Aux
@@ -138,6 +138,10 @@ void Controls::process() {
         } else if (hangPercent < 0) {
             hang->setControlMode(Hang::ControlMode::GOING_DOWN);
         }
+    }
+
+    if (gamepiece->elevator) {
+        gamepiece->elevator->manualMovement(auxController.GetLeftY() * -0.75);
     }
 }
 

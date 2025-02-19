@@ -14,13 +14,14 @@ struct PID_t
     double Kd = 0;
     double Kv = 0;
     double Ks = 0;
+    double Kg = 0;
     double Kff = 0;
     double Kizone = 0;
     units::angular_velocity::degrees_per_second_t MaxVel = 0_deg_per_s;
     units::angular_acceleration::degrees_per_second_squared_t MaxAccel = 0_deg_per_s_sq;
     void clear() 
     {
-        Kp = Ki = Kd = Kff = Kizone = Kv = Ks = 0;
+        Kp = Ki = Kd = Kff = Kizone = Kv = Ks = Kg = 0;
         MaxVel = 0_deg_per_s;
         MaxAccel = 0_deg_per_s_sq;
     }
@@ -37,7 +38,7 @@ struct DrivePreferences {
     units::radians_per_second_t DRIVE_AUTO_MAX_ANG_VEL = 9.28_rad_per_s;
     units::radians_per_second_squared_t DRIVE_AUTO_MAX_ANG_ACCEL = 6.14_rad_per_s_sq;
 
-    units::meters_per_second_t DRIVE_MANUAL_MAX_VEL = 2.5_mps;
+    units::meters_per_second_t DRIVE_MANUAL_MAX_VEL = 5_mps;
     units::degrees_per_second_t DRIVE_MANUAL_MAX_ANG_VEL = 240_deg_per_s; // 540
     units::radians_per_second_squared_t DRIVE_MANUAL_MAX_ANG_ACCEL = 4.5_rad_per_s_sq; // 9.42
 
@@ -132,9 +133,10 @@ static PreferencesWrist WRIST_PREFERENCE;
 
 struct PreferencesElevator {
     PID_t PID;
-    double MAX_SPEED = 0.05;
+    double MAX_DOWN_SPEED = 0.05;
+    double MAX_UP_SPEED = 0.35;
     PreferencesElevator() {
-        PID.Kp = 0.1;
+        // PID.Kp = 0.1;
     }
 };
 

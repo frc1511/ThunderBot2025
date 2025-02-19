@@ -2,10 +2,6 @@
 void Elevator::process() {
     double motorSpeed = 0;
     
-    rightSparkMax.Set(motorSpeed);
-    leftSparkMax.Set(motorSpeed);
-    return;
-    
     if (atMinHeight()) { // if elevator at the lower limit switch
         leftEncoder.SetPosition(0); // zero the encoders
         rightEncoder.SetPosition(0);
@@ -13,7 +9,7 @@ void Elevator::process() {
     }
 
     if (!encoderZeroed) { // if elevator not at the lower limit switch
-        motorSpeed = -0.05; // move down slowly until at the lower limit switch
+        motorSpeed = -0.01; // move down slowly until at the lower limit switch
     } else if (manualControl) {
         motorSpeed = manualMovementSpeed;
     } else {
@@ -26,7 +22,7 @@ void Elevator::process() {
     if (atMaxHeight() && motorSpeed > 0)
         motorSpeed = 0;
     
-    motorSpeed = std::clamp(motorSpeed, -ELEVATOR_PREFERENCE.MAX_SPEED, ELEVATOR_PREFERENCE.MAX_SPEED);
+    motorSpeed = std::clamp(motorSpeed, -ELEVATOR_PREFERENCE.MAX_DOWN_SPEED, ELEVATOR_PREFERENCE.MAX_UP_SPEED);
     
     rightSparkMax.Set(motorSpeed);
     leftSparkMax.Set(motorSpeed);
@@ -53,9 +49,11 @@ void Elevator::doPersistentConfiguration() {
 
 void Elevator::sendFeedback() {
     frc::SmartDashboard::PutNumber ("Elevator Left Motor Position (rotations)",  leftEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber ("Elevator Left Motor Current",               leftSparkMax.GetOutputCurrent());
     frc::SmartDashboard::PutNumber ("Elevator Left Motor Temperature C",         leftSparkMax.GetMotorTemperature());
     frc::SmartDashboard::PutNumber ("Elevator Right Motor Position (rotations)", rightEncoder.GetPosition());
     frc::SmartDashboard::PutNumber ("Elevator Right Motor Temperature C",        rightSparkMax.GetMotorTemperature());
+    frc::SmartDashboard::PutNumber ("Elevator Right Motor Current",              rightSparkMax.GetOutputCurrent());
     frc::SmartDashboard::PutBoolean("Elevator At Target Preset",                 atPreset());
     frc::SmartDashboard::PutNumber ("Elevator Target Position (rotations)",      Position[targetPreset].value());
     frc::SmartDashboard::PutBoolean("Elevator Lower Limit tripping",             getLowerLimit());
@@ -115,6 +113,7 @@ bool Elevator::atPreset() { //detects if at preset
 }
 
 void Elevator::manualMovement(double speed) { // allows input of speed and turns on manual movement
+    frc::SmartDashboard::PutNumber ("Elevator Manual Movement Speed",  speed);
     manualMovementSpeed = speed;
     manualControl = true;
 }
