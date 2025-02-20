@@ -19,7 +19,7 @@
 #define ENABLE_ELEVATOR
 #define ENABLE_CALGAE
 #define ENABLE_BLINKY_BLINKY
-#define ENABLE_HANG
+// #define ENABLE_HANG
 
 // Auto requires drive at present
 // #ifdef ENABLE_DRIVE

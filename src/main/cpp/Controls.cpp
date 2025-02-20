@@ -140,8 +140,11 @@ void Controls::process() {
         }
     }
 
-    if (gamepiece->elevator) {
-        gamepiece->elevator->manualMovement(auxController.GetLeftY() * -0.75);
+    if (gamepiece->elevator && auxController.IsConnected()) {
+        double movementPercent = auxController.GetLeftY();
+        if (fabs(movementPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
+            movementPercent = 0;
+        gamepiece->elevator->manualMovement(movementPercent);
     }
 }
 

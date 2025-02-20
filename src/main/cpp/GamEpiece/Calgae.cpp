@@ -37,6 +37,7 @@ void Calgae::sendFeedback() {
     frc::SmartDashboard::PutString ("Calgae Last Gamepiece"                      , lastGamepieceStateToString()            );
     frc::SmartDashboard::PutBoolean("Calgae Algae Retroreflective"               , algaeRetroreflectiveTripped()           );
     frc::SmartDashboard::PutString ("Calgae Motor Target Speed"                  , motorSpeedToString()                    );
+    frc::SmartDashboard::PutNumber ("Calgae Motor Out Voltage"                   , motor.GetVoltage().value()              );
 }
 
 void Calgae::process() {

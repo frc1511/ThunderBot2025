@@ -22,6 +22,8 @@ void Elevator::process() {
     if (atMaxHeight() && motorSpeed > 0)
         motorSpeed = 0;
     
+    motorSpeed += 0.05; // Temp Feedfoward
+
     motorSpeed = std::clamp(motorSpeed, -ELEVATOR_PREFERENCE.MAX_DOWN_SPEED, ELEVATOR_PREFERENCE.MAX_UP_SPEED);
     
     rightSparkMax.Set(motorSpeed);
