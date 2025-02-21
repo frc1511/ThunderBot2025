@@ -1,0 +1,475 @@
+{
+  "settings": {
+    "auto_export": false,
+    "auto_save": false,
+    "drive_ctrl": 0,
+    "field": {
+      "img": "2025",
+      "img_type": 1
+    },
+    "robot_length": 0.8064500093460083,
+    "robot_width": 0.7111999988555908
+  },
+  "state": {
+    "actions": [],
+    "paths": [
+      [
+        "Blue1Station1",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 3.1415927410125732,
+              "h1": 0.0,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 1.0,
+              "x": 8.76069450378418,
+              "y": 7.35746431350708
+            },
+            {
+              "actions": 0,
+              "h0": 4.408114433288574,
+              "h1": 1.26652193069458,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 2.2340214252471924,
+              "stop": false,
+              "w0": 1.5241179466247559,
+              "w1": 1.0,
+              "x": 1.2666264772415161,
+              "y": 7.088184833526611
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "Blue2Station1",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 3.1415927410125732,
+              "h1": 0.0,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 1.0,
+              "x": 8.787553787231445,
+              "y": 6.118780136108398
+            },
+            {
+              "actions": 0,
+              "h0": 4.408114433288574,
+              "h1": 1.26652193069458,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 2.2340214252471924,
+              "stop": false,
+              "w0": 1.5241179466247559,
+              "w1": 1.0,
+              "x": 1.2666264772415161,
+              "y": 7.088184833526611
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "Blue3Station1",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 5.934396743774414,
+              "h1": 2.79280424118042,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 2.91530442237854,
+              "x": 8.787553787231445,
+              "y": 4.960880279541016
+            },
+            {
+              "actions": 0,
+              "h0": 6.108083248138428,
+              "h1": 2.9664902687072754,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 2.2340214252471924,
+              "stop": false,
+              "w0": 1.8548741340637207,
+              "w1": 1.0,
+              "x": 1.2666264772415161,
+              "y": 7.088184833526611
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "Blue1Station2",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 6.000846862792969,
+              "h1": 2.8592538833618164,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 6.5724334716796875,
+              "x": 8.76069450378418,
+              "y": 7.35746431350708
+            },
+            {
+              "actions": 0,
+              "h0": 0.5973647236824036,
+              "h1": 3.738957405090332,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 3.9793508052825928,
+              "stop": false,
+              "w0": 1.8192402124404907,
+              "w1": 1.0,
+              "x": 1.2666264772415161,
+              "y": 0.8678399920463562
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "Blue2Station2",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 5.978734493255615,
+              "h1": 2.837141752243042,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 7.5456132888793945,
+              "x": 8.76069450378418,
+              "y": 6.118780136108398
+            },
+            {
+              "actions": 0,
+              "h0": 0.5973647236824036,
+              "h1": 3.738957405090332,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 3.9793508052825928,
+              "stop": false,
+              "w0": 1.8192402124404907,
+              "w1": 1.0,
+              "x": 1.2666264772415161,
+              "y": 0.8678399920463562
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "Blue3Station2",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 5.837374210357666,
+              "h1": 2.6957814693450928,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 8.30587387084961,
+              "x": 8.7069730758667,
+              "y": 4.987808704376221
+            },
+            {
+              "actions": 0,
+              "h0": 0.6923161745071411,
+              "h1": 3.833909034729004,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 3.9793508052825928,
+              "stop": false,
+              "w0": 2.8264260292053223,
+              "w1": 1.0,
+              "x": 1.2666264772415161,
+              "y": 0.8678399920463562
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "Red1Station1",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 2.828225612640381,
+              "h1": 5.969818592071533,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 2.7953133583068848,
+              "x": 8.76069450378418,
+              "y": 0.8678399920463562
+            },
+            {
+              "actions": 0,
+              "h0": 3.1415927410125732,
+              "h1": 0.0,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 5.375614166259766,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 1.0,
+              "x": 16.38906478881836,
+              "y": 0.9486231803894043
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "Red2Station1",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 2.828225612640381,
+              "h1": 5.969818592071533,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 2.7953133583068848,
+              "x": 8.733832359313965,
+              "y": 1.9180279970169067
+            },
+            {
+              "actions": 0,
+              "h0": 3.1415927410125732,
+              "h1": 0.0,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 5.375614166259766,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 1.0,
+              "x": 16.38906478881836,
+              "y": 0.9486231803894043
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "Red3Station1",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 2.828225612640381,
+              "h1": 5.969818592071533,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 2.7953133583068848,
+              "x": 8.814414024353027,
+              "y": 2.9951441287994385
+            },
+            {
+              "actions": 0,
+              "h0": 3.1415927410125732,
+              "h1": 0.0,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 5.375614166259766,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 1.0,
+              "x": 16.38906478881836,
+              "y": 0.9486231803894043
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "Red1Station2",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 2.84238862991333,
+              "h1": 5.983981132507324,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 7.673844337463379,
+              "x": 8.787553787231445,
+              "y": 0.8409118056297302
+            },
+            {
+              "actions": 0,
+              "h0": 3.200495958328247,
+              "h1": 0.05890321731567383,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.8377580642700195,
+              "stop": false,
+              "w0": 1.3722624778747559,
+              "w1": 1.0,
+              "x": 16.147319793701172,
+              "y": 7.142040729522705
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "Red2Station2",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 2.787458896636963,
+              "h1": 5.929051399230957,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 8.075773239135742,
+              "x": 8.841275215148926,
+              "y": 1.9180279970169067
+            },
+            {
+              "actions": 0,
+              "h0": 3.200495958328247,
+              "h1": 0.05890321731567383,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.8377580642700195,
+              "stop": false,
+              "w0": 1.3722624778747559,
+              "w1": 1.0,
+              "x": 16.147319793701172,
+              "y": 7.142040729522705
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "Red3Station2",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 2.5802550315856934,
+              "h1": 5.7218475341796875,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 8.852548599243164,
+              "x": 8.787553787231445,
+              "y": 2.9682159423828125
+            },
+            {
+              "actions": 0,
+              "h0": 3.200495958328247,
+              "h1": 0.05890321731567383,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.8377580642700195,
+              "stop": false,
+              "w0": 1.3722624778747559,
+              "w1": 1.0,
+              "x": 16.147319793701172,
+              "y": 7.142040729522705
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ]
+    ],
+    "waypoint_links": []
+  }
+}

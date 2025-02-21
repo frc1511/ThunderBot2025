@@ -1,0 +1,477 @@
+{
+  "settings": {
+    "auto_export": false,
+    "auto_save": false,
+    "drive_ctrl": 0,
+    "field": {
+      "img": "2025",
+      "img_type": 1
+    },
+    "robot_length": 0.8064500093460083,
+    "robot_width": 0.7111999988555908
+  },
+  "state": {
+    "actions": [
+      "action1"
+    ],
+    "paths": [
+      [
+        "BlueSlot1ReefAutoMain",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 6.2309041023254395,
+              "h1": 3.089311361312866,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 4.667524337768555,
+              "x": 8.772533416748047,
+              "y": 7.270611763000488
+            },
+            {
+              "actions": 0,
+              "h0": 0.262748122215271,
+              "h1": 3.4043407440185547,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 0.5436782836914063,
+              "w1": 1.0,
+              "x": 5.801692485809326,
+              "y": 4.215288162231445
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "BlueSlot2ReefAutoMain",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 0.30803442001342773,
+              "h1": 3.44962739944458,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 2.244121551513672,
+              "x": 8.78533935546875,
+              "y": 6.153749465942383
+            },
+            {
+              "actions": 0,
+              "h0": 0.4463964104652405,
+              "h1": 3.587989091873169,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 2.2004544734954834,
+              "w1": 1.0,
+              "x": 5.9681620597839355,
+              "y": 4.0227251052856445
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "BlueSlot3ReefAutoMain",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 0.7866511344909668,
+              "h1": 3.92824387550354,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 0.2901155352592468,
+              "x": 8.72131061553955,
+              "y": 5.101075172424316
+            },
+            {
+              "actions": 0,
+              "h0": 6.2290496826171875,
+              "h1": 3.0874571800231934,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 0.47449246048927307,
+              "w1": 1.0,
+              "x": 5.929746627807617,
+              "y": 3.9970502853393555
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "RedSlot3ReefAutoMain",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 3.4196362495422363,
+              "h1": 0.27804356813430786,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 1.917616844177246,
+              "x": 8.734116554260254,
+              "y": 3.034237861633301
+            },
+            {
+              "actions": 0,
+              "h0": 3.53524112701416,
+              "h1": 0.393648624420166,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 0.9706100821495056,
+              "w1": 1.0,
+              "x": 11.78178882598877,
+              "y": 4.112587928771973
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "RedSlot2ReefAutoMain",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 2.7325291633605957,
+              "h1": 5.87412166595459,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 2.5820212364196777,
+              "x": 8.772533416748047,
+              "y": 1.8788632154464722
+            },
+            {
+              "actions": 0,
+              "h0": 3.0626115798950195,
+              "h1": 6.204204559326172,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.4643723964691162,
+              "w1": 1.0,
+              "x": 11.756176948547363,
+              "y": 4.035562992095947
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "RedSlot1ReefAutoMain",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 3.0370965003967285,
+              "h1": 6.178689479827881,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 4.184561252593994,
+              "x": 8.772533416748047,
+              "y": 0.8518632650375366
+            },
+            {
+              "actions": 0,
+              "h0": 2.8571219444274902,
+              "h1": 5.998714447021484,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 0.32019585371017456,
+              "w1": 1.0,
+              "x": 11.704955101013184,
+              "y": 4.074075222015381
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "BlueSlot1ReefAutoAlt",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 4.088089466094971,
+              "h1": 0.946496844291687,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 0.28479427099227905,
+              "x": 8.810948371887207,
+              "y": 7.232100009918213
+            },
+            {
+              "actions": 0,
+              "h0": 2.0376367568969727,
+              "h1": 5.179229736328125,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 2.1293017864227295,
+              "stop": false,
+              "w0": 2.7313990592956543,
+              "w1": 1.0,
+              "x": 3.6631999015808105,
+              "y": 5.370662212371826
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "BlueSlot2ReefAutoAlt",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 0.20415639877319336,
+              "h1": 3.3457489013671875,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 1.203076958656311,
+              "x": 8.772533416748047,
+              "y": 6.128075122833252
+            },
+            {
+              "actions": 0,
+              "h0": 2.2443130016326904,
+              "h1": 5.385905742645264,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 2.1293017864227295,
+              "stop": false,
+              "w0": 0.49271923303604126,
+              "w1": 1.0,
+              "x": 3.599173069000244,
+              "y": 5.383499622344971
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "BlueSlot3ReefAutoAlt",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 0.6149506568908691,
+              "h1": 3.7565436363220215,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 2.069420337677002,
+              "x": 8.772533416748047,
+              "y": 5.011212348937988
+            },
+            {
+              "actions": 0,
+              "h0": 1.2050589323043823,
+              "h1": 4.346651554107666,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 2.1293017864227295,
+              "stop": false,
+              "w0": 1.539629578590393,
+              "w1": 1.0,
+              "x": 3.714421510696411,
+              "y": 5.409175395965576
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "RedSlot3ReefAutoAlt",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 3.9401493072509766,
+              "h1": 0.7985565066337585,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 1.5232609510421753,
+              "x": 8.78533935546875,
+              "y": 3.0085630416870117
+            },
+            {
+              "actions": 0,
+              "h0": 3.5109963417053223,
+              "h1": 0.3694033622741699,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 2.1293017864227295,
+              "stop": false,
+              "w0": 1.9910862445831299,
+              "w1": 1.0,
+              "x": 13.933084487915039,
+              "y": 2.700463056564331
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "RedSlot2ReefAutoAlt",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 2.9354500770568848,
+              "h1": 6.077043056488037,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 2.132417917251587,
+              "x": 8.772533416748047,
+              "y": 1.930213451385498
+            },
+            {
+              "actions": 0,
+              "h0": 3.2148163318634033,
+              "h1": 0.07322359085083008,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 2.1293017864227295,
+              "stop": false,
+              "w0": 3.1585769653320313,
+              "w1": 1.0,
+              "x": 13.945890426635742,
+              "y": 2.6234383583068848
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ],
+      [
+        "RedSlot1ReefAutoAlt",
+        {
+          "points": [
+            {
+              "actions": 0,
+              "h0": 3.3030824661254883,
+              "h1": 0.16148962080478668,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 0.0,
+              "stop": false,
+              "w0": 1.0,
+              "w1": 1.037933111190796,
+              "x": 8.734116554260254,
+              "y": 0.7748382687568665
+            },
+            {
+              "actions": 0,
+              "h0": 4.576408863067627,
+              "h1": 1.4348158836364746,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 2.1293017864227295,
+              "stop": false,
+              "w0": 2.9283063411712646,
+              "w1": 1.0,
+              "x": 13.997113227844238,
+              "y": 2.610600709915161
+            }
+          ],
+          "settings": {
+            "max_centripetal_accel": 19.6200008392334,
+            "max_linear_accel": 1.5,
+            "max_linear_vel": 2.0
+          }
+        }
+      ]
+    ],
+    "waypoint_links": []
+  }
+}
