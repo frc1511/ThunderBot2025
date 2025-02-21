@@ -38,9 +38,10 @@ struct DrivePreferences {
     units::radians_per_second_t DRIVE_AUTO_MAX_ANG_VEL = 9.28_rad_per_s;
     units::radians_per_second_squared_t DRIVE_AUTO_MAX_ANG_ACCEL = 6.14_rad_per_s_sq;
 
-    units::meters_per_second_t DRIVE_MANUAL_MAX_VEL = 2.5_mps;
-    units::degrees_per_second_t DRIVE_MANUAL_MAX_ANG_VEL = 240_deg_per_s; // 540
-    units::radians_per_second_squared_t DRIVE_MANUAL_MAX_ANG_ACCEL = 4.5_rad_per_s_sq; // 9.42
+    units::meters_per_second_t DRIVE_MANUAL_MAX_VEL = 6.0_mps;
+
+    units::degrees_per_second_t DRIVE_MANUAL_MAX_ANG_VEL = 540_deg_per_s; // 540
+    units::radians_per_second_squared_t DRIVE_MANUAL_MAX_ANG_ACCEL = 9.42_rad_per_s_sq; // 9.42
 
     DrivePreferences()
     {
