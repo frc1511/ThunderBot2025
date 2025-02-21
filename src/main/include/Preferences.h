@@ -126,18 +126,18 @@ struct PreferencesWrist {
     units::degree_t LOWEST_ANGLE = 0_deg;
     units::degree_t HIGHEST_ANGLE = 120_deg;
     PreferencesWrist() {
-        PID.Kp = 0.001;
+        PID.Kp = 0.01;
+        PID.MaxVel = 18_deg_per_s;
+        PID.MaxAccel = 18_deg_per_s_sq;
     }
 };
 static PreferencesWrist WRIST_PREFERENCE;
 
 struct PreferencesElevator {
-    PID_t PID;
-    double MAX_DOWN_SPEED = 0.05;
+    double MAX_DOWN_SPEED = 0.3;
     double MAX_UP_SPEED = 0.35;
-    PreferencesElevator() {
-        // PID.Kp = 0.1;
-    }
+    double TARGET_TOLERANCE = 0.5; // in turn_t
+    PreferencesElevator() {}
 };
 
 static PreferencesElevator ELEVATOR_PREFERENCE;

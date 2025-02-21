@@ -7,8 +7,6 @@
 #include <rev/SparkMax.h>
 #include <rev/config/SparkMaxConfig.h>
 #include <frc/DigitalInput.h>
-#include <frc/controller/ProfiledPIDController.h>
-#include <frc/controller/ElevatorFeedforward.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 class Controls;
@@ -51,21 +49,20 @@ class Elevator : public Component {
   private:
     units::turn_t Position[Preset::_enum_MAX] {
         0_tr,   // Stopped (Does not move to 0 turns)
-        6_tr,  // Ground
-        12_tr, // Processor
+        12_tr,  // Ground
+        24_tr, // Processor
         35_tr, // Coral Station
         30_tr, // L1
         40_tr, // L2
         50_tr, // L3
         60_tr, // L4
-        60_tr  // Net
+        70_tr  // Net
     };
 
     Preset targetPreset = Elevator::Preset::kSTOP;
     double manualMovementSpeed = 0;
     bool manualControl = false;
     
-    const units::turn_t targetTolerance = 1_tr;
     bool sensorBroken = false;
     bool encoderZeroed = false;
 
@@ -81,11 +78,7 @@ class Elevator : public Component {
     frc::DigitalInput lowerLimitSwitch {DIO_ELEVATOR_BOTTOM_LIMITSWITCH};
     frc::DigitalInput upperLimitSwitch {DIO_ELEVATOR_TOP_LIMITSWITCH};
 
-    frc::ProfiledPIDController<units::turn> PIDController {
-      ELEVATOR_PREFERENCE.PID.Kp, ELEVATOR_PREFERENCE.PID.Ki, ELEVATOR_PREFERENCE.PID.Kd,
-      frc::TrapezoidProfile<units::turn>::Constraints(ELEVATOR_PREFERENCE.PID.MaxVel, ELEVATOR_PREFERENCE.PID.MaxAccel)
-    };
-    // frc::ElevatorFeedforward feedForward {(units::volt_t)ELEVATOR_PREFERENCE.PID.Ks, (units::volt_t)ELEVATOR_PREFERENCE.PID.Kg, units::unit_t<frc::ElevatorFeedforward::kv_unit>ELEVATOR_PREFERENCE.PID.Kv};
-    // If Elevator sensor is broken, have code that can do its best without the sensor/stop the robot 
+    double startDownPosition = 0;
+
     friend class Controls;
 };

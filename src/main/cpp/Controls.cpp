@@ -140,12 +140,13 @@ void Controls::process() {
         }
     }
 
-    if (gamepiece->elevator && auxController.IsConnected()) {
-        double movementPercent = auxController.GetLeftY();
-        if (fabs(movementPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
-            movementPercent = 0;
-        gamepiece->elevator->manualMovement(movementPercent);
-    }
+    // Elevator Manual Movement Code, Comment out if needed
+    // if (gamepiece->elevator && auxController.IsConnected()) {
+    //     double movementPercent = auxController.GetLeftY();
+    //     if (fabs(movementPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
+    //         movementPercent = 0;
+    //     gamepiece->elevator->manualMovement(movementPercent);
+    // }
 }
 
 void Controls::sendFeedback() {

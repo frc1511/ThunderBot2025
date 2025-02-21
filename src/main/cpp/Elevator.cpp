@@ -14,6 +14,7 @@ void Elevator::process() {
         motorSpeed = manualMovementSpeed;
     } else {
         motorSpeed = computeSpeedForPreset();
+        frc::SmartDashboard::PutNumber ("Elevator Motor Output", motorSpeed);
     }
 
     if (atMinHeight() && motorSpeed < 0) // stop moving when at either limit switch
@@ -50,6 +51,7 @@ void Elevator::doPersistentConfiguration() {
 }
 
 void Elevator::sendFeedback() {
+    frc::SmartDashboard::PutNumber ("Elevator Position (rotations)",             getPosition().value());
     frc::SmartDashboard::PutNumber ("Elevator Left Motor Position (rotations)",  leftEncoder.GetPosition());
     frc::SmartDashboard::PutNumber ("Elevator Left Motor Current",               leftSparkMax.GetOutputCurrent());
     frc::SmartDashboard::PutNumber ("Elevator Left Motor Temperature C",         leftSparkMax.GetMotorTemperature());
@@ -60,6 +62,7 @@ void Elevator::sendFeedback() {
     frc::SmartDashboard::PutNumber ("Elevator Target Position (rotations)",      Position[targetPreset].value());
     frc::SmartDashboard::PutBoolean("Elevator Lower Limit tripping",             getLowerLimit());
     frc::SmartDashboard::PutBoolean("Elevator Upper Limit tripping",             getUpperLimit());
+    frc::SmartDashboard::PutNumber ("Elevator Manual Movement Speed",            manualMovementSpeed);
 }
 
 bool Elevator::atMaxHeight() {
@@ -98,6 +101,7 @@ double getHeightAsPercent() {
 
 void Elevator::goToPreset(Preset target) {
     targetPreset = target;
+    startDownPosition = getPosition().value();
     manualControl = false;
 }
 
@@ -107,7 +111,7 @@ bool Elevator::atPreset() { //detects if at preset
     if (!encoderZeroed) // if we are at the bottom we are not at our preset
         return false;
 
-    if ((units::turn_t)fabs(getPosition().value()) - Position[targetPreset] < targetTolerance) { // If the diff from our preset is less than our tol, we at the preset
+    if (fabs(getPosition().value()) - Position[targetPreset].value() < ELEVATOR_PREFERENCE.TARGET_TOLERANCE) { // If the diff from our preset is less than our tol, we at the preset
         return true;
     }
     // if we aren't at our preset, we aren't at our preset
@@ -115,7 +119,6 @@ bool Elevator::atPreset() { //detects if at preset
 }
 
 void Elevator::manualMovement(double speed) { // allows input of speed and turns on manual movement
-    frc::SmartDashboard::PutNumber ("Elevator Manual Movement Speed",  speed);
     manualMovementSpeed = speed;
     manualControl = true;
 }
@@ -124,14 +127,31 @@ void Elevator::setSensorBroken(bool isBroken) { // this still needs to be implem
     sensorBroken = isBroken;
 }
 double Elevator::computeSpeedForPreset() { 
-    double PIDOutput = 0;
     if (targetPreset == Preset::kSTOP) {
-        return PIDOutput;
+        return 0;
     }
 
-    units::turn_t position = Position[targetPreset];
-    PIDOutput = PIDController.Calculate(getPosition(), position);
-    return PIDOutput;
+    units::turn_t targetPosition = Position[targetPreset];
+    units::turn_t difference = targetPosition - getPosition();
+
+    if (fabs(difference.value()) < ELEVATOR_PREFERENCE.TARGET_TOLERANCE) {
+        return 0;
+    }
+    bool isDirectionUp = difference > 0_tr;
+
+    double speedFactorUp = std::clamp(fabs(difference.value()) * 0.1, 0.2, 1.0);
+
+    if (isDirectionUp) {
+        return ELEVATOR_PREFERENCE.MAX_UP_SPEED * speedFactorUp;
+    }
+    
+    double diffFromStart = startDownPosition - getPosition().value();
+
+    double speedFactorDown = std::clamp(fabs(diffFromStart) * 0.2, 0.3, 1.0);
+
+    speedFactorDown *= std::clamp(fabs(difference.value()) * 0.2, 0.3, 1.0);
+
+    return -ELEVATOR_PREFERENCE.MAX_DOWN_SPEED * speedFactorDown;
 }
 
 // Mason spread the love on 1/28/25 at 8:19:43 >:)
