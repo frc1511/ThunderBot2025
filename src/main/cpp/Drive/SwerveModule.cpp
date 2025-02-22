@@ -11,9 +11,10 @@ SwerveModule::SwerveModule(int driveID, int turningID, int canCoderID, units::de
   driveRequest(ctre::phoenix6::controls::VelocityVoltage{(units::turns_per_second_t)0}.WithSlot(0))
 
 {
+    doConfiguration(false);
 }
 
-void SwerveModule::doPersistentConfiguration()
+void SwerveModule::doConfiguration(bool persist)
 {
     // Can Coder
     ctre::phoenix6::configs::MagnetSensorConfigs magnetConfig;

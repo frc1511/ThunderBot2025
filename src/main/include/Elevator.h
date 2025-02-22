@@ -3,6 +3,7 @@
 #include "Basic/Component.h"
 #include "Basic/IOMap.h"
 #include "Preferences.h"
+#include "Gamepiece/Wrist.h"
 
 #include <rev/SparkMax.h>
 #include <rev/config/SparkMaxConfig.h>
@@ -13,10 +14,11 @@ class Controls;
 
 class Elevator : public Component {
   public:
+    Elevator(Wrist *wrist_);
     void process() override;
 
     void resetToMatchMode(MatchMode priorMode, MatchMode mode) override;
-    void doPersistentConfiguration() override;
+    void doConfiguration(bool persist) override;
     void sendFeedback() override;
 
     bool getLowerLimit();
@@ -35,6 +37,9 @@ class Elevator : public Component {
         kL3,
         kL4,
         kNET,
+        kTRANSIT,
+        kREEF_LOW,
+        kREEF_HIGH,
         _enum_MAX,
     };
     void goToPreset(Preset preset);
@@ -48,15 +53,18 @@ class Elevator : public Component {
     Preset getCurrentPreset();
   private:
     units::turn_t Position[Preset::_enum_MAX] {
-        0_tr,   // Stopped (Does not move to 0 turns)
-        12_tr,  // Ground
-        24_tr, // Processor
-        35_tr, // Coral Station
-        30_tr, // L1
-        40_tr, // L2
-        50_tr, // L3
-        60_tr, // L4
-        70_tr  // Net
+        0_tr,     // Stopped (Does not move to 0 turns)
+        0_tr,     // Ground
+        0_tr,     // Processor
+        12.13_tr, // Coral Station
+        8_tr,     // L1
+        9_tr,     // L2
+        23_tr,    // L3
+        56_tr,    // L4
+        76_tr,    // Net
+        0_tr,     // Transit
+        19_tr,    // Reef Low
+        33_tr,    // Reef High
     };
 
     Preset targetPreset = Elevator::Preset::kSTOP;
@@ -79,6 +87,8 @@ class Elevator : public Component {
     frc::DigitalInput upperLimitSwitch {DIO_ELEVATOR_TOP_LIMITSWITCH};
 
     double startDownPosition = 0;
+
+    Wrist *wrist;
 
     friend class Controls;
 };

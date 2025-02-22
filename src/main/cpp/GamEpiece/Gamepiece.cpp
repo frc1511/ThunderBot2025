@@ -10,7 +10,7 @@ void Gamepiece::process() {
 
 }
 
-void Gamepiece::doPersistentConfiguration() {}
+void Gamepiece::doConfiguration(bool persist) {}
 
 void Gamepiece::sendFeedback() {
     frc::SmartDashboard::PutBoolean("Calgae Autopilot",   calgaeAutopilot);
@@ -23,13 +23,13 @@ void Gamepiece::moveToPreset(Preset preset) {
     targetPreset = preset;
 
     if (calgae != nullptr) {
-        calgaeAutopilot = true;
+        // calgaeAutopilot = true;
         switch (targetPreset) {
         case Gamepiece::kCORAL_STATION:
-            calgae->setMotorMode(Calgae::MotorModes::kCORAL_INTAKE); // Intake for the coral station
+            // calgae->setMotorMode(Calgae::MotorModes::kCORAL_INTAKE); // Intake for the coral station
             break;
         case Gamepiece::kGROUND:
-            calgae->setMotorMode(Calgae::MotorModes::kALGAE_INTAKE); // Intake algae if on the ground
+            // calgae->setMotorMode(Calgae::MotorModes::kALGAE_INTAKE); // Intake algae if on the ground
             break;
         // kSTOP preset should be handled by controls
         default:
@@ -48,7 +48,11 @@ void Gamepiece::moveToPreset(Preset preset) {
         case Gamepiece::kL2:            wrist->toPreset(Wrist::Preset::kBRANCH2_3); break;
         case Gamepiece::kL3:            wrist->toPreset(Wrist::Preset::kBRANCH2_3); break;
         case Gamepiece::kL4:            wrist->toPreset(Wrist::Preset::kBRANCH4);   break;
+        case Gamepiece::kNET:           wrist->toPreset(Wrist::Preset::kTROUGH);    break;
         case Gamepiece::kPROCESSOR:     wrist->toPreset(Wrist::Preset::kPROCESSOR); break;
+        case Gamepiece::kTRANSIT:       wrist->toPreset(Wrist::Preset::kTRANSIT);   break;
+        case Gamepiece::kREEF_HIGH:     wrist->toPreset(Wrist::Preset::kREEF);      break;
+        case Gamepiece::kREEF_LOW:      wrist->toPreset(Wrist::Preset::kREEF);      break;
         // kSTOP preset should be handled by controls
         default:
             // Not a preset where we do something? Don't do anything
@@ -68,6 +72,9 @@ void Gamepiece::moveToPreset(Preset preset) {
         case Gamepiece::kL4:            elevator->goToPreset(Elevator::Preset::kL4);            break;
         case Gamepiece::kNET:           elevator->goToPreset(Elevator::Preset::kNET);           break;
         case Gamepiece::kPROCESSOR:     elevator->goToPreset(Elevator::Preset::kPROCESSOR);     break;
+        case Gamepiece::kTRANSIT:       elevator->goToPreset(Elevator::Preset::kTRANSIT);       break;
+        case Gamepiece::kREEF_HIGH:     elevator->goToPreset(Elevator::Preset::kREEF_HIGH);     break;
+        case Gamepiece::kREEF_LOW:      elevator->goToPreset(Elevator::Preset::kREEF_LOW);      break;
         // kSTOP preset should be handled by controls
         default:
             // Not a preset where we do something? Don't do anything
@@ -110,6 +117,7 @@ std::string Gamepiece::targetPresetAsString() {
     case Preset::kL3: return "L3";
     case Preset::kL4: return "L4";
     case Preset::kNET: return "Net";
+    case Preset::kTRANSIT: return "Transit";
     default: return "Error reading motorSpeed";
     }
 }

@@ -14,7 +14,7 @@
 class Hang : public Component {
   public:
     Hang();
-    void doPersistentConfiguration();
+    void doConfiguration(bool persist);
 
     void process();
 

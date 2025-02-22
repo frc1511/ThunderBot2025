@@ -1,13 +1,13 @@
 #include "GamEpiece/Calgae.h"
 
 Calgae::Calgae() {
-    doPersistentConfiguration();
+    doConfiguration(false);
 }
 
 Calgae::~Calgae() {
 }
 
-void Calgae::doPersistentConfiguration() {}
+void Calgae::doConfiguration(bool persist) {}
 
 void Calgae::resetToMatchMode(Component::MatchMode lastMode, Component::MatchMode mode) {
     stopMotors();
@@ -19,6 +19,7 @@ void Calgae::resetToMatchMode(Component::MatchMode lastMode, Component::MatchMod
         lastGamepieceState = GamepieceState::kCORAL; // "I don't see why not." -Noah, "Huh?" -Trevor
         break;
     case Component::MatchMode::TELEOP:
+        updateGamepieceState();
         lastGamepieceState = currentGamepieceState;
         break;
     default:
@@ -40,6 +41,7 @@ void Calgae::sendFeedback() {
     frc::SmartDashboard::PutNumber ("Calgae Motor Out Voltage"                   , motor.GetVoltage().value()              );
 }
 
+// #define TMP
 void Calgae::process() {
     updateGamepieceState();
     motorSpeed = MotorSpeed::kSTOPPED; // In case we make it through the below logic without getting a speed
@@ -145,9 +147,13 @@ void Calgae::stopMotors() {
 }
 
 void Calgae::runMotors(double speed) {
+    #ifdef TMP
+    if (speed < 0) {
+        speed = -0.7;
+    }
+    #endif
     speed = std::clamp(speed, -1.0, 1.0);
-    printf("Run at %lf\n", speed);
-    motor.Set(speed);
+    motor.Set(speed); // NOTE: + is for IN, - is for OUT
 }
 
 void Calgae::updateGamepieceState() {

@@ -1,8 +1,10 @@
 #include "Hang.h"
 
-Hang::Hang() {}
+Hang::Hang() {
+    doConfiguration(false);
+}
 
-void Hang::doPersistentConfiguration() {
+void Hang::doConfiguration(bool persist) {
 
 }
 

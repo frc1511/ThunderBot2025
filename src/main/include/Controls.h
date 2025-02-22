@@ -23,6 +23,7 @@ class Controls : public Component {
     void process();
     void sendFeedback();
     void utilizeSwitchBoard();
+    bool shouldPersistentConfig();
  private:
 
     Drive* drive;

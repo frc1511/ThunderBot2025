@@ -55,7 +55,7 @@ public:
     void driveWithVelocities(units::meters_per_second_t xVel, units::meters_per_second_t yVel, units::radians_per_second_t angVel, unsigned flags);
     
     void sendFeedback();
-    void doPersistentConfiguration() override;
+    void doConfiguration(bool persist) override;
 
     /// MARK: Field Centric
 

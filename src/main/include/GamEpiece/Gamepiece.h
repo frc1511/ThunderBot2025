@@ -12,7 +12,7 @@ class Gamepiece : public Component {
     Gamepiece(Calgae* calgae_, Wrist* wrist_, Elevator* elevator_);
 
     void process();
-    void doPersistentConfiguration();
+    void doConfiguration(bool persist);
     void sendFeedback();
 
     enum Preset {
@@ -25,6 +25,9 @@ class Gamepiece : public Component {
         kL3,
         kL4,
         kNET,
+        kTRANSIT,
+        kREEF_LOW,
+        kREEF_HIGH,
         _enum_MAX,
     };
 

@@ -1,42 +1,73 @@
 #include "GamEpiece/Wrist.h"
 
 Wrist::Wrist() {
-    PIDController.Reset(getEncoderDegrees());
-    PIDController.DisableContinuousInput(); // No 360 rotate. :(
-    PIDController.SetTolerance(WRIST_PREFERENCE.ANGLE_TOLERANCE);
-
+    doConfiguration(false);
     encoder.SetAssumedFrequency(975.6_Hz); // From REV specs
     encoder.SetConnectedFrequencyThreshold(100); // NOTE: We should ensure that this one is correct
 }
 
 void Wrist::process() {
-    motor.SetSpeed(0);
-    return;
-    
-    if (!encoderBroken) {
-        units::degree_t degrees = getEncoderDegrees();
-        double speed = PIDController.Calculate(degrees);
-        setSpeed(speed);
+    if (!encoder.IsConnected()) {
+        encoderBroken = true;
+    }
+    if (!encoderBroken && withinEncoderSafeZone()) {
+        if (!manual) {
+            if (atPreset()) {
+                setSpeed(0);
+                return;
+            }
+
+            units::degree_t targetPosition = Positions[currentPreset];
+            units::degree_t difference = targetPosition - getEncoderDegrees();
+            units::degree_t diffFromStart = startPosition - getEncoderDegrees();
+
+            double speedFactor = std::clamp(difference.value() * 0.1, -1.0, 1.0);
+            // speedFactor *= std::clamp(fabs(difference.value()) * 0.05, 0.3, 1.0);
+
+            setSpeed(WRIST_PREFERENCE.MAX_SPEED * speedFactor);
+        } else {
+            setSpeed(manualSpeed);
+        }
+    } else {
+        setSpeed(0);
     }
 }
 
-void Wrist::doPersistentConfiguration() {}
+void Wrist::doConfiguration(bool persist) {}
 
 void Wrist::sendFeedback() {
+    frc::SmartDashboard::PutBoolean("Wrist Manual",          manual);
+    frc::SmartDashboard::PutNumber ("Wrist Manual Out",      manualSpeed);
     frc::SmartDashboard::PutNumber ("Wrist Encoder Raw",     getRawEncoder());
     frc::SmartDashboard::PutNumber ("Wrist Degrees",         getEncoderDegrees().value());
     frc::SmartDashboard::PutString ("Wrist Target Preset",   presetAsString());
     frc::SmartDashboard::PutNumber ("Wrist Target Position", Positions[currentPreset].value());
     frc::SmartDashboard::PutNumber ("Wrist Motor Speed",     motor.GetSpeed());
-    frc::SmartDashboard::PutBoolean("Wrist At Goal",         PIDController.AtGoal());
+    frc::SmartDashboard::PutBoolean("Wrist At Goal",         atPreset());
+}
+
+bool Wrist::withinEncoderSafeZone() {
+    if (getEncoderDegrees() < WRIST_PREFERENCE.LOWEST_ANGLE - WRIST_PREFERENCE.ENCODER_FAILURE_OUTBOUND) {
+        printf("WRIST ENCODER FAILURE\n");
+        return false;
+    }
+    if (getEncoderDegrees() > WRIST_PREFERENCE.HIGHEST_ANGLE + WRIST_PREFERENCE.ENCODER_FAILURE_OUTBOUND) {
+        printf("WRIST ENCODER FAILURE\n");
+        return false;
+    }
+    return true;
 }
 
 void Wrist::toPreset(Wrist::Preset preset) {
     currentPreset = preset;
+    startPosition = getEncoderDegrees();
 }
 
 bool Wrist::atPreset() {
-    return PIDController.AtSetpoint();
+    units::degree_t targetPosition = Positions[currentPreset];
+    units::degree_t difference = targetPosition - getEncoderDegrees();
+
+    return fabs(difference.value()) < WRIST_PREFERENCE.ANGLE_TOLERANCE.value();
 }
 
 void Wrist::setEncoderBroken(bool isBroken) {
@@ -47,17 +78,39 @@ void Wrist::setEncoderBroken(bool isBroken) {
     }
 }
 
+void Wrist::manualMovement(double speed) {
+    manual = true;
+    manualSpeed = speed;
+}
+
+bool Wrist::wristIsUnsafe() {
+    if (getEncoderDegrees() > WRIST_PREFERENCE.UNSAFE_MIN && !encoderBroken)
+        return true;
+    return false;
+}
+
 double Wrist::getRawEncoder() {
     return encoder.Get(); 
 }
 
 units::degree_t Wrist::getEncoderDegrees() {
-    return units::degree_t((getRawEncoder() - WRIST_PREFERENCE.OFFSET) * 360); // 0-1 -> 0-360
+    return units::degree_t(getRawEncoder() * 360) - WRIST_PREFERENCE.UP_ZERO; // 0-1 -> 0-360
 }
 
 void Wrist::setTarget(Preset preset) {
+    manual = false;
     currentPreset = preset;
-    PIDController.SetGoal(Positions[preset]);
+}
+
+double Wrist::feedForwardPower() {
+    double radFromUp = getEncoderDegrees().value() * (std::numbers::pi / 180);
+    frc::SmartDashboard::PutNumber("Wrist Rad From Up", radFromUp);
+
+    if (getEncoderDegrees() > 45_deg) {
+        return sin(radFromUp) * -WRIST_PREFERENCE.MAX_FEED_FORWARD_POWER_HIGH_ANGLE;
+    }
+
+    return sin(radFromUp) * -WRIST_PREFERENCE.MAX_FEED_FORWARD_POWER_LOW_ANGLE;
 }
 
 void Wrist::setSpeed(double speed) {
@@ -68,6 +121,8 @@ void Wrist::setSpeed(double speed) {
     if (speed > 0 && getEncoderDegrees() > WRIST_PREFERENCE.HIGHEST_ANGLE) {
         speed = 0;
     }
+    speed += feedForwardPower();
+    frc::SmartDashboard::PutNumber("Wrist Speed", speed);
     motor.SetSpeed(speed);
 }
 
@@ -85,6 +140,8 @@ std::string Wrist::presetAsString() {
         return "Branch 4";
     case Preset::kPROCESSOR:
         return "Processor";
+    case Preset::kTRANSIT:
+        return "Transit";
     default:
        return "ERROR: Unknown/Incorrect";
     }

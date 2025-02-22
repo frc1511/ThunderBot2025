@@ -13,7 +13,7 @@ class Calgae : public Component {
     Calgae();
     ~Calgae();
 
-    void doPersistentConfiguration();
+    void doConfiguration(bool persist);
 
     void resetToMatchMode(Component::MatchMode lastMode, Component::MatchMode mode);
 

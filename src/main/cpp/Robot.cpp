@@ -29,7 +29,7 @@ Robot::Robot() :
 #endif
 
 #ifdef ENABLE_ELEVATOR
-	elevator = new Elevator();
+	elevator = new Elevator(wrist);
 	allComponents.push_back(elevator);
 #endif
 
@@ -96,15 +96,17 @@ void Robot::DisabledPeriodic() {
 	#ifdef ENABLE_BLINKY_BLINKY
 	blinkyBlinky->process();
 	#endif
+	if (controls->shouldPersistentConfig()) {
+		for (Component* component : allComponents) {
+			component->doConfiguration(true);
+		}
+
+		printf("Persistent Configurations Applied \n");
+	}
 }
 
 void Robot::TestInit() {
     reset(Component::MatchMode::TEST);
-	for (Component* component : allComponents) {
-		component->doPersistentConfiguration();
-	}
-
-	printf("Persistent Configurations Applied \n");
 }
 
 void Robot::TestPeriodic() {

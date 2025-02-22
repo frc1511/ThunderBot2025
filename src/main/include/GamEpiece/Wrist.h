@@ -6,7 +6,6 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/PWM.h>
-#include <frc/controller/ProfiledPIDController.h>
 #include <frc/DutyCycleEncoder.h>
 #include <units/angle.h>
 
@@ -16,7 +15,7 @@ class Wrist : public Component {
 
     void process();
 
-    void doPersistentConfiguration();
+    void doConfiguration(bool persist);
 
     void sendFeedback();
 
@@ -27,8 +26,12 @@ class Wrist : public Component {
         kBRANCH2_3,
         kBRANCH4,
         kPROCESSOR,
+        kTRANSIT,
+        kREEF,
         _enum_MAX
     };
+
+    bool withinEncoderSafeZone();
 
     void toPreset(Preset preset);
 
@@ -36,16 +39,22 @@ class Wrist : public Component {
 
     void setEncoderBroken(bool isBroken);
 
+    void manualMovement(double speed);
+
+    bool wristIsUnsafe();
+
   private:
-    Preset currentPreset = Preset::kGROUND;
+    Preset currentPreset = Preset::kTRANSIT;
 
     units::degree_t Positions[Preset::_enum_MAX] = {
-        0_deg,   // Ground
-        35_deg,  // Station
-        35_deg,  // Trough
-        55_deg,  // Branch 2 & 3
-        75_deg,  // Branch 4
-        0_deg,   // Processor
+         63_deg,  // Ground
+        -37_deg,  // Station, Max back angle
+        -19_deg,  // Trough
+        -19_deg,  // Branch 2 & 3
+         100_deg, // Branch 4
+         25_deg,  // Processor
+        -37_deg,  // Transit
+        -35_deg,  // Reef
     };
 
     double getRawEncoder();
@@ -54,17 +63,18 @@ class Wrist : public Component {
 
     void setTarget(Preset preset);
 
+    double feedForwardPower();
+
     void setSpeed(double speed);
 
     std::string presetAsString();
+
+    bool manual = false;
+    double manualSpeed = 0.0;
+    units::degree_t startPosition = 0_deg;
 
     frc::PWM motor {PWM_WRIST}; // The wrist motor
 
     frc::DutyCycleEncoder encoder {DIO_WRIST_ENCODER}; // The through bore encoder
     bool encoderBroken = false;
-
-    frc::ProfiledPIDController<units::degrees> PIDController {
-        WRIST_PREFERENCE.PID.Kp, WRIST_PREFERENCE.PID.Ki, WRIST_PREFERENCE.PID.Kd,
-        frc::TrapezoidProfile<units::degrees>::Constraints(WRIST_PREFERENCE.PID.MaxVel, WRIST_PREFERENCE.PID.MaxAccel)
-    };
 };

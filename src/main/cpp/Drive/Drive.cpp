@@ -109,10 +109,10 @@ void Drive::process()
 }
 
 
-void Drive::doPersistentConfiguration()
+void Drive::doConfiguration(bool persist)
 {
     for (SwerveModule* module : swerveModules) {
-        module->doPersistentConfiguration();
+        module->doConfiguration(persist);
     }
 }
 

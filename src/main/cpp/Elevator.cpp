@@ -1,4 +1,8 @@
 #include "Elevator.h" 
+Elevator::Elevator(Wrist *wrist_)
+: wrist(wrist_) {
+    doConfiguration(false);
+}
 void Elevator::process() {
     double motorSpeed = 0;
     
@@ -22,6 +26,10 @@ void Elevator::process() {
 
     if (atMaxHeight() && motorSpeed > 0)
         motorSpeed = 0;
+
+    if (wrist != nullptr)
+        if (wrist->wristIsUnsafe())
+            motorSpeed = 0;
     
     motorSpeed += 0.05; // Temp Feedfoward
 
@@ -39,15 +47,15 @@ void Elevator::resetToMatchMode(MatchMode priorMode, MatchMode mode) { //resets 
     rightSparkMax.Set(0);
 }
 
-void Elevator::doPersistentConfiguration() {
+void Elevator::doConfiguration(bool persist) {
     rev::spark::SparkMaxConfig motorConfig {};
     
     motorConfig.Inverted(false);
     motorConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kBrake);
-    rightSparkMax.Configure(motorConfig, rev::spark::SparkBase::ResetMode::kNoResetSafeParameters, rev::spark::SparkBase::PersistMode::kPersistParameters);
+    rightSparkMax.Configure(motorConfig, rev::spark::SparkBase::ResetMode::kNoResetSafeParameters, persist ? rev::spark::SparkBase::PersistMode::kPersistParameters : rev::spark::SparkBase::PersistMode::kNoPersistParameters);
     
     motorConfig.Inverted(true);
-    leftSparkMax.Configure(motorConfig, rev::spark::SparkBase::ResetMode::kNoResetSafeParameters, rev::spark::SparkBase::PersistMode::kPersistParameters);
+    leftSparkMax.Configure(motorConfig, rev::spark::SparkBase::ResetMode::kNoResetSafeParameters, persist ? rev::spark::SparkBase::PersistMode::kPersistParameters : rev::spark::SparkBase::PersistMode::kNoPersistParameters);
 }
 
 void Elevator::sendFeedback() {
@@ -93,10 +101,6 @@ Elevator::Preset Elevator::getCurrentPreset() {
 
 units::turn_t Elevator::getPosition() {
     return units::turn_t((leftEncoder.GetPosition() + rightEncoder.GetPosition()) / 2);
-}
-
-double getHeightAsPercent() {
-    
 }
 
 void Elevator::goToPreset(Preset target) {
