@@ -9,7 +9,7 @@ Controls::Controls(Drive* drive_, Gamepiece* gamepiece_, Calgae* calgae_, Wrist*
     blinkyBlinky(blinkyBlinky_),
     hang(hang_)
 {}
-// #define TMP
+
 void Controls::process() {
     // MARK: Drive
     if (drive != nullptr && driveController.IsConnected()) {
@@ -60,23 +60,11 @@ void Controls::process() {
 
         // SWAP: 90_deg offset for drive
         double finalSpeedReduction = 0.3; //1 - speedReduction
-        #ifdef TMP
-        static double r = 0.5;
-        if (driveController.GetPOV() == 0) {
-            r += 0.05;
-            printf("Drive: %lf\n", r);
-        } else if (driveController.GetPOV() == 180) {
-            r -= 0.05;
-            printf("Drive: %lf\n", r);
-        }
-        finalSpeedReduction = r;
-        #endif
         drive->driveFromPercents(yPercent * finalSpeedReduction, xPercent * finalSpeedReduction, rotPercent * finalSpeedReduction, flags);
     }
 
     // MARK: Aux
     if (gamepiece != nullptr && auxController.IsConnected()) {
-        #ifndef TMP
         bool toGround = auxController.GetPOV() == 180;
         bool toProcessor = auxController.GetPOV(0) == 270;
         bool toCoralStation = auxController.GetPOV(0) == 90;
@@ -99,7 +87,6 @@ void Controls::process() {
         } else if (toProcessor)    { gamepiece->moveToPreset(Gamepiece::Preset::kPROCESSOR);
         } else if (toGround)       { gamepiece->moveToPreset(Gamepiece::Preset::kGROUND); 
         } else if (toTransit)      { gamepiece->moveToPreset(Gamepiece::Preset::kTRANSIT); }
-        #endif
     }
 
     // #define CALGAE_SENSOR_BROKEN false// Replace with switchboard?
@@ -156,17 +143,6 @@ void Controls::process() {
     //     double movementPercent = -auxController.GetLeftY();
     //     if (fabs(movementPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
     //         movementPercent = 0;
-    //     #ifdef TMP
-    //     static double er = 0.5;
-    //     if (auxController.GetPOV() == 0) {
-    //         er += 0.05;
-    //         printf("Elevator: %lf\n", er);
-    //     } else if (auxController.GetPOV() == 180) {
-    //         er -= 0.05;
-    //         printf("Elevator: %lf\n", er);
-    //     }
-    //     movementPercent *= er;
-    //     #endif
     //     gamepiece->elevator->manualMovement(movementPercent);
     // }
 
@@ -176,17 +152,6 @@ void Controls::process() {
     //     double movementPercent = -auxController.GetRightY();
     //     if (fabs(movementPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
     //         movementPercent = 0;
-    //     #ifdef TMP
-    //     static double wr = 0.5;
-    //     if (auxController.GetPOV() == 90) {
-    //         wr += 0.05;
-    //         printf("Wrist: %lf\n", wr);
-    //     } else if (auxController.GetPOV() == 270) {
-    //         wr -= 0.05;
-    //         printf("Wrist: %lf\n", wr);
-    //     }
-    //     movementPercent *= wr;
-    //     #endif
     //     gamepiece->wrist->manualMovement(movementPercent);
     // }
 }

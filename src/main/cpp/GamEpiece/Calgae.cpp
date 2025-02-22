@@ -41,7 +41,6 @@ void Calgae::sendFeedback() {
     frc::SmartDashboard::PutNumber ("Calgae Motor Out Voltage"                   , motor.GetVoltage().value()              );
 }
 
-// #define TMP
 void Calgae::process() {
     updateGamepieceState();
     motorSpeed = MotorSpeed::kSTOPPED; // In case we make it through the below logic without getting a speed
@@ -147,11 +146,6 @@ void Calgae::stopMotors() {
 }
 
 void Calgae::runMotors(double speed) {
-    #ifdef TMP
-    if (speed < 0) {
-        speed = -0.7;
-    }
-    #endif
     speed = std::clamp(speed, -1.0, 1.0);
     motor.Set(speed); // NOTE: + is for IN, - is for OUT
 }
