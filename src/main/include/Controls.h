@@ -12,6 +12,7 @@
 #include "Hang.h"
 #include "Libraries/elasticlib.h"
 #include "Alerts.h"
+#include "ControlMap.h"
 
 class Controls : public Component {
   public:

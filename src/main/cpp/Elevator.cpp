@@ -30,11 +30,15 @@ void Elevator::process() {
     if (wrist != nullptr)
         if (wrist->wristIsUnsafe())
             motorSpeed = 0;
-    
+
     motorSpeed += 0.05; // Temp Feedfoward
 
     motorSpeed = std::clamp(motorSpeed, -ELEVATOR_PREFERENCE.MAX_DOWN_SPEED, ELEVATOR_PREFERENCE.MAX_UP_SPEED);
-    
+
+    if (isSlow) {
+        motorSpeed *= ELEVATOR_PREFERENCE.PITMODE_SPEED_REDUCTION;
+    }
+
     rightSparkMax.Set(motorSpeed);
     leftSparkMax.Set(motorSpeed);
 }
@@ -159,7 +163,15 @@ double Elevator::computeSpeedForPreset() {
 
     speedFactorDown *= std::clamp(fabs(difference.value()) * 0.1, 0.2, 1.0);
 
-    return -ELEVATOR_PREFERENCE.MAX_DOWN_SPEED * speedFactorDown;
+    return -ELEVATOR_PREFERENCE.MAX_DOWN_SPEED * speedFactorDown; // TODO: Noticed this. Should this function only return the down?
+}
+
+void Elevator::slowYourRoll(bool shouldSlow) {
+    isSlow = true;
+}
+
+bool Elevator::shouldSlow() {
+    return isSlow;
 }
 
 // Mason spread the love on 1/28/25 at 8:19:43 >:)

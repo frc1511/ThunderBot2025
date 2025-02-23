@@ -44,6 +44,8 @@ class Wrist : public Component {
 
     bool wristIsUnsafe();
 
+    void slowYourRoll(bool shouldSlow);
+    bool shouldSlow();
   private:
     Preset currentPreset = Preset::kTRANSIT;
 
@@ -72,6 +74,8 @@ class Wrist : public Component {
     bool manual = false;
     units::degree_t manualAngle = 0_deg;
     units::degree_t startPosition = 0_deg;
+
+    bool isSlow = false;
 
     frc::PWM motor {PWM_WRIST}; // The wrist motor
 

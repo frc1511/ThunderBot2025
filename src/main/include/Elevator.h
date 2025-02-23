@@ -52,6 +52,9 @@ class Elevator : public Component {
     double getPercentHeight();
 
     Preset getCurrentPreset();
+
+    void slowYourRoll(bool shouldSlow);
+    bool shouldSlow();
   private:
     units::turn_t Position[Preset::_enum_MAX] {
         0_tr,     // Stopped (Does not move to 0 turns)
@@ -89,6 +92,8 @@ class Elevator : public Component {
     frc::DigitalInput upperLimitSwitch {DIO_ELEVATOR_TOP_LIMITSWITCH};
 
     double startDownPosition = 0;
+
+    bool isSlow = false;
 
     Wrist *wrist;
 

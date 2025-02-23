@@ -117,8 +117,21 @@ void Wrist::setSpeed(double speed) {
         speed = 0;
     }
     speed += feedForwardPower();
+
+    if (shouldSlow()) {
+        speed *= WRIST_PREFERENCE.PITMODE_SPEED_REDUCTION;
+    }
+
     frc::SmartDashboard::PutNumber("Wrist Speed", speed);
     motor.SetSpeed(speed);
+}
+
+void Wrist::slowYourRoll(bool shouldSlow) {
+    isSlow = true;
+}
+
+bool Wrist::shouldSlow() {
+    return isSlow;
 }
 
 std::string Wrist::presetAsString() {

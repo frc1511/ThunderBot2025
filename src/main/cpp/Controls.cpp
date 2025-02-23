@@ -166,7 +166,6 @@ void Controls::process() {
         gamepiece->elevator->manualMovement(movementPercent / 3);
     }
 
-    
     // Wrist Manual Movement Code, re-implement if needed
     if (gamepiece->wrist && auxController.IsConnected() && manualMode) {
         double movementPercent = -auxController.GetRightY();
@@ -182,22 +181,55 @@ void Controls::sendFeedback() {
     
 }
 
+// MARK: SwitchBoard
+
 void Controls::utilizeSwitchBoard() {
     if (!switchBoard.IsConnected()) {
-        printf("Switch Board Not Connected to port 2\n");
+        printf("Switch Board Not Connected to port 2\n"); // TODO: Make this an Alert
         manualMode = false;
         return;
     }
 
-    // bool disableLimelight = switchBoard.GetRawButton(1);
+    bool isPitMode = switchBoard.GetRawButton(SWITCHBOARD_PITMODE);
+    // bool disableLimelight = switchBoard.GetRawButton(SWITCHBOARD_LIMELIGHT_DISABLE);
+    // bool wristMotorBroken = switchBoard.GetRawButton(SWITCHBOARD_WRISTMOTOR_BROKEN);
+    manualMode = switchBoard.GetRawButton(SWITCHBOARD_MANUALMODE);
+
+    if (isPitMode) {
+        if (gamepiece != nullptr) { // TODO: Me when nested ifs: https://www.youtube.com/shorts/7ncHu9EvQik?feature=share. Someone please tell me if there is a better way to do this.
+            if (gamepiece->elevator != nullptr) {
+                if (!gamepiece->elevator->shouldSlow()) {
+                    gamepiece->elevator->slowYourRoll(true);
+                }
+            }
+
+            if (gamepiece->wrist != nullptr) {
+                if (!gamepiece->wrist->shouldSlow()) {
+                    gamepiece->wrist->slowYourRoll(true);
+                }
+            }
+        }
+    } else { // if not isPitMode
+        if (gamepiece != nullptr) {
+            if (gamepiece->elevator != nullptr) {
+                if (gamepiece->elevator->shouldSlow()) {
+                    gamepiece->elevator->slowYourRoll(false);
+                }
+            }
+
+            if (gamepiece->wrist != nullptr) {
+                if (gamepiece->wrist->shouldSlow()) {
+                    gamepiece->wrist->slowYourRoll(false);
+                }
+            }
+        }
+    }
+
     // if (limelight != nullptr)
     //     limelight->setFunctioningState(disableLimelight);
 
-    // bool wristMotorBroken = switchBoard.GetRawButton(2);
     // if (gamepiece->wrist != nullptr)
     //     gamepiece->wrist->setEncoderBroken(wristMotorBroken);
-    
-    manualMode = switchBoard.GetRawButton(3);
 }
 
 bool Controls::shouldPersistentConfig() {
