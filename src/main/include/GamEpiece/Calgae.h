@@ -59,6 +59,9 @@ class Calgae : public Component {
      */
     bool algaeRetroreflectiveTripped();
 
+    bool isShootDone();
+
+    void autoShoot();
   private:
 
     /**
@@ -147,4 +150,9 @@ class Calgae : public Component {
 
     frc::DigitalInput coralRetroreflective {DIO_CORAL_RETROREFLECTIVE};
     frc::DigitalInput algaeRetroreflective {DIO_ALGAE_RETROREFLECTIVE};
+
+    bool isAuto = false;
+
+    frc::Timer regrabTimeout;
+    frc::Timer shootTimer;
 };

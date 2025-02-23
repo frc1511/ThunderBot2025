@@ -28,6 +28,7 @@ class Wrist : public Component {
         kPROCESSOR,
         kTRANSIT,
         kREEF,
+        kCORAL_STATION_LOW,
         _enum_MAX
     };
 
@@ -39,7 +40,7 @@ class Wrist : public Component {
 
     void setEncoderBroken(bool isBroken);
 
-    void manualMovement(double speed);
+    void manualMovement(units::degree_t speed);
 
     bool wristIsUnsafe();
 
@@ -47,21 +48,20 @@ class Wrist : public Component {
     Preset currentPreset = Preset::kTRANSIT;
 
     units::degree_t Positions[Preset::_enum_MAX] = {
-         63_deg,  // Ground
-        -37_deg,  // Station, Max back angle
-        -19_deg,  // Trough
-        -19_deg,  // Branch 2 & 3
-         100_deg, // Branch 4
-         25_deg,  // Processor
-        -37_deg,  // Transit
-        -35_deg,  // Reef
+         63_deg,   // Ground
+        -35.75_deg,// Coral Station
+        -19_deg,   // Trough
+        -0_deg,    // Branch 2 & 3
+         53.1_deg, // Branch 4
+         25_deg,   // Processor
+        -37_deg,   // Transit
+         0_deg,    // Reef
+        -37_deg,   // Coral Station Low
     };
 
     double getRawEncoder();
 
     units::degree_t getEncoderDegrees();
-
-    void setTarget(Preset preset);
 
     double feedForwardPower();
 
@@ -70,7 +70,7 @@ class Wrist : public Component {
     std::string presetAsString();
 
     bool manual = false;
-    double manualSpeed = 0.0;
+    units::degree_t manualAngle = 0_deg;
     units::degree_t startPosition = 0_deg;
 
     frc::PWM motor {PWM_WRIST}; // The wrist motor

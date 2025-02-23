@@ -222,11 +222,14 @@ void Drive::sendFeedback()
 
     frc::Pose2d pose(getEstimatedPose());
 
+    swerveFeedback.robotRotation = getRotation();
+    frc::SmartDashboard::PutData("Swerve_Feedback", &swerveFeedback);
+    
     feedbackField.SetRobotPose(pose);
     frc::SmartDashboard::PutData("Field", &feedbackField);
     frc::SmartDashboard::PutData("debug_TrajectoryTargetField", &trajectoryField);
 
-    
+
     // Drive feedback.
     frc::SmartDashboard::PutNumber("Drive_PoseX_m",                 pose.X().value());
     frc::SmartDashboard::PutNumber("Drive_PoseY_m",                 pose.Y().value());
@@ -498,4 +501,46 @@ void Drive::execTrajectory() {
 
     // Make the robot go vroom :D
     setModuleStates(velocities);
+}
+
+
+SwerveFeedback::SwerveFeedback(wpi::array<SwerveModule*, 4>* _swerveModules):
+ swerveModules(_swerveModules) {
+
+}
+void SwerveFeedback::InitSendable(wpi::SendableBuilder &builder)
+{
+    builder.SetSmartDashboardType("SwerveDrive");
+
+    builder.AddDoubleProperty("Front Left Angle", [this] () {
+        return swerveModules->at(0)->getState().angle.Radians().value();
+    }, [this] (double _) {} );
+    builder.AddDoubleProperty("Front Left Velocity", [this] () {
+        return swerveModules->at(0)->getState().speed.value();
+    }, [this] (double _) {});
+
+    builder.AddDoubleProperty("Front Right Angle", [this] () {
+        return swerveModules->at(3)->getState().angle.Radians().value();
+    }, [this] (double _) {});
+    builder.AddDoubleProperty("Front Right Velocity", [this] () {
+        return swerveModules->at(3)->getState().speed.value();
+    }, [this] (double _) {});
+
+    builder.AddDoubleProperty("Back Left Angle", [this] () {
+        return swerveModules->at(1)->getState().angle.Radians().value();
+    }, [this] (double _) {});
+    builder.AddDoubleProperty("Back Left Velocity",  [this] () {
+        return swerveModules->at(1)->getState().speed.value();
+    }, [this] (double _) {});
+
+    builder.AddDoubleProperty("Back Right Angle", [this] () {
+        return swerveModules->at(2)->getState().angle.Radians().value();
+    }, [this] (double _) {});
+    builder.AddDoubleProperty("Back Right Velocity",  [this] () {
+        return swerveModules->at(2)->getState().speed.value();
+    }, [this] (double _) {});
+
+    builder.AddDoubleProperty("Robot Angle", [this] () {
+        return robotRotation.Radians().value();
+    }, [this] (double _) {});
 }

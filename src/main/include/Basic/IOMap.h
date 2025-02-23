@@ -22,9 +22,9 @@
 #define ENABLE_HANG
 
 // Auto requires drive at present
-// #ifdef ENABLE_DRIVE
-//     #define ENABLE_AUTO
-// #endif
+#ifdef ENABLE_DRIVE
+    #define ENABLE_AUTO
+#endif
 
 // Real robot or testboard?
 // #define IS_TESTBOARD

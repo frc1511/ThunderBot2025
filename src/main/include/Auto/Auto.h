@@ -6,6 +6,7 @@
 #include "Drive/CSVTrajectory.h"
 #include "Basic/Component.h"
 #include "Auto/Action.h"
+#include "Gamepiece/Gamepiece.h"
 
 #include "Drive/Drive.h"
 
@@ -14,7 +15,7 @@
 class Auto : public Component {
 
 public:
-    Auto(Drive *drive_, Limelight *limelight_);
+    Auto(Drive *drive_, Limelight *limelight_, Gamepiece *gamepiece_);
 
     void process() override;
     void sendFeedback() override;
@@ -37,6 +38,7 @@ private:
     };
     Drive *drive;
     Limelight *limelight;
+    Gamepiece *gamepiece;
 
     Auto::AutoMode mode = AutoMode::DO_NOTHING;
 
@@ -99,43 +101,41 @@ private:
     };
     const std::map<Path, CSVTrajectory>* paths = nullptr;
 
-    class ElevatorToL1 : public Action {
-      public:
-        ElevatorToL1() {}
-        Action::Result process() override {
-            printf("I RAN ELEVATOR\n");
-            return Action::Result::DONE;
-            // Elevator->gotToPreset();
-            // Action::Result atPosition = Action::Result::WORKING;
-            // if (Elevator->getAtTarget()) {
-            //     atPosition = Action::Result::DONE;
-            // }
-            // return atPosition;
-        }
-    };
-    ElevatorToL1 elevatorToL1;
 
-    class OuttakeCoral : public Action {
+
+
+    class ToL1 : public Action {
       public:
-        OuttakeCoral() {}
+        ToL1(Gamepiece *gamepiece_) : gamepiece(gamepiece_) {};
+        Gamepiece *gamepiece;
         Action::Result process() override {
-            printf("I RAN OUTTAKE CORAL\n");
-            return Action::Result::DONE;
-            // calgae->setMotorMode(Calgae::MotorModes::kSHOOT);
-            // Action::Result shootDone = Action::Result::WORKING;
-            // if (calgae->shootDone()) {
-            //     shootDone = Action::Result::DONE;
-            //     calgae->setMotorMode(Calgae::MotorModes::kDONE_SHOOTING); //TODO: Make sure this actually stops the motors
-            // }
-            // return shootDone;
-        }
+            gamepiece->moveToPreset(Gamepiece::Preset::kL1);
+            return gamepiece->isAtPreset() ? Action::Result::DONE : Action::Result::WORKING;
+        };
     };
-    OuttakeCoral outtakeCoral;
+    ToL1 toL1;
+
+    class ShootCoral : public Action {
+      public:
+        ShootCoral(Gamepiece *gamepiece_) : gamepiece(gamepiece_) {};
+        Gamepiece *gamepiece;
+        Action::Result process() override {
+            gamepiece->calgae->autoShoot();
+            return gamepiece->calgae->isShootDone() ? Action::Result::DONE : Action::Result::WORKING;
+        };
+    };
+    ShootCoral shootCoral;
 
     std::map<u_int32_t, Action*> actions {
-        {1 << 0, &elevatorToL1}, 
-        {1 << 1, &outtakeCoral},
+        {1 << 0, &toL1}, // Ground
+        {1 << 1, &toL1}, // L1
+        {1 << 2, &toL1}, // L2
+        {1 << 3, &toL1}, // L3
+        {1 << 4, &toL1}, // L4
+        {1 << 5, &shootCoral}
     };
 
     std::string autoSelected;
+
+    bool isAuto = false;
 };

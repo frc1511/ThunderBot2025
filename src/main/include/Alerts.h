@@ -22,11 +22,11 @@ class Alert {
                                                 .displayTime = 9_s,};
     inline static const elastic::Notification elevatorAlert = {.level = elastic::NotificationLevel::WARNING,
                                                 .title = "Elevator Disabled",
-                                                .description = "Drive Disabled",
+                                                .description = "Elevator Disabled",
                                                 .displayTime = 12_s,};
     inline static const elastic::Notification controlsAlert = {.level = elastic::NotificationLevel::WARNING,
-                                                .title = "Elevator Disabled",
-                                                .description = "Drive Disabled",
+                                                .title = "Controls Disabled",
+                                                .description = "Controls Disabled",
                                                 .displayTime = 15_s,};
     inline static const elastic::Notification autoAlert = {.level = elastic::NotificationLevel::WARNING,
                                                 .title = "Autonomous Disabled",
@@ -34,7 +34,7 @@ class Alert {
                                                 .displayTime = 18_s,};
     inline static const elastic::Notification blinkyBlinkyAlert = {.level = elastic::NotificationLevel::WARNING,
                                                 .title = "Blinky Blinky Disabled",
-                                                .description = "Drive Disabled",
+                                                .description = "Blinky Blinky Disabled",
                                                 .displayTime = 21_s,};
 
     static void sendComponentDisableAlerts() {

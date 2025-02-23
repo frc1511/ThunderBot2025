@@ -11,11 +11,13 @@ void Calgae::doConfiguration(bool persist) {}
 
 void Calgae::resetToMatchMode(Component::MatchMode lastMode, Component::MatchMode mode) {
     stopMotors();
+    isAuto = false;
     switch (mode) {
     case Component::MatchMode::DISABLED:
         stopMotors();
         break;
     case Component::MatchMode::AUTO:
+        isAuto = true;
         lastGamepieceState = GamepieceState::kCORAL; // "I don't see why not." -Noah, "Huh?" -Trevor
         break;
     case Component::MatchMode::TELEOP:
@@ -45,6 +47,13 @@ void Calgae::process() {
     updateGamepieceState();
     motorSpeed = MotorSpeed::kSTOPPED; // In case we make it through the below logic without getting a speed
 
+    if (isAuto) {
+        if (shootTimer.Get() >= 0.5_s) {
+            shootTimer.Stop();
+            resetHadGamepiece();
+        }
+    }
+
     if (currentGamepieceState == GamepieceState::kNONE) { // If we don't have a gamepiece, so intake or nothing
         switch (motorMode) {
             case MotorModes::kSTOP: // If we aren't being told to move motors
@@ -53,6 +62,12 @@ void Calgae::process() {
                 if ((lastGamepieceState == GamepieceState::kCORAL) || 
                      lastGamepieceState == GamepieceState::kALGAE) 
                 { // If we lost the gamepiece
+                    regrabTimeout.Start();
+                    if (regrabTimeout.Get() >= 2_s) {
+                        motorSpeed = MotorSpeed::kSTOPPED;
+                        regrabTimeout.Reset();
+                        resetHadGamepiece();
+                    }
                     motorSpeed = MotorSpeed::kREGRAB_SPEED;
                 }
                 break;
@@ -68,6 +83,8 @@ void Calgae::process() {
                     motorSpeed = MotorSpeed::kCORAL_SPEED;
                 } else if (lastGamepieceState == GamepieceState::kALGAE) { // If we had algae
                     motorSpeed = MotorSpeed::kALGAE_SPEED;
+                } else {
+                    motorSpeed = MotorSpeed::kALGAE_SPEED; // ALWAYS Shoot
                 }
                 runMotors(presetShooterSpeeds[motorSpeed]);
                 return; // Return early so we don't intake further down
@@ -102,6 +119,8 @@ void Calgae::process() {
                     motorSpeed = MotorSpeed::kCORAL_SPEED; // Set speed to coral
                 } else if (currentGamepieceState == GamepieceState::kALGAE) { // If we have algae
                     motorSpeed = MotorSpeed::kALGAE_SPEED; // Set speed to Algae
+                } else {
+                    motorSpeed = MotorSpeed::kALGAE_SPEED; // ALWAYS Shoot
                 }
                 break;
             case MotorModes::kDONE_SHOOTING:
@@ -116,7 +135,8 @@ void Calgae::process() {
 
         runMotors(presetShooterSpeeds[motorSpeed]);  // Run motors out at the speed ^
         return;
-    } else if (motorMode == MotorModes::kSHOOT_OVERRIDE) { // For when the sensor is broken
+    } 
+    if (motorMode == MotorModes::kSHOOT_OVERRIDE) { // For when the sensor is broken
         motorSpeed = MotorSpeed::kALGAE_SPEED; // Stronger to accomodate for algae because we can't tell what we have
         runMotors(presetShooterSpeeds[motorSpeed]);
     }
@@ -141,12 +161,27 @@ bool Calgae::algaeRetroreflectiveTripped() {
     return algaeRetroreflective.Get();
 }
 
+bool Calgae::isShootDone() {
+    return shootTimer.Get() >= 0.5_s;
+}
+
+void Calgae::autoShoot() {
+    isAuto = true;
+    shootTimer.Restart();
+    setMotorMode(Calgae::MotorModes::kSHOOT);
+}
+
 void Calgae::stopMotors() {
     motor.StopMotor();
 }
 
 void Calgae::runMotors(double speed) {
     speed = std::clamp(speed, -1.0, 1.0);
+    // #define TMP
+    #ifdef TMP
+    if (speed > 0)
+        speed = 1.0
+    #endif
     motor.Set(speed); // NOTE: + is for IN, - is for OUT
 }
 

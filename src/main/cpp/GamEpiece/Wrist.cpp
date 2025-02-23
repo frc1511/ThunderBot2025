@@ -11,23 +11,21 @@ void Wrist::process() {
         encoderBroken = true;
     }
     if (!encoderBroken && withinEncoderSafeZone()) {
+        units::degree_t targetPosition = Positions[currentPreset];
         if (!manual) {
             if (atPreset()) {
                 setSpeed(0);
                 return;
             }
-
-            units::degree_t targetPosition = Positions[currentPreset];
-            units::degree_t difference = targetPosition - getEncoderDegrees();
-            units::degree_t diffFromStart = startPosition - getEncoderDegrees();
-
-            double speedFactor = std::clamp(difference.value() * 0.1, -1.0, 1.0);
-            // speedFactor *= std::clamp(fabs(difference.value()) * 0.05, 0.3, 1.0);
-
-            setSpeed(WRIST_PREFERENCE.MAX_SPEED * speedFactor);
         } else {
-            setSpeed(manualSpeed);
+            targetPosition = manualAngle;
         }
+        units::degree_t difference = targetPosition - getEncoderDegrees();
+
+        double speedFactor = std::clamp(difference.value() * 0.1, -1.0, 1.0);
+        // speedFactor *= std::clamp(fabs(difference.value()) * 0.05, 0.3, 1.0);
+
+        setSpeed(WRIST_PREFERENCE.MAX_SPEED * speedFactor);
     } else {
         setSpeed(0);
     }
@@ -37,7 +35,7 @@ void Wrist::doConfiguration(bool persist) {}
 
 void Wrist::sendFeedback() {
     frc::SmartDashboard::PutBoolean("Wrist Manual",          manual);
-    frc::SmartDashboard::PutNumber ("Wrist Manual Out",      manualSpeed);
+    frc::SmartDashboard::PutNumber ("Wrist Manual Angle",    manualAngle.value());
     frc::SmartDashboard::PutNumber ("Wrist Encoder Raw",     getRawEncoder());
     frc::SmartDashboard::PutNumber ("Wrist Degrees",         getEncoderDegrees().value());
     frc::SmartDashboard::PutString ("Wrist Target Preset",   presetAsString());
@@ -61,6 +59,8 @@ bool Wrist::withinEncoderSafeZone() {
 void Wrist::toPreset(Wrist::Preset preset) {
     currentPreset = preset;
     startPosition = getEncoderDegrees();
+    manualAngle = 0_deg;
+    manual = false;
 }
 
 bool Wrist::atPreset() {
@@ -78,9 +78,9 @@ void Wrist::setEncoderBroken(bool isBroken) {
     }
 }
 
-void Wrist::manualMovement(double speed) {
+void Wrist::manualMovement(units::degree_t angle) {
     manual = true;
-    manualSpeed = speed;
+    manualAngle = std::clamp(manualAngle + angle, WRIST_PREFERENCE.LOWEST_ANGLE, WRIST_PREFERENCE.HIGHEST_ANGLE);
 }
 
 bool Wrist::wristIsUnsafe() {
@@ -95,11 +95,6 @@ double Wrist::getRawEncoder() {
 
 units::degree_t Wrist::getEncoderDegrees() {
     return units::degree_t(getRawEncoder() * 360) - WRIST_PREFERENCE.UP_ZERO; // 0-1 -> 0-360
-}
-
-void Wrist::setTarget(Preset preset) {
-    manual = false;
-    currentPreset = preset;
 }
 
 double Wrist::feedForwardPower() {

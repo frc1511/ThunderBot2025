@@ -19,15 +19,16 @@ class Gamepiece : public Component {
         kSTOP,
         kGROUND,
         kPROCESSOR,
-        kCORAL_STATION,
+        kTRANSIT,
         kL1,
         kL2,
+        kREEF_LOW,
+        kCORAL_STATION_LOW,
+        kCORAL_STATION,
         kL3,
+        kREEF_HIGH,
         kL4,
         kNET,
-        kTRANSIT,
-        kREEF_LOW,
-        kREEF_HIGH,
         _enum_MAX,
     };
 
@@ -48,4 +49,10 @@ class Gamepiece : public Component {
     std::string targetPresetAsString();
 
     Preset targetPreset = Preset::kSTOP;
+
+    void moveToTarget();
+
+    bool isMovingDown = false;
+    bool wristMoveDone = false;
+    bool elevatorMoveDone = false;
 };

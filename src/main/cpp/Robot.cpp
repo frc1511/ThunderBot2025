@@ -33,11 +33,13 @@ Robot::Robot() :
 	allComponents.push_back(elevator);
 #endif
 
-#ifdef ENABLE_AUTO
-	auto_ = new Auto(drive);
-#endif
 	gamepiece = new Gamepiece(calgae, wrist, elevator);
 	allComponents.push_back(gamepiece);
+
+#ifdef ENABLE_AUTO
+	auto_ = new Auto(drive, &limelight, gamepiece);
+	allComponents.push_back(auto_);
+#endif
 
 #ifdef ENABLE_HANG
 	hang = new Hang();
@@ -49,11 +51,11 @@ Robot::Robot() :
 	allComponents.push_back(blinkyBlinky);
 #endif
 
-	controls = new Controls(drive, gamepiece, calgae, wrist, elevator, blinkyBlinky, hang);
+	controls = new Controls(drive, gamepiece, blinkyBlinky, hang);
 }
 
 void Robot::RobotInit() {
-	if (auto_)
+	if (auto_ != nullptr)
 		auto_->autoSelectorInit();
 }
 
@@ -70,9 +72,6 @@ void Robot::AutonomousInit() {
 	Alert::reAllowControllerAlerts();
 }
 void Robot::AutonomousPeriodic() {
-	if (auto_)
-		auto_->process();
-	
 	for (Component* component : allComponents)
 		component->process();
 }

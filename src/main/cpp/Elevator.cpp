@@ -13,7 +13,7 @@ void Elevator::process() {
     }
 
     if (!encoderZeroed) { // if elevator not at the lower limit switch
-        motorSpeed = -0.01; // move down slowly until at the lower limit switch
+        motorSpeed = -0.03; // move down slowly until at the lower limit switch
     } else if (manualControl) {
         motorSpeed = manualMovementSpeed;
     } else {
@@ -71,6 +71,7 @@ void Elevator::sendFeedback() {
     frc::SmartDashboard::PutBoolean("Elevator Lower Limit tripping",             getLowerLimit());
     frc::SmartDashboard::PutBoolean("Elevator Upper Limit tripping",             getUpperLimit());
     frc::SmartDashboard::PutNumber ("Elevator Manual Movement Speed",            manualMovementSpeed);
+    frc::SmartDashboard::PutBoolean("Elevator Zeroed",                           encoderZeroed);
 }
 
 bool Elevator::atMaxHeight() {
@@ -90,7 +91,7 @@ bool Elevator::getUpperLimit() {
 }
 
 double Elevator::getPercentHeight() {
-    double percentHeight = getPosition()/Position[Preset::kNET];
+    double percentHeight = getPosition() / Position[Preset::kNET];
     return percentHeight;
 }
 
@@ -104,8 +105,10 @@ units::turn_t Elevator::getPosition() {
 }
 
 void Elevator::goToPreset(Preset target) {
+    if (targetPreset != target) { // If we have a new preset
+        startDownPosition = getPosition().value();
+    }
     targetPreset = target;
-    startDownPosition = getPosition().value();
     manualControl = false;
 }
 
@@ -123,7 +126,7 @@ bool Elevator::atPreset() { //detects if at preset
 }
 
 void Elevator::manualMovement(double speed) { // allows input of speed and turns on manual movement
-    manualMovementSpeed = speed;
+    manualMovementSpeed = std::clamp(speed, -1.0, 1.0 );
     manualControl = true;
 }
 
@@ -153,7 +156,7 @@ double Elevator::computeSpeedForPreset() {
 
     double speedFactorDown = std::clamp(fabs(diffFromStart) * 0.2, 0.3, 1.0);
 
-    speedFactorDown *= std::clamp(fabs(difference.value()) * 0.2, 0.3, 1.0);
+    speedFactorDown *= std::clamp(fabs(difference.value()) * 0.2, 0.2, 1.0);
 
     return -ELEVATOR_PREFERENCE.MAX_DOWN_SPEED * speedFactorDown;
 }

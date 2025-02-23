@@ -110,7 +110,7 @@ static PreferencesControls CONTROLS_PREFERENCE;
 
 struct PreferencesCalgae {
     double MOTOR_SPEED_STOPPED = 0.0;
-    double MOTOR_SPEED_INTAKE_CORAL = 0.75;
+    double MOTOR_SPEED_INTAKE_CORAL = 1.0  ;
     double MOTOR_SPEED_SHOOT_CORAL = -0.7;
     double MOTOR_SPEED_INTAKE_ALGAE = 1.0;
     double MOTOR_SPEED_SHOOT_ALGAE = -0.7;
@@ -123,7 +123,7 @@ struct PreferencesWrist {
     units::degree_t UP_ZERO = 100_deg;
     double MAX_FEED_FORWARD_POWER_HIGH_ANGLE = 0.07;
     double MAX_FEED_FORWARD_POWER_LOW_ANGLE = 0.1;
-    units::degree_t ANGLE_TOLERANCE = 0.25_deg;
+    units::degree_t ANGLE_TOLERANCE = 0.5_deg;
     units::degree_t LOWEST_ANGLE = -35_deg;
 
     units::degree_t HIGHEST_ANGLE = 100_deg;
@@ -134,8 +134,8 @@ struct PreferencesWrist {
 static PreferencesWrist WRIST_PREFERENCE;
 
 struct PreferencesElevator {
-    double MAX_DOWN_SPEED = 0.3;
-    double MAX_UP_SPEED = 0.35;
+    double MAX_DOWN_SPEED = 0.5;
+    double MAX_UP_SPEED = 0.50;
     double TARGET_TOLERANCE = 0.2; // in turn_t
     PreferencesElevator() {}
 };

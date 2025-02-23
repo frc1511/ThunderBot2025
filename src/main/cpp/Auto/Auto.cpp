@@ -1,11 +1,15 @@
 #include "Auto/Auto.h"
 
-Auto::Auto(Drive *drive_, Limelight *limelight_)
-    : drive(drive_),
-      limelight(limelight_) {
-}
+Auto::Auto(Drive *drive_, Limelight *limelight_, Gamepiece *gamepiece_)
+: drive(drive_),
+  limelight(limelight_),
+  gamepiece(gamepiece_),
+  toL1(gamepiece_),
+  shootCoral(gamepiece_)
+{}
 void Auto::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
     if (mode == MatchMode::AUTO) {
+        isAuto = true;
         step = 0;
         drive->calibrateIMU();
             /// Separate Red and Blue paths are not required
@@ -26,9 +30,13 @@ void Auto::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
         {
             printf("No alliance selected\n");
         }
+    } else {
+        isAuto = false;
     }
 }
 void Auto::process() { //called during auto
+    if (!isAuto)
+        return;
     switch (mode) { //find what auto mode you are using and do it
         using enum AutoMode;
         case DO_NOTHING:

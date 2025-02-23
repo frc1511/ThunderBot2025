@@ -29,11 +29,17 @@ void BlinkyBlinky::process() {
             // Elevator Sides
             if (!gamepiece->elevator->atPreset() && gamepiece->elevator->getCurrentPreset() != Elevator::Preset::kSTOP) {
                 double elevatorPercentHeight = gamepiece->elevator->getPercentHeight();
-                int litLEDS = floor(elevatorPercentHeight * BLINKY_BLINKY_PREFERENCE.LED_SIDE_STRIP_TOTAL);
+                double litLEDS = elevatorPercentHeight * BLINKY_BLINKY_PREFERENCE.LED_SIDE_STRIP_TOTAL;
+                int majorLEDS = floor(litLEDS);
+                double finalFade = std::clamp(majorLEDS % 1, 0, 1);
                 int sideBufferSize = (int)sideBuffer.size();
                 for (int i = 0; i < sideBufferSize; i++) {
-                    if (i <= litLEDS) {
-                        sideBuffer[i] = LEDData(0, 255, 0);                                         // Green
+                    if (i <= majorLEDS) {
+                        if (i == majorLEDS) {
+                            sideBuffer[i] = LEDData(0, 255 * finalFade, 0);                                         // Green
+                        } else {
+                            sideBuffer[i] = LEDData(0, 255, 0);
+                        }
                     } else {
                         sideBuffer[i] = LEDData(0, 0, 0);                                           // Black
                     }

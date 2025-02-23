@@ -33,6 +33,14 @@
 #include "Auto/Action.h"
 #include "Limelight.h"
 
+class SwerveFeedback : public wpi::Sendable {
+public:
+    SwerveFeedback(wpi::array<SwerveModule*, 4>* _swerveModules);
+    void InitSendable(wpi::SendableBuilder& builder);
+    frc::Rotation2d robotRotation = frc::Rotation2d(0_deg);
+    wpi::array<SwerveModule*, 4>* swerveModules;
+};
+
 class Drive : public Component {
 public:
     Drive(Limelight* _limelight);
@@ -255,4 +263,7 @@ private:
     /// MARK: Limelight
 
     Limelight* limelight;
+
+    /// MARK: Dashboard Extras
+    SwerveFeedback swerveFeedback {&swerveModules};
 };
