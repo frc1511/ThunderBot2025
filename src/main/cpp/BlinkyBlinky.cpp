@@ -36,12 +36,12 @@ void BlinkyBlinky::process() {
                 for (int i = 0; i < sideBufferSize; i++) {
                     if (i <= majorLEDS) {
                         if (i == majorLEDS) {
-                            sideBuffer[i] = LEDData(0, 255 * finalFade, 0);                                         // Green
+                            sideBuffer[i] = LEDData(0, 255 * finalFade, 0); // Green
                         } else {
                             sideBuffer[i] = LEDData(0, 255, 0);
                         }
                     } else {
-                        sideBuffer[i] = LEDData(0, 0, 0);                                           // Black
+                        sideBuffer[i] = LEDData(0, 0, 0);                   // Black
                     }
                 }
                 currentSideStatus = "Elevator Percentage";
@@ -51,11 +51,11 @@ void BlinkyBlinky::process() {
 
         if (!overridePatterns && gamepiece->calgae != nullptr) { // Something else is not already overriding
             if (gamepiece->calgae->hasCoral()) {
-                sideBuffer.fill(LEDData(250, 0, 220));                                             // Pink
+                sideBuffer.fill(LEDData(250, 0, 220)); // Pink
                 currentSideStatus = "Has Coral";
                 overridePatterns = true;
             } else if (gamepiece->calgae->hasAlgae()) {
-                sideBuffer.fill(LEDData(0, 255, 255));                                             // Cyan
+                sideBuffer.fill(LEDData(0, 255, 255)); // Cyan
                 currentSideStatus = "Has Algae";
                 overridePatterns = true;
             }
@@ -104,7 +104,7 @@ void BlinkyBlinky::process() {
 
         switch (currentMode) {
         case Mode::OFF:
-            sideBuffer.fill(LEDData(0, 0, 0));                                                      // Black (off)
+            sideBuffer.fill(LEDData(0, 0, 0)); // Black (off)
             break;
         case Mode::RAINBOW:
             static int rainbowPosition = 0;

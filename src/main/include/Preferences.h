@@ -39,8 +39,8 @@ struct DrivePreferences {
     units::radians_per_second_squared_t DRIVE_AUTO_MAX_ANG_ACCEL = 6.14_rad_per_s_sq;
 
     units::meters_per_second_t DRIVE_MANUAL_MAX_VEL = 5_mps;
-    units::degrees_per_second_t DRIVE_MANUAL_MAX_ANG_VEL = 240_deg_per_s; // 540
-    units::radians_per_second_squared_t DRIVE_MANUAL_MAX_ANG_ACCEL = 4.5_rad_per_s_sq; // 9.42
+    units::degrees_per_second_t DRIVE_MANUAL_MAX_ANG_VEL = 540_deg_per_s; // 540
+    units::radians_per_second_squared_t DRIVE_MANUAL_MAX_ANG_ACCEL = 9.42_rad_per_s_sq; // 9.42
 
     units::meters_per_second_squared_t MAX_ACCEL = 0.01_mps_sq;
 
@@ -125,7 +125,6 @@ struct PreferencesWrist {
     double MAX_FEED_FORWARD_POWER_LOW_ANGLE = 0.1;
     units::degree_t ANGLE_TOLERANCE = 0.5_deg;
     units::degree_t LOWEST_ANGLE = -35_deg;
-
     units::degree_t HIGHEST_ANGLE = 100_deg;
     units::degree_t ENCODER_FAILURE_OUTBOUND = 10_deg;
     units::degree_t UNSAFE_MIN = 80_deg;
@@ -134,8 +133,8 @@ struct PreferencesWrist {
 static PreferencesWrist WRIST_PREFERENCE;
 
 struct PreferencesElevator {
-    double MAX_DOWN_SPEED = 0.5;
-    double MAX_UP_SPEED = 0.50;
+    double MAX_DOWN_SPEED = 0.6;
+    double MAX_UP_SPEED = 0.6;
     double TARGET_TOLERANCE = 0.2; // in turn_t
     PreferencesElevator() {}
 };

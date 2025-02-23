@@ -23,7 +23,7 @@ void Wrist::process() {
         units::degree_t difference = targetPosition - getEncoderDegrees();
 
         double speedFactor = std::clamp(difference.value() * 0.1, -1.0, 1.0);
-        // speedFactor *= std::clamp(fabs(difference.value()) * 0.05, 0.3, 1.0);
+        speedFactor *= std::clamp(fabs(difference.value()) * 0.1, 0.2, 1.0);
 
         setSpeed(WRIST_PREFERENCE.MAX_SPEED * speedFactor);
     } else {
@@ -126,17 +126,21 @@ std::string Wrist::presetAsString() {
     case Preset::kGROUND:
         return "Ground";
     case Preset::kSTATION:
-        return "Station";
+        return "Coral Station";
     case Preset::kTROUGH:
-        return "Trough";
+        return "L1 (Trough)";
     case Preset::kBRANCH2_3:
-        return "Branch 2&3";
+        return "L2 & L3";
     case Preset::kBRANCH4:
-        return "Branch 4";
+        return "L4";
     case Preset::kPROCESSOR:
         return "Processor";
     case Preset::kTRANSIT:
         return "Transit";
+    case Preset::kREEF:
+        return "Reef";
+    case Preset::kCORAL_STATION_LOW:
+        return "Coral Station Low";
     default:
        return "ERROR: Unknown/Incorrect";
     }

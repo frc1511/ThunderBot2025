@@ -49,7 +49,7 @@ class Wrist : public Component {
 
     units::degree_t Positions[Preset::_enum_MAX] = {
          63_deg,   // Ground
-        -35.75_deg,// Coral Station
+        -35_deg,// Coral Station
         -19_deg,   // Trough
         -0_deg,    // Branch 2 & 3
          53.1_deg, // Branch 4
