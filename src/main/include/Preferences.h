@@ -44,6 +44,9 @@ struct DrivePreferences {
 
     units::meters_per_second_squared_t MAX_ACCEL = 0.01_mps_sq;
 
+    double DRIVE_ROTATION_SPEED_MANUAL_LIMITER_SLOWNESS_FACTOR = .5;
+    double DRIVE_VELOCITY_SPEED_MANUAL_LIMITER_SLOWNESS_FACTOR = .5;
+
     DrivePreferences()
     {
         PID_XY.Kp = 7.5;

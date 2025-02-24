@@ -38,6 +38,8 @@ void Controls::process() {
             rotPercent = 0;
         bool lockX = fabs(driveController.GetLeftTriggerAxis()) > CONTROLS_PREFERENCE.AXIS_DEADZONE;
         bool lockY = fabs(driveController.GetRightTriggerAxis()) > CONTROLS_PREFERENCE.AXIS_DEADZONE;
+        bool slowDrive = driveController.GetXButtonPressed();
+        bool speedUpDrive = driveController.GetBButtonPressed();
         bool lockRot = driveController.GetRightStickButtonPressed();
         bool resetIMU = driveController.GetYButtonPressed();
         bool brickMode = driveController.GetAButton();
@@ -55,6 +57,14 @@ void Controls::process() {
 
         if (resetIMU)
             drive->resetOdometry();
+
+        if (slowDrive) {
+            drive->slowYourRoll();
+        }
+
+        if (speedUpDrive) {
+            drive->unslowYourRoll();
+        }
 
         // SWAP: 90_deg offset for drive
         double finalSpeedReduction = 1; //1 - speedReduction

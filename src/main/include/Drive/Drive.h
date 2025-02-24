@@ -114,6 +114,8 @@ public:
 
     void setAccelerationReduction(double reduction);
 
+    void slowYourRoll();
+    void unslowYourRoll();
 private:
     void executeVelocityData();
     void setModuleStates(frc::ChassisSpeeds speeds);
@@ -259,6 +261,8 @@ private:
      * Executes the instructions for when the robot is running a trajectory.
      */
     void execTrajectory();
+
+    double speedLimiting = 1.0; // This multiplies
 
     /// MARK: Limelight
 
