@@ -8,8 +8,7 @@ driveController(
         // Setup the drive controller with the individual axis PID controllers.
         return frc::HolonomicDriveController(xPIDController, yPIDController, trajectoryThetaPIDController);
     } ()),
-limelight(_limelight)
- {
+limelight(_limelight) {
     manualThetaPIDController.EnableContinuousInput(units::radian_t(-180_deg), units::radian_t(180_deg));
 
     // Enable the trajectory drive controller.
@@ -19,8 +18,7 @@ limelight(_limelight)
     // frc::SmartDashboard::PutData("Field", &m_field);
 }
 
-Drive::~Drive() 
-{
+Drive::~Drive() {
     for (SwerveModule* module : swerveModules) {
        delete module;
     }
@@ -50,8 +48,7 @@ void Drive::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
         //setIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 
         trajectoryTimer.Stop();
-    }
-    else {
+    } else {
         // Brake all motors when enabled to help counteract pushing.
         //setIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 
@@ -79,8 +76,7 @@ void Drive::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
         wasAuto = false;
         frc::Pose2d currPose(getEstimatedPose());
         // resetOdometry(frc::Pose2d(currPose.X(), currPose.Y(), currPose.Rotation().Degrees() + 90_deg + (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed ? 180_deg : 0_deg)));
-    }
-    else {
+    } else {
         // Check if going from Auto to Disabled.
         wasAuto = priorMode == Component::MatchMode::AUTO && mode == Component::MatchMode::DISABLED;
 
@@ -91,8 +87,7 @@ void Drive::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
     }
 }
 
-void Drive::process()
-{
+void Drive::process() {
     updateOdometry();
 
     switch (driveMode) {
@@ -109,15 +104,13 @@ void Drive::process()
 }
 
 
-void Drive::doConfiguration(bool persist)
-{
+void Drive::doConfiguration(bool persist) {
     for (SwerveModule* module : swerveModules) {
         module->doConfiguration(persist);
     }
 }
 
-void Drive::driveFromPercents(double xPct, double yPct, double rotPct, unsigned flags)
-{
+void Drive::driveFromPercents(double xPct, double yPct, double rotPct, unsigned flags) {
     /**
      * Calculate chassis velocities using percentages of the configured max
      * manual control velocities.
@@ -130,8 +123,7 @@ void Drive::driveFromPercents(double xPct, double yPct, double rotPct, unsigned 
     driveWithVelocities(xVel, yVel, rotVel, flags);
 }
 
-void Drive::driveWithVelocities(units::meters_per_second_t xVel, units::meters_per_second_t yVel, units::radians_per_second_t angVel, unsigned flags)
-{
+void Drive::driveWithVelocities(units::meters_per_second_t xVel, units::meters_per_second_t yVel, units::radians_per_second_t angVel, unsigned flags) {
     units::meters_per_second_t newXVel    = xVel;
     units::meters_per_second_t newYVel    = yVel;
     units::radians_per_second_t newAngVel = angVel;
@@ -141,24 +133,22 @@ void Drive::driveWithVelocities(units::meters_per_second_t xVel, units::meters_p
     if (flags & ControlFlag::LOCK_Y) newYVel = 0_mps;
     if (flags & ControlFlag::LOCK_ROT) newAngVel = 0_rad_per_s;
 
+    newXVel *= speedLimiting;
+    newYVel *= speedLimiting;
+
     // Stop the robot in brick mode no matter what.
     if (flags & ControlFlag::BRICK) {
         driveMode = DriveMode::STOPPED;
-    }
-    // The robot isn't being told to do move, sooo.... stop??
-    else if (!newXVel && !newYVel && !newAngVel) {
+    } else if (!newXVel && !newYVel && !newAngVel) { // The robot isn't being told to do move, sooo.... stop??
         driveMode = DriveMode::STOPPED;
-    }
-    // The robot is being told to do stuff, so start doing stuff.
-    else {
+    } else { // The robot is being told to do stuff, so start doing stuff.
         driveMode = DriveMode::VELOCITY;
     }
 
     controlData = { newXVel, newYVel, newAngVel, flags };
 }
 
-void Drive::executeVelocityData()
-{
+void Drive::executeVelocityData() {
     if (controlData.flags & ControlFlag::BRICK) {
         makeBrick();
         return;
@@ -182,8 +172,7 @@ void Drive::executeVelocityData()
     setModuleStates(velocities);
 }
 
-void Drive::setModuleStates(frc::ChassisSpeeds speeds)
-{
+void Drive::setModuleStates(frc::ChassisSpeeds speeds) {
     /// NOTE: If auto is 90_deg off swap X and Y in chassis speeds here, its swaped in controls.
 
     // Store velocities for feedback.
@@ -200,8 +189,7 @@ void Drive::setModuleStates(frc::ChassisSpeeds speeds)
     }
 }
 
-void Drive::stop()
-{
+void Drive::stop() {
     // Set the speeds to 0.
     setModuleStates({ 0_mps, 0_mps, 0_deg_per_s });
 
@@ -214,8 +202,7 @@ void Drive::stop()
     }
 }
 
-void Drive::sendFeedback()
-{
+void Drive::sendFeedback() {
     for (std::size_t i = 0; i < swerveModules.size(); i++) {
         swerveModules.at(i)->sendDebugInfo(i);
     }
@@ -258,8 +245,7 @@ void Drive::sendFeedback()
     frc::SmartDashboard::PutBoolean("thunderdashboard_gyro", !imuCalibrated);
 }
 
-bool Drive::isFinished() const 
-{
+bool Drive::isFinished() const { // Can this const be moved to the beginning of the line? I think it would be easier to read
     return driveMode == DriveMode::STOPPED;
 }
 
@@ -349,7 +335,6 @@ wpi::array<frc::SwerveModulePosition, 4> Drive::getModulePositions() {
              swerveModules.at(2)->getPosition(), swerveModules.at(3)->getPosition() };
 }
 
-
 void Drive::makeBrick() {
     swerveModules.at(0)->setTurningMotor(45_deg);
     swerveModules.at(1)->setTurningMotor(-45_deg);
@@ -380,8 +365,7 @@ void Drive::runTrajectory(const CSVTrajectory* _trajectory, const std::map<u_int
 
 }
 
-void Drive::setupInitialTrajectoryPosition(const CSVTrajectory *trajectory)
-{
+void Drive::setupInitialTrajectoryPosition(const CSVTrajectory *trajectory) {
     frc::Pose2d initPose(trajectory->getInitialPose());
     resetOdometry(frc::Pose2d(initPose.X(), initPose.Y(), initPose.Rotation().Degrees()));
 }
@@ -418,7 +402,7 @@ void Drive::execTrajectory() {
                             // Remember that it's done.
                             doneTrajectoryActions.push_back(id);
                         }
-                        
+
                         if (!actionExecuting)
                             actionExecuting = res == Action::Result::WORKING;
                     }
@@ -503,13 +487,19 @@ void Drive::execTrajectory() {
     setModuleStates(velocities);
 }
 
+void Drive::slowYourRoll() {
+    speedLimiting = std::clamp(speedLimiting - .1, 0.0, 1.0);
+}
+
+void Drive::unslowYourRoll() {
+    speedLimiting = std::clamp(speedLimiting - .1, 0.0, 1.0);
+}
 
 SwerveFeedback::SwerveFeedback(wpi::array<SwerveModule*, 4>* _swerveModules):
  swerveModules(_swerveModules) {
 
 }
-void SwerveFeedback::InitSendable(wpi::SendableBuilder &builder)
-{
+void SwerveFeedback::InitSendable(wpi::SendableBuilder &builder) {
     builder.SetSmartDashboardType("SwerveDrive");
 
     builder.AddDoubleProperty("Front Left Angle", [this] () {

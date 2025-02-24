@@ -38,6 +38,8 @@ void Controls::process() {
             rotPercent = 0;
         bool lockX = fabs(driveController.GetLeftTriggerAxis()) > CONTROLS_PREFERENCE.AXIS_DEADZONE;
         bool lockY = fabs(driveController.GetRightTriggerAxis()) > CONTROLS_PREFERENCE.AXIS_DEADZONE;
+        bool slowDrive = driveController.GetXButtonPressed();
+        bool speedUpDrive = driveController.GetBButtonPressed();
         bool lockRot = driveController.GetRightStickButtonPressed();
         bool resetIMU = driveController.GetYButtonPressed();
         bool brickMode = driveController.GetAButton();
@@ -56,6 +58,14 @@ void Controls::process() {
         if (resetIMU)
             drive->resetOdometry();
 
+        if (slowDrive) {
+            drive->slowYourRoll();
+        }
+
+        if (speedUpDrive) {
+            drive->unslowYourRoll();
+        }
+
         // SWAP: 90_deg offset for drive
         double finalSpeedReduction = 1; //1 - speedReduction
 
@@ -69,21 +79,19 @@ void Controls::process() {
     // MARK: Aux
     if (gamepiece != nullptr && auxController.IsConnected()) {
         bool hasBeenSetByAux = false;
-        if (auxController.IsConnected()) {
+        if (auxController.IsConnected()) { // TODO: Noticed this (and its also on each check below), is this if statement extraneous?
             bool toCoralStation = auxController.GetPOV(0) == 90;
             bool toCoralStationLow = auxController.GetPOV(0) == 270;
             bool toL1 = auxController.GetAButton();
             bool toL2 = auxController.GetBButton();
             bool toL3 = auxController.GetXButton();
             bool toL4 = auxController.GetYButton();
-            bool toNet = auxController.GetPOV() == 0;
             bool toTransit = auxController.GetStartButtonPressed();
             if (blinkyBlinky != nullptr)
                 blinkyBlinky->neuralyze = auxController.GetBackButton(); // Flash leds/signal light/limelight for Human Player attention acquisition
-            
+
             hasBeenSetByAux = true;
-            if (toNet)                    { gamepiece->moveToPreset(Gamepiece::Preset::kNET);
-            } else if (toL4)              { gamepiece->moveToPreset(Gamepiece::Preset::kL4);
+            if (toL4)              { gamepiece->moveToPreset(Gamepiece::Preset::kL4);
             } else if (toL3)              { gamepiece->moveToPreset(Gamepiece::Preset::kL3);
             } else if (toL2)              { gamepiece->moveToPreset(Gamepiece::Preset::kL2);
             } else if (toL1)              { gamepiece->moveToPreset(Gamepiece::Preset::kL1);
@@ -99,14 +107,16 @@ void Controls::process() {
             bool toReefHigh = driveController.GetRightBumperButtonPressed();
             bool toGround = driveController.GetPOV() == 180;
             bool toProcessor = driveController.GetPOV(0) == 270;
-            
+            bool toNet = driveController.GetPOV() == 0;
+
+            // Prioritize Highest
             if (toReefLow)             { gamepiece->moveToPreset(Gamepiece::Preset::kREEF_LOW); 
             } else if (toReefHigh)     { gamepiece->moveToPreset(Gamepiece::Preset::kREEF_HIGH); 
             } else if (toProcessor)    { gamepiece->moveToPreset(Gamepiece::Preset::kPROCESSOR);
-            } else if (toGround)       { gamepiece->moveToPreset(Gamepiece::Preset::kGROUND); }
+            } else if (toGround)       { gamepiece->moveToPreset(Gamepiece::Preset::kGROUND); 
+            } else if (toNet)          { gamepiece->moveToPreset(Gamepiece::Preset::kNET);
+            }
         }
-
-        // Prioritize Highest
     }
 
     // #define CALGAE_SENSOR_BROKEN false// Replace with switchboard?
@@ -114,7 +124,7 @@ void Controls::process() {
         bool coralIntake = fabs(auxController.GetRightTriggerAxis()) > CONTROLS_PREFERENCE.AXIS_DEADZONE; //fabs is extraneous but might as well 
         bool algaeIntake = fabs(auxController.GetLeftTriggerAxis()) > CONTROLS_PREFERENCE.AXIS_DEADZONE;
         bool shoot = auxController.GetRightBumperButton();
-        bool resetHadGamepiece = auxController.GetLeftBumperButtonPressed();
+        bool resetGamepieceState = auxController.GetLeftBumperButtonPressed();
         bool shootDone = auxController.GetRightBumperButtonReleased();
 
         if (coralIntake) {
@@ -138,7 +148,7 @@ void Controls::process() {
                 gamepiece->calgae->setMotorMode(Calgae::MotorModes::kSTOP);
             }
         }
-        if (resetHadGamepiece) {
+        if (resetGamepieceState) {
             gamepiece->calgaeAutopilot = false;
             gamepiece->calgae->resetHadGamepiece();
         }

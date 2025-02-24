@@ -57,7 +57,7 @@ class Elevator : public Component {
         0_tr,     // Stopped (Does not move to 0 turns)
         0_tr,     // Ground
         0_tr,     // Processor
-        14.86_tr, // Coral Station
+        14.0_tr, // Coral Station
         8_tr,     // L1
         11.16_tr, // L2
         25.65_tr, // L3
@@ -66,7 +66,7 @@ class Elevator : public Component {
         0_tr,     // Transit
         11.16_tr, // Reef Low
         25.65_tr, // Reef High
-        14.0_tr, // Coral Station Low
+        13.6_tr,  // Coral Station Low
     };
 
     Preset targetPreset = Elevator::Preset::kSTOP;

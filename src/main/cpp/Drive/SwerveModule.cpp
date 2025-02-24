@@ -48,10 +48,6 @@ void SwerveModule::doConfiguration(bool persist)
     turningFeedback.RotorToSensorRatio = 18.75;
     turningMotor.GetConfigurator().Apply(turningFeedback);
 
-
-
-
-
     ctre::phoenix6::configs::ClosedLoopRampsConfigs ramp {};
     ramp.WithVoltageClosedLoopRampPeriod(SWERVE_PREFERENCE.DRIVE_RAMP_TIME);
 
@@ -68,11 +64,10 @@ void SwerveModule::doConfiguration(bool persist)
     driveMotor.GetConfigurator().Apply(drivePIDConfig);
     ctre::phoenix6::configs::MotorOutputConfigs driveMotorOutput {};
     driveMotorOutput.Inverted = true;
-    
-    setDriveMotorsNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
-    
-    driveMotor.GetConfigurator().Apply(driveMotorOutput);
 
+    setDriveMotorsNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
+
+    driveMotor.GetConfigurator().Apply(driveMotorOutput);
 
     ctre::phoenix6::configs::CurrentLimitsConfigs driveCurrentLimit {};
     driveCurrentLimit.WithSupplyCurrentLimit(SWERVE_PREFERENCE.DRIVE_MOTOR.MAX_AMPERAGE);
@@ -144,6 +139,7 @@ void SwerveModule::setDriveMotor(units::meters_per_second_t velocity)
 {
     const units::turns_per_second_t tps = units::turns_per_second_t(velocity.value() * SWERVE_PREFERENCE.DRIVE_MOTOR.METERS_TO_TURNS);
     // driveRequest.Acceleration = units::turns_per_second_squared_t((1 - accelReduction) * DRIVE_PREFERENCES.MAX_ACCEL.value() * SWERVE_PREFERENCE.DRIVE_MOTOR.METERS_TO_TURNS);
+    driveRequest.WithAcceleration(units::turns_per_second_squared_t((1 - accelReduction) * DRIVE_PREFERENCES.MAX_ACCEL.value() * SWERVE_PREFERENCE.DRIVE_MOTOR.METERS_TO_TURNS));
     driveMotor.SetControl(driveRequest.WithVelocity(tps));
 }
 

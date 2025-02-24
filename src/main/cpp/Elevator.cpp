@@ -130,9 +130,10 @@ void Elevator::manualMovement(double speed) { // allows input of speed and turns
     manualControl = true;
 }
 
-void Elevator::setSensorBroken(bool isBroken) { // this still needs to be implemented
+void Elevator::setSensorBroken(bool isBroken) { // TODO: this still needs to be implemented
     sensorBroken = isBroken;
 }
+
 double Elevator::computeSpeedForPreset() { 
     if (targetPreset == Preset::kSTOP) {
         return 0;
@@ -154,9 +155,9 @@ double Elevator::computeSpeedForPreset() {
     
     double diffFromStart = startDownPosition - getPosition().value();
 
-    double speedFactorDown = std::clamp(fabs(diffFromStart) * 0.2, 0.3, 1.0);
+    double speedFactorDown = std::clamp(fabs(diffFromStart) * 0.2, 0.2, 1.0);
 
-    speedFactorDown *= std::clamp(fabs(difference.value()) * 0.2, 0.2, 1.0);
+    speedFactorDown *= std::clamp(fabs(difference.value()) * 0.1, 0.2, 1.0);
 
     return -ELEVATOR_PREFERENCE.MAX_DOWN_SPEED * speedFactorDown;
 }

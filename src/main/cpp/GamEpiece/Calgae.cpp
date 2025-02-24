@@ -147,6 +147,7 @@ void Calgae::setMotorMode(Calgae::MotorModes mode) {
 }
 
 void Calgae::resetHadGamepiece() {
+    currentGamepieceState = GamepieceState::kNONE;
     lastGamepieceState = GamepieceState::kNONE;
 }
 
