@@ -129,19 +129,19 @@ class Calgae : public Component {
      * The set of intake speeds
      */
     double presetIntakeSpeeds [MotorSpeed::_enum_MAX] = {
-        CALGAE_PREFERENCE.MOTOR_SPEED_STOPPED, // Stopped
-        CALGAE_PREFERENCE.MOTOR_SPEED_INTAKE_CORAL, // Coral
-        CALGAE_PREFERENCE.MOTOR_SPEED_INTAKE_ALGAE, // Algae
-        CALGAE_PREFERENCE.MOTOR_SPEED_INTAKE_REGRAB // Regrab
+        PreferencesCalgae::MOTOR_SPEED_STOPPED, // Stopped
+        PreferencesCalgae::MOTOR_SPEED_INTAKE_CORAL, // Coral
+        PreferencesCalgae::MOTOR_SPEED_INTAKE_ALGAE, // Algae
+        PreferencesCalgae::MOTOR_SPEED_INTAKE_REGRAB // Regrab
     };
 
     /**
      * The set of shooter speeds
      */
     double presetShooterSpeeds [MotorSpeed::_enum_MAX] = {
-        CALGAE_PREFERENCE.MOTOR_SPEED_STOPPED, // Stopped
-        CALGAE_PREFERENCE.MOTOR_SPEED_SHOOT_CORAL, // Coral
-        CALGAE_PREFERENCE.MOTOR_SPEED_SHOOT_ALGAE, // Algae
+        PreferencesCalgae::MOTOR_SPEED_STOPPED, // Stopped
+        PreferencesCalgae::MOTOR_SPEED_SHOOT_CORAL, // Coral
+        PreferencesCalgae::MOTOR_SPEED_SHOOT_ALGAE, // Algae
     };
 
     enum Calgae::GamepieceState currentGamepieceState = GamepieceState::kNONE;

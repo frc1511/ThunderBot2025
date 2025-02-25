@@ -3,7 +3,7 @@
 BlinkyBlinky::BlinkyBlinky(Gamepiece* gamepiece_, Hang* hang_)
 : gamepiece(gamepiece_),
   hang(hang_) {
-    leds.SetLength((int)BLINKY_BLINKY_PREFERENCE.LED_TOTAL);
+    leds.SetLength((int)PreferencesBlinkyBlinky::LED_TOTAL);
     leds.SetData(mainLEDBuffer);
     leds.Start();
 }
@@ -29,7 +29,7 @@ void BlinkyBlinky::process() {
             // Elevator Sides
             if (!gamepiece->elevator->atPreset() && gamepiece->elevator->getCurrentPreset() != Elevator::Preset::kSTOP) {
                 double elevatorPercentHeight = gamepiece->elevator->getPercentHeight();
-                double litLEDS = elevatorPercentHeight * BLINKY_BLINKY_PREFERENCE.LED_SIDE_STRIP_TOTAL;
+                double litLEDS = elevatorPercentHeight * PreferencesBlinkyBlinky::LED_SIDE_STRIP_TOTAL;
                 int majorLEDS = floor(litLEDS);
                 double finalFade = std::clamp(majorLEDS % 1, 0, 1);
                 int sideBufferSize = (int)sideBuffer.size();
@@ -126,7 +126,7 @@ void BlinkyBlinky::process() {
     int mainBufferSize = (int)mainLEDBuffer.size();
     for (int i = 0; i < sideBufferSize; i++) {
         mainLEDBuffer[i] = sideBuffer[i];
-        mainLEDBuffer[mainBufferSize - BLINKY_BLINKY_PREFERENCE.LED_SIDE_STRIP_TOTAL + i] = sideBuffer[i];
+        mainLEDBuffer[mainBufferSize - PreferencesBlinkyBlinky::LED_SIDE_STRIP_TOTAL + i] = sideBuffer[i];
     }
 
 
@@ -136,45 +136,45 @@ void BlinkyBlinky::process() {
     if (gamepiece->elevator != nullptr) {
         /// Elevator Status
         if (gamepiece->elevator->getUpperLimit() && gamepiece->elevator->getLowerLimit()) {
-            statusBuffer[BLINKY_BLINKY_PREFERENCE.ELEVATOR_STATUS_ID] = LEDData(255, 255, 255); // White
+            statusBuffer[PreferencesBlinkyBlinky::ELEVATOR_STATUS_ID] = LEDData(255, 255, 255); // White
         } else if (gamepiece->elevator->getUpperLimit()) {
-            statusBuffer[BLINKY_BLINKY_PREFERENCE.ELEVATOR_STATUS_ID] = LEDData(0, 255, 0);     // Green
+            statusBuffer[PreferencesBlinkyBlinky::ELEVATOR_STATUS_ID] = LEDData(0, 255, 0);     // Green
         } else if (gamepiece->elevator->getLowerLimit()) {
-            statusBuffer[BLINKY_BLINKY_PREFERENCE.ELEVATOR_STATUS_ID] = LEDData(255, 0, 0);     // Red
+            statusBuffer[PreferencesBlinkyBlinky::ELEVATOR_STATUS_ID] = LEDData(255, 0, 0);     // Red
         } else {
-            statusBuffer[BLINKY_BLINKY_PREFERENCE.ELEVATOR_STATUS_ID] = LEDData(0, 0, 255);     // Blue
+            statusBuffer[PreferencesBlinkyBlinky::ELEVATOR_STATUS_ID] = LEDData(0, 0, 255);     // Blue
         }
     }
 
     if (gamepiece->calgae != nullptr) {
         if (gamepiece->calgae->coralRetroreflectiveTripped()) {
-            statusBuffer[BLINKY_BLINKY_PREFERENCE.CORAL_STATUS_ID] = LEDData(0, 255, 0);        // Green
+            statusBuffer[PreferencesBlinkyBlinky::CORAL_STATUS_ID] = LEDData(0, 255, 0);        // Green
         } else {
-            statusBuffer[BLINKY_BLINKY_PREFERENCE.CORAL_STATUS_ID] = LEDData(255, 0, 0);        // Red
+            statusBuffer[PreferencesBlinkyBlinky::CORAL_STATUS_ID] = LEDData(255, 0, 0);        // Red
         }
         
         if (gamepiece->calgae->algaeRetroreflectiveTripped()) {
-            statusBuffer[BLINKY_BLINKY_PREFERENCE.ALGAE_STATUS_ID] = LEDData(0, 255, 0);        // Green
+            statusBuffer[PreferencesBlinkyBlinky::ALGAE_STATUS_ID] = LEDData(0, 255, 0);        // Green
         } else {
-            statusBuffer[BLINKY_BLINKY_PREFERENCE.ALGAE_STATUS_ID] = LEDData(255, 0, 0);        // Red
+            statusBuffer[PreferencesBlinkyBlinky::ALGAE_STATUS_ID] = LEDData(255, 0, 0);        // Red
         }
     }
 
     if (hang != nullptr) {
         if (hang->isHung() && hang->isSolenoidUp()) {
-            statusBuffer[BLINKY_BLINKY_PREFERENCE.CAGE_STATUS_ID] = LEDData(255, 255, 255);     // White
+            statusBuffer[PreferencesBlinkyBlinky::CAGE_STATUS_ID] = LEDData(255, 255, 255);     // White
         } else if (hang->isHung()) {
-            statusBuffer[BLINKY_BLINKY_PREFERENCE.CAGE_STATUS_ID] = LEDData(0, 255, 0);         // Green
+            statusBuffer[PreferencesBlinkyBlinky::CAGE_STATUS_ID] = LEDData(0, 255, 0);         // Green
         } else if (hang->isSolenoidUp()) {
-            statusBuffer[BLINKY_BLINKY_PREFERENCE.CAGE_STATUS_ID] = LEDData(255, 0, 0);         // Red
+            statusBuffer[PreferencesBlinkyBlinky::CAGE_STATUS_ID] = LEDData(255, 0, 0);         // Red
         } else {
-            statusBuffer[BLINKY_BLINKY_PREFERENCE.CAGE_STATUS_ID] = LEDData(0, 0, 255);         // Blue
+            statusBuffer[PreferencesBlinkyBlinky::CAGE_STATUS_ID] = LEDData(0, 0, 255);         // Blue
         }
     }
 
     int statusBufferSize = (int)statusBuffer.size();
     for (int i = 0; i < statusBufferSize; i++) {
-        mainLEDBuffer[BLINKY_BLINKY_PREFERENCE.LED_SIDE_STRIP_TOTAL + BLINKY_BLINKY_PREFERENCE.LED_STATUS_STRIP_TOTAL - i - 1] = statusBuffer[i];
+        mainLEDBuffer[PreferencesBlinkyBlinky::LED_SIDE_STRIP_TOTAL + PreferencesBlinkyBlinky::LED_STATUS_STRIP_TOTAL - i - 1] = statusBuffer[i];
     }
     
     

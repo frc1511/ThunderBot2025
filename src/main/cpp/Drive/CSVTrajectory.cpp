@@ -21,8 +21,8 @@ CSVTrajectory::CSVTrajectory(std::filesystem::path path, bool inverted) {
         u_int32_t action = static_cast<u_int32_t>(Parser::parseNumber(currIter, fileStr.cend())); ++currIter;
 
         if (inverted) {
-            xPos = TRAJECTORY_PREFERENCE.FIELD_X - xPos;
-            yPos = TRAJECTORY_PREFERENCE.FIELD_Y - yPos;            
+            xPos = PreferencesTrajectory::FIELD_X - xPos;
+            yPos = PreferencesTrajectory::FIELD_Y - yPos;            
             rotation = frc::Rotation2d(rotation.Degrees() + 180_deg);
         }
 

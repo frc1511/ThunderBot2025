@@ -115,9 +115,9 @@ void Drive::driveFromPercents(double xPct, double yPct, double rotPct, unsigned 
      * Calculate chassis velocities using percentages of the configured max
      * manual control velocities.
      */
-    units::meters_per_second_t xVel    = xPct * DRIVE_PREFERENCES.DRIVE_MANUAL_MAX_VEL;
-    units::meters_per_second_t yVel    = yPct * DRIVE_PREFERENCES.DRIVE_MANUAL_MAX_VEL;
-    units::radians_per_second_t rotVel = rotPct * DRIVE_PREFERENCES.DRIVE_MANUAL_MAX_ANG_VEL;
+    units::meters_per_second_t xVel    = xPct * DrivePreferences::DRIVE_MANUAL_MAX_VEL;
+    units::meters_per_second_t yVel    = yPct * DrivePreferences::DRIVE_MANUAL_MAX_VEL;
+    units::radians_per_second_t rotVel = rotPct * DrivePreferences::DRIVE_MANUAL_MAX_ANG_VEL;
 
     // Pass the velocities to the velocity control function.
     driveWithVelocities(xVel, yVel, rotVel, flags);
@@ -181,7 +181,7 @@ void Drive::setModuleStates(frc::ChassisSpeeds speeds) {
     // Generate individual module states using the chassis velocities.
     wpi::array<frc::SwerveModuleState, 4> moduleStates(kinematics.ToSwerveModuleStates(speeds));
     
-    kinematics.DesaturateWheelSpeeds(&moduleStates, DRIVE_PREFERENCES.DRIVE_MANUAL_MAX_VEL);
+    kinematics.DesaturateWheelSpeeds(&moduleStates, DrivePreferences::DRIVE_MANUAL_MAX_VEL);
 
     // Set the states of the individual modules.
     for(std::size_t i = 0; i < swerveModules.size(); i++) {

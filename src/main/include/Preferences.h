@@ -27,161 +27,124 @@ struct PID_t
     }
 };
 
-const units::inch_t WHEEL_DISTANCE_FROM_FRAME = 2.625_in;
 
 struct DrivePreferences {
-    PID_t PID_XY;
-    PID_t PID_THETA;
-    units::inch_t ROBOT_WIDTH = 29_in - WHEEL_DISTANCE_FROM_FRAME * 2;
-    units::inch_t ROBOT_LENGTH = 30_in - WHEEL_DISTANCE_FROM_FRAME * 2;
+    static const units::inch_t WHEEL_DISTANCE_FROM_FRAME;
 
-    units::radians_per_second_t DRIVE_AUTO_MAX_ANG_VEL = 9.28_rad_per_s;
-    units::radians_per_second_squared_t DRIVE_AUTO_MAX_ANG_ACCEL = 6.14_rad_per_s_sq;
+    static const units::inch_t ROBOT_WIDTH;
+    static const units::inch_t ROBOT_LENGTH;
 
-    units::meters_per_second_t DRIVE_MANUAL_MAX_VEL = 5_mps;
-    units::degrees_per_second_t DRIVE_MANUAL_MAX_ANG_VEL = 540_deg_per_s; // 540
-    units::radians_per_second_squared_t DRIVE_MANUAL_MAX_ANG_ACCEL = 9.42_rad_per_s_sq; // 9.42
+    static const units::radians_per_second_t DRIVE_AUTO_MAX_ANG_VEL;
+    static const units::radians_per_second_squared_t DRIVE_AUTO_MAX_ANG_ACCEL;
 
-    units::meters_per_second_squared_t MAX_ACCEL = 0.01_mps_sq;
+    static const units::meters_per_second_t DRIVE_MANUAL_MAX_VEL;
+    static const units::degrees_per_second_t DRIVE_MANUAL_MAX_ANG_VEL;
+    static const units::radians_per_second_squared_t DRIVE_MANUAL_MAX_ANG_ACCEL;
+    static const units::meters_per_second_squared_t MAX_ACCEL;
 
-    double DRIVE_ROTATION_SPEED_MANUAL_LIMITER_SLOWNESS_FACTOR = .5;
-    double DRIVE_VELOCITY_SPEED_MANUAL_LIMITER_SLOWNESS_FACTOR = .5;
+    static const double DRIVE_ROTATION_SPEED_MANUAL_LIMITER_SLOWNESS_FACTOR;
+    static const double DRIVE_VELOCITY_SPEED_MANUAL_LIMITER_SLOWNESS_FACTOR;
 
-    DrivePreferences()
-    {
-        PID_XY.Kp = 7.5;
-        // PID_XY.Ki = 0.001;
-        // PID_XY.Kd = 0.1;
-
-        PID_THETA.Kp = 13;
-        PID_THETA.Kd = 0.125;
-    }
+    static const PID_t PID_XY;
+    static const PID_t PID_THETA;
 };
-static const DrivePreferences DRIVE_PREFERENCES;
 
 struct PreferencesDriveMotor
 {
-    PID_t PID;
-    units::current::ampere_t MAX_AMPERAGE = 40_A;
-    double METERS_TO_TURNS = 16.6474609375;
-    double TURNS_TO_METERS = (1 / (METERS_TO_TURNS));
+    static const PID_t PID;
+    static const units::current::ampere_t MAX_AMPERAGE;
+    static const double METERS_TO_TURNS;
+    static const double TURNS_TO_METERS;
 };
 
 struct PreferencesTurnMotor
 {
-    PID_t PID;
+    static const PID_t PID;
 
-    units::current::ampere_t MAX_AMPERAGE = 30_A;
-    double TURN_RADIAN_TO_ENCODER_FACTOR = 2.03362658302;
+    static const units::current::ampere_t MAX_AMPERAGE;
+    static const double TURN_RADIAN_TO_ENCODER_FACTOR;
 };
 
 struct PreferencesSwerve 
 {
-    PreferencesDriveMotor DRIVE_MOTOR;
-    PreferencesTurnMotor TURN_MOTOR;
-    units::second_t DRIVE_RAMP_TIME = 0.3_s;
-    PreferencesSwerve()
-    {
-        DRIVE_MOTOR.PID.Kp = 0.1;
-        DRIVE_MOTOR.PID.Kv = 0.124;
-        DRIVE_MOTOR.PID.Kff = 0;
-
-        TURN_MOTOR.PID.Kp = 33;
-        TURN_MOTOR.PID.Ki = 0;
-        TURN_MOTOR.PID.Kd = 0;
-    }
+    static const units::second_t DRIVE_RAMP_TIME;
 };
-static PreferencesSwerve SWERVE_PREFERENCE;
 
 struct PreferencesControls
 {
-    double AXIS_DEADZONE = 0.1;
+    static const double AXIS_DEADZONE;
 
-    double kGROUND = 0.0; 
-    double kPROCESSOR = 0.0;
-    double kCORAL_STATION = 0.0;
-    double kL1 = 0.0;
-    double kL2 = 0.0;
-    double kL3 = 0.5;
-    double kL4 = 0.5;
-    double kNET = 0.5;
+    static const double kGROUND; 
+    static const double kPROCESSOR;
+    static const double kCORAL_STATION;
+    static const double kL1;
+    static const double kL2;
+    static const double kL3;
+    static const double kL4;
+    static const double kNET;
 
-    static const bool wristEncoderBroken = false;
+    static const bool wristEncoderBroken;
 
 };
-static PreferencesControls CONTROLS_PREFERENCE;
 
 struct PreferencesCalgae {
-    double MOTOR_SPEED_STOPPED = 0.0;
-    double MOTOR_SPEED_INTAKE_CORAL = 1.0  ;
-    double MOTOR_SPEED_SHOOT_CORAL = -0.7;
-    double MOTOR_SPEED_INTAKE_ALGAE = 1.0;
-    double MOTOR_SPEED_SHOOT_ALGAE = -0.7;
-    double MOTOR_SPEED_INTAKE_REGRAB = 0.5;
+    static const double MOTOR_SPEED_STOPPED;
+    static const double MOTOR_SPEED_INTAKE_CORAL;
+    static const double MOTOR_SPEED_SHOOT_CORAL;
+    static const double MOTOR_SPEED_INTAKE_ALGAE;
+    static const double MOTOR_SPEED_SHOOT_ALGAE;
+    static const double MOTOR_SPEED_INTAKE_REGRAB;
 };
-static PreferencesCalgae CALGAE_PREFERENCE;
 
 struct PreferencesWrist {
-    double MAX_SPEED = 0.3;
-    units::degree_t UP_ZERO = 100_deg;
-    double MAX_FEED_FORWARD_POWER_HIGH_ANGLE = 0.07;
-    double MAX_FEED_FORWARD_POWER_LOW_ANGLE = 0.1;
-    units::degree_t ANGLE_TOLERANCE = 0.5_deg;
-    units::degree_t LOWEST_ANGLE = -35_deg;
-    units::degree_t HIGHEST_ANGLE = 100_deg;
-    units::degree_t ENCODER_FAILURE_OUTBOUND = 10_deg;
-    units::degree_t UNSAFE_MIN = 80_deg;
-    PreferencesWrist() {}
+    static const double MAX_SPEED;
+    static const units::degree_t UP_ZERO;
+    static const double MAX_FEED_FORWARD_POWER_HIGH_ANGLE;
+    static const double MAX_FEED_FORWARD_POWER_LOW_ANGLE;
+    static const units::degree_t ANGLE_TOLERANCE;
+    static const units::degree_t LOWEST_ANGLE;
+
+    static const units::degree_t HIGHEST_ANGLE;
+    static const units::degree_t ENCODER_FAILURE_OUTBOUND;
+    static const units::degree_t UNSAFE_MIN;
 };
-static PreferencesWrist WRIST_PREFERENCE;
 
 struct PreferencesElevator {
-    double MAX_DOWN_SPEED = 0.6;
-    double MAX_UP_SPEED = 0.6;
-    double TARGET_TOLERANCE = 0.2; // in turn_t
-    PreferencesElevator() {}
+    static const double MAX_DOWN_SPEED;
+    static const double MAX_UP_SPEED;
+    static const double TARGET_TOLERANCE; // in turn_t
 };
-
-static PreferencesElevator ELEVATOR_PREFERENCE;
 
 struct PreferencesTrajectory
 {
-    units::meter_t FIELD_X = 17.55_m;
-    units::meter_t FIELD_Y = 8.05_m;
+    static const units::meter_t FIELD_X;
+    static const units::meter_t FIELD_Y;
 };
-static PreferencesTrajectory TRAJECTORY_PREFERENCE;
 
-// #define for array, it won't accept the preferences value
-#define BLINKY_BLINKY_LED_TOTAL 42
-#define BLINKY_BLINKY_LED_SIDE_TOTAL 19
-#define BLINKY_BLINKY_LED_STATUS_TOTAL 4
+
 struct PreferencesBlinkyBlinky
 {
-    size_t LED_TOTAL = BLINKY_BLINKY_LED_TOTAL;
-    size_t LED_SIDE_STRIP_TOTAL = BLINKY_BLINKY_LED_SIDE_TOTAL;
-    size_t LED_STATUS_STRIP_TOTAL = BLINKY_BLINKY_LED_STATUS_TOTAL;
-    int CAGE_STATUS_ID = 0; // This does not mean the first LED, this is the first LED in the status bar
-    int ELEVATOR_STATUS_ID = 1;
-    int CORAL_STATUS_ID = 2;
-    int ALGAE_STATUS_ID = 3;
+    static constexpr size_t LED_TOTAL = 42;
+    static constexpr size_t LED_SIDE_STRIP_TOTAL= 19;
+    static constexpr size_t LED_STATUS_STRIP_TOTAL = 4;
+    static const int CAGE_STATUS_ID ; // This does not mean the first LED, this is the first LED in the status bar
+    static const int ELEVATOR_STATUS_ID;
+    static const int CORAL_STATUS_ID;
+    static const int ALGAE_STATUS_ID;
 };
-static PreferencesBlinkyBlinky BLINKY_BLINKY_PREFERENCE;
 
 struct PreferencesHang
 {
-    double MAX_POSITION = 1;
-    double MAX_HANG_SPEED_UP = 0.5; // TODO: CHANGE LATER
-    double MAX_HANG_SPEED_DOWN = -0.5;
-    double BACKTRACKING_SPEED = -0.1;
-    double BACKTRACKING_DISTANCE = 1;
-    units::second_t DISENGAGE_DURATION = 0.3_s;
+    static const double MAX_POSITION;
+    static const double MAX_HANG_SPEED_UP; // TODO: CHANGE LATER
+    static const double MAX_HANG_SPEED_DOWN;
+    static const double BACKTRACKING_SPEED;
+    static const double BACKTRACKING_DISTANCE;
+    static const units::second_t DISENGAGE_DURATION;
 };
-
-static PreferencesHang HANG_PREFERENCE;
 
 
 struct PreferencesLimelight
 {
-    std::string LIMELIGHT_NAME = "limelight";
+    static const std::string LIMELIGHT_NAME;
 };
-static PreferencesLimelight LIMELIGHT_PREFERENCE;

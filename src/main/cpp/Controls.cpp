@@ -28,16 +28,16 @@ void Controls::process() {
         // drive->setAccelerationReduction(accelerationReduction);
 
         double xPercent = driveController.GetLeftX();
-        if (fabs(xPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
+        if (fabs(xPercent) < PreferencesControls::AXIS_DEADZONE)
             xPercent = 0;
         double yPercent = driveController.GetLeftY();
-        if (fabs(yPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
+        if (fabs(yPercent) < PreferencesControls::AXIS_DEADZONE)
             yPercent = 0;
         double rotPercent = driveController.GetRightX();
-        if (fabs(rotPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
+        if (fabs(rotPercent) < PreferencesControls::AXIS_DEADZONE)
             rotPercent = 0;
-        bool lockX = fabs(driveController.GetLeftTriggerAxis()) > CONTROLS_PREFERENCE.AXIS_DEADZONE;
-        bool lockY = fabs(driveController.GetRightTriggerAxis()) > CONTROLS_PREFERENCE.AXIS_DEADZONE;
+        bool lockX = fabs(driveController.GetLeftTriggerAxis()) > PreferencesControls::AXIS_DEADZONE;
+        bool lockY = fabs(driveController.GetRightTriggerAxis()) > PreferencesControls::AXIS_DEADZONE;
         bool slowDrive = driveController.GetXButtonPressed();
         bool speedUpDrive = driveController.GetBButtonPressed();
         bool lockRot = driveController.GetRightStickButtonPressed();
@@ -69,7 +69,7 @@ void Controls::process() {
         // SWAP: 90_deg offset for drive
         double finalSpeedReduction = 1; //1 - speedReduction
 
-        if (fabs(driveController.GetLeftTriggerAxis()) > CONTROLS_PREFERENCE.AXIS_DEADZONE) {
+        if (fabs(driveController.GetLeftTriggerAxis()) > PreferencesControls::AXIS_DEADZONE) {
             finalSpeedReduction -= driveController.GetLeftTriggerAxis() * 0.75;
         }
 
@@ -121,8 +121,8 @@ void Controls::process() {
 
     // #define CALGAE_SENSOR_BROKEN false// Replace with switchboard?
     if (gamepiece->calgae != nullptr && auxController.IsConnected()) {
-        bool coralIntake = fabs(auxController.GetRightTriggerAxis()) > CONTROLS_PREFERENCE.AXIS_DEADZONE; //fabs is extraneous but might as well 
-        bool algaeIntake = fabs(auxController.GetLeftTriggerAxis()) > CONTROLS_PREFERENCE.AXIS_DEADZONE;
+        bool coralIntake = fabs(auxController.GetRightTriggerAxis()) > PreferencesControls::AXIS_DEADZONE; //fabs is extraneous but might as well 
+        bool algaeIntake = fabs(auxController.GetLeftTriggerAxis()) > PreferencesControls::AXIS_DEADZONE;
         bool shoot = auxController.GetRightBumperButton();
         bool resetGamepieceState = auxController.GetLeftBumperButtonPressed();
         bool shootDone = auxController.GetRightBumperButtonReleased();
@@ -156,7 +156,7 @@ void Controls::process() {
 
     if (hang != nullptr && auxController.IsConnected()) {
         double hangPercent = auxController.GetLeftY();
-        if (fabs(hangPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE) {
+        if (fabs(hangPercent) < PreferencesControls::AXIS_DEADZONE) {
             hangPercent = 0;
             hang->setControlMode(Hang::ControlMode::STOPPED);
         }
@@ -171,7 +171,7 @@ void Controls::process() {
     // Elevator Manual Movement Code, re-implement if needed
     if (gamepiece->elevator && auxController.IsConnected() && manualMode) {
         double movementPercent = -auxController.GetLeftY();
-        if (fabs(movementPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
+        if (fabs(movementPercent) < PreferencesControls::AXIS_DEADZONE)
             movementPercent = 0;
         gamepiece->elevator->manualMovement(movementPercent / 3);
     }
@@ -180,7 +180,7 @@ void Controls::process() {
     // Wrist Manual Movement Code, re-implement if needed
     if (gamepiece->wrist && auxController.IsConnected() && manualMode) {
         double movementPercent = -auxController.GetRightY();
-        if (fabs(movementPercent) < CONTROLS_PREFERENCE.AXIS_DEADZONE)
+        if (fabs(movementPercent) < PreferencesControls::AXIS_DEADZONE)
             movementPercent = 0;
         gamepiece->wrist->manualMovement(units::degree_t(movementPercent / 3));
     }
