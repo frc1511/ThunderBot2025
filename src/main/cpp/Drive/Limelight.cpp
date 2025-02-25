@@ -8,9 +8,9 @@ std::pair<bool, LimelightHelpers::PoseEstimate> Limelight::getEstimatedBotPose()
         return std::make_pair(false, LimelightHelpers::PoseEstimate());
     }
 
-    LimelightHelpers::PoseEstimate mt1 = LimelightHelpers::getBotPoseEstimate_wpiBlue(LIMELIGHT_PREFERENCE.LIMELIGHT_NAME);
+    LimelightHelpers::PoseEstimate mt1 = LimelightHelpers::getBotPoseEstimate_wpiBlue(PreferencesLimelight::LIMELIGHT_NAME);
     if (allianceColor == frc::DriverStation::Alliance::kRed) 
-        LimelightHelpers::PoseEstimate mt1 = LimelightHelpers::getBotPoseEstimate_wpiRed(LIMELIGHT_PREFERENCE.LIMELIGHT_NAME);
+        LimelightHelpers::PoseEstimate mt1 = LimelightHelpers::getBotPoseEstimate_wpiRed(PreferencesLimelight::LIMELIGHT_NAME);
     
     bool shouldUpdate = true;
     if (mt1.tagCount == 0)

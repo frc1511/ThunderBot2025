@@ -22,7 +22,7 @@ void Hang::process() {
 
     case ControlMode::GOING_DOWN:
         if (!isHung()) {
-            speed = HANG_PREFERENCE.MAX_HANG_SPEED_DOWN;
+            speed = PreferencesHang::MAX_HANG_SPEED_DOWN;
         }
         desiredSolenoidState = SolenoidState::DOWN;
         solenoidAction = SolenoidAction::NONE;
@@ -30,8 +30,8 @@ void Hang::process() {
 
     case ControlMode::GOING_UP:
         desiredSolenoidState = SolenoidState::UP;
-        if (encoder.GetPosition() < HANG_PREFERENCE.MAX_POSITION && realSolenoidState == SolenoidState::UP) {
-            speed = HANG_PREFERENCE.MAX_HANG_SPEED_UP;
+        if (encoder.GetPosition() < PreferencesHang::MAX_POSITION && realSolenoidState == SolenoidState::UP) {
+            speed = PreferencesHang::MAX_HANG_SPEED_UP;
         }
         break;
 
@@ -57,15 +57,15 @@ void Hang::process() {
 
     if (solenoidAction == SolenoidAction::DISENGAGING) {
         solenoidOutput = SolenoidState::DOWN;
-        speed = HANG_PREFERENCE.BACKTRACKING_SPEED;
-        if (getMotorPosition() - backtrackingStart >= HANG_PREFERENCE.BACKTRACKING_DISTANCE) {
+        speed = PreferencesHang::BACKTRACKING_SPEED;
+        if (getMotorPosition() - backtrackingStart >= PreferencesHang::BACKTRACKING_DISTANCE) {
             solenoidAction = SolenoidAction::CHECKING_UP_STATE;
         }
     }
     if (solenoidAction == SolenoidAction::CHECKING_UP_STATE) {
         solenoidOutput = SolenoidState::UP;
         disengageTimer.Start();
-        if (realSolenoidState == SolenoidState::UP && disengageTimer.Get() > HANG_PREFERENCE.DISENGAGE_DURATION) {
+        if (realSolenoidState == SolenoidState::UP && disengageTimer.Get() > PreferencesHang::DISENGAGE_DURATION) {
             solenoidAction = SolenoidAction::KEEP_UP;
             disengageTimer.Stop();
         } else { // We can't go up rn, :(

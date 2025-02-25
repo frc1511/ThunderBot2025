@@ -152,10 +152,10 @@ private:
 
 
     wpi::array<frc::Translation2d, 4> locations {
-        frc::Translation2d(+DRIVE_PREFERENCES.ROBOT_LENGTH/2, +DRIVE_PREFERENCES.ROBOT_WIDTH/2), // FRONT LEFT.
-        frc::Translation2d(-DRIVE_PREFERENCES.ROBOT_LENGTH/2, +DRIVE_PREFERENCES.ROBOT_WIDTH/2), // BACK LEFT.
-        frc::Translation2d(-DRIVE_PREFERENCES.ROBOT_LENGTH/2, -DRIVE_PREFERENCES.ROBOT_WIDTH/2), // BACK RIGHT.
-        frc::Translation2d(+DRIVE_PREFERENCES.ROBOT_LENGTH/2, -DRIVE_PREFERENCES.ROBOT_WIDTH/2), // FRONT RIGHT.
+        frc::Translation2d(+DrivePreferences::ROBOT_LENGTH/2, +DrivePreferences::ROBOT_WIDTH/2), // FRONT LEFT.
+        frc::Translation2d(-DrivePreferences::ROBOT_LENGTH/2, +DrivePreferences::ROBOT_WIDTH/2), // BACK LEFT.
+        frc::Translation2d(-DrivePreferences::ROBOT_LENGTH/2, -DrivePreferences::ROBOT_WIDTH/2), // BACK RIGHT.
+        frc::Translation2d(+DrivePreferences::ROBOT_LENGTH/2, -DrivePreferences::ROBOT_WIDTH/2), // FRONT RIGHT.
     };
     /**
      * The helper class that it used to convert chassis speeds into swerve
@@ -196,8 +196,8 @@ private:
 
     // PID Controller for angular drivetrain movement.
     frc::ProfiledPIDController<units::radians> manualThetaPIDController {
-        DRIVE_PREFERENCES.PID_THETA.Kp, DRIVE_PREFERENCES.PID_THETA.Ki, DRIVE_PREFERENCES.PID_THETA.Kd,
-        frc::TrapezoidProfile<units::radians>::Constraints(DRIVE_PREFERENCES.DRIVE_MANUAL_MAX_ANG_VEL, DRIVE_PREFERENCES.DRIVE_MANUAL_MAX_ANG_ACCEL)
+        DrivePreferences::PID_THETA.Kp, DrivePreferences::PID_THETA.Ki, DrivePreferences::PID_THETA.Kd,
+        frc::TrapezoidProfile<units::radians>::Constraints(DrivePreferences::DRIVE_MANUAL_MAX_ANG_VEL, DrivePreferences::DRIVE_MANUAL_MAX_ANG_ACCEL)
     };
 
     bool imuCalibrated = false;
@@ -228,13 +228,13 @@ private:
 
 
     // PID Controller for X and Y axis drivetrain movement.
-    frc::PIDController xPIDController { DRIVE_PREFERENCES.PID_XY.Kp, DRIVE_PREFERENCES.PID_XY.Ki, DRIVE_PREFERENCES.PID_XY.Kd },
-                       yPIDController { DRIVE_PREFERENCES.PID_XY.Kp, DRIVE_PREFERENCES.PID_XY.Ki, DRIVE_PREFERENCES.PID_XY.Kd };
+    frc::PIDController xPIDController { DrivePreferences::PID_XY.Kp, DrivePreferences::PID_XY.Ki, DrivePreferences::PID_XY.Kd },
+                       yPIDController { DrivePreferences::PID_XY.Kp, DrivePreferences::PID_XY.Ki, DrivePreferences::PID_XY.Kd };
 
     // PID Controller for angular drivetrain movement.
     frc::ProfiledPIDController<units::radians> trajectoryThetaPIDController {
-        DRIVE_PREFERENCES.PID_THETA.Kp, DRIVE_PREFERENCES.PID_THETA.Ki, DRIVE_PREFERENCES.PID_THETA.Kd,
-        frc::TrapezoidProfile<units::radians>::Constraints(DRIVE_PREFERENCES.DRIVE_AUTO_MAX_ANG_VEL, DRIVE_PREFERENCES.DRIVE_AUTO_MAX_ANG_ACCEL)
+        DrivePreferences::PID_THETA.Kp, DrivePreferences::PID_THETA.Ki, DrivePreferences::PID_THETA.Kd,
+        frc::TrapezoidProfile<units::radians>::Constraints(DrivePreferences::DRIVE_AUTO_MAX_ANG_VEL, DrivePreferences::DRIVE_AUTO_MAX_ANG_ACCEL)
     };
     
    // The drive controller that will handle the drivetrain movement.

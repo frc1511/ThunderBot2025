@@ -25,7 +25,7 @@ void Wrist::process() {
         double speedFactor = std::clamp(difference.value() * 0.1, -1.0, 1.0);
         speedFactor *= std::clamp(fabs(difference.value()) * 0.1, 0.2, 1.0);
 
-        setSpeed(WRIST_PREFERENCE.MAX_SPEED * speedFactor);
+        setSpeed(PreferencesWrist::MAX_SPEED * speedFactor);
     } else {
         setSpeed(0);
     }
@@ -45,11 +45,11 @@ void Wrist::sendFeedback() {
 }
 
 bool Wrist::withinEncoderSafeZone() {
-    if (getEncoderDegrees() < WRIST_PREFERENCE.LOWEST_ANGLE - WRIST_PREFERENCE.ENCODER_FAILURE_OUTBOUND) {
+    if (getEncoderDegrees() < PreferencesWrist::LOWEST_ANGLE - PreferencesWrist::ENCODER_FAILURE_OUTBOUND) {
         printf("WRIST ENCODER FAILURE\n");
         return false;
     }
-    if (getEncoderDegrees() > WRIST_PREFERENCE.HIGHEST_ANGLE + WRIST_PREFERENCE.ENCODER_FAILURE_OUTBOUND) {
+    if (getEncoderDegrees() > PreferencesWrist::HIGHEST_ANGLE + PreferencesWrist::ENCODER_FAILURE_OUTBOUND) {
         printf("WRIST ENCODER FAILURE\n");
         return false;
     }
@@ -67,7 +67,7 @@ bool Wrist::atPreset() {
     units::degree_t targetPosition = Positions[currentPreset];
     units::degree_t difference = targetPosition - getEncoderDegrees();
 
-    return fabs(difference.value()) < WRIST_PREFERENCE.ANGLE_TOLERANCE.value();
+    return fabs(difference.value()) < PreferencesWrist::ANGLE_TOLERANCE.value();
 }
 
 void Wrist::setEncoderBroken(bool isBroken) {
@@ -80,11 +80,11 @@ void Wrist::setEncoderBroken(bool isBroken) {
 
 void Wrist::manualMovement(units::degree_t angle) {
     manual = true;
-    manualAngle = std::clamp(manualAngle + angle, WRIST_PREFERENCE.LOWEST_ANGLE, WRIST_PREFERENCE.HIGHEST_ANGLE);
+    manualAngle = std::clamp(manualAngle + angle, PreferencesWrist::LOWEST_ANGLE, PreferencesWrist::HIGHEST_ANGLE);
 }
 
 bool Wrist::wristIsUnsafe() {
-    if (getEncoderDegrees() > WRIST_PREFERENCE.UNSAFE_MIN && !encoderBroken)
+    if (getEncoderDegrees() > PreferencesWrist::UNSAFE_MIN && !encoderBroken)
         return true;
     return false;
 }
@@ -94,7 +94,7 @@ double Wrist::getRawEncoder() {
 }
 
 units::degree_t Wrist::getEncoderDegrees() {
-    return units::degree_t(getRawEncoder() * 360) - WRIST_PREFERENCE.UP_ZERO; // 0-1 -> 0-360
+    return units::degree_t(getRawEncoder() * 360) - PreferencesWrist::UP_ZERO; // 0-1 -> 0-360
 }
 
 double Wrist::feedForwardPower() {
@@ -102,18 +102,18 @@ double Wrist::feedForwardPower() {
     frc::SmartDashboard::PutNumber("Wrist Rad From Up", radFromUp);
 
     if (getEncoderDegrees() > 45_deg) {
-        return sin(radFromUp) * -WRIST_PREFERENCE.MAX_FEED_FORWARD_POWER_HIGH_ANGLE;
+        return sin(radFromUp) * -PreferencesWrist::MAX_FEED_FORWARD_POWER_HIGH_ANGLE;
     }
 
-    return sin(radFromUp) * -WRIST_PREFERENCE.MAX_FEED_FORWARD_POWER_LOW_ANGLE;
+    return sin(radFromUp) * -PreferencesWrist::MAX_FEED_FORWARD_POWER_LOW_ANGLE;
 }
 
 void Wrist::setSpeed(double speed) {
-    speed = std::clamp(speed, -WRIST_PREFERENCE.MAX_SPEED, WRIST_PREFERENCE.MAX_SPEED);
-    if (speed < 0 && getEncoderDegrees() < WRIST_PREFERENCE.LOWEST_ANGLE) {
+    speed = std::clamp(speed, -PreferencesWrist::MAX_SPEED, PreferencesWrist::MAX_SPEED);
+    if (speed < 0 && getEncoderDegrees() < PreferencesWrist::LOWEST_ANGLE) {
         speed = 0;
     }
-    if (speed > 0 && getEncoderDegrees() > WRIST_PREFERENCE.HIGHEST_ANGLE) {
+    if (speed > 0 && getEncoderDegrees() > PreferencesWrist::HIGHEST_ANGLE) {
         speed = 0;
     }
     speed += feedForwardPower();

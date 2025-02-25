@@ -33,7 +33,7 @@ void Elevator::process() {
     
     motorSpeed += 0.05; // Temp Feedfoward
 
-    motorSpeed = std::clamp(motorSpeed, -ELEVATOR_PREFERENCE.MAX_DOWN_SPEED, ELEVATOR_PREFERENCE.MAX_UP_SPEED);
+    motorSpeed = std::clamp(motorSpeed, -PreferencesElevator::MAX_DOWN_SPEED, PreferencesElevator::MAX_UP_SPEED);
     
     rightSparkMax.Set(motorSpeed);
     leftSparkMax.Set(motorSpeed);
@@ -118,7 +118,7 @@ bool Elevator::atPreset() { //detects if at preset
     if (!encoderZeroed) // if we are at the bottom we are not at our preset
         return false;
 
-    if (fabs(getPosition().value()) - Position[targetPreset].value() < ELEVATOR_PREFERENCE.TARGET_TOLERANCE) { // If the diff from our preset is less than our tol, we at the preset
+    if (fabs(getPosition().value()) - Position[targetPreset].value() < PreferencesElevator::TARGET_TOLERANCE) { // If the diff from our preset is less than our tol, we at the preset
         return true;
     }
     // if we aren't at our preset, we aren't at our preset
@@ -142,7 +142,7 @@ double Elevator::computeSpeedForPreset() {
     units::turn_t targetPosition = Position[targetPreset];
     units::turn_t difference = targetPosition - getPosition();
 
-    if (fabs(difference.value()) < ELEVATOR_PREFERENCE.TARGET_TOLERANCE) {
+    if (fabs(difference.value()) < PreferencesElevator::TARGET_TOLERANCE) {
         return 0;
     }
     bool isDirectionUp = difference > 0_tr;
@@ -150,7 +150,7 @@ double Elevator::computeSpeedForPreset() {
     double speedFactorUp = std::clamp(fabs(difference.value()) * 0.1, 0.2, 1.0);
 
     if (isDirectionUp) {
-        return ELEVATOR_PREFERENCE.MAX_UP_SPEED * speedFactorUp;
+        return PreferencesElevator::MAX_UP_SPEED * speedFactorUp;
     }
     
     double diffFromStart = startDownPosition - getPosition().value();
@@ -159,7 +159,7 @@ double Elevator::computeSpeedForPreset() {
 
     speedFactorDown *= std::clamp(fabs(difference.value()) * 0.1, 0.2, 1.0);
 
-    return -ELEVATOR_PREFERENCE.MAX_DOWN_SPEED * speedFactorDown;
+    return -PreferencesElevator::MAX_DOWN_SPEED * speedFactorDown;
 }
 
 // Mason spread the love on 1/28/25 at 8:19:43 >:)

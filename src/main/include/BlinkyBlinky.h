@@ -36,9 +36,9 @@ class BlinkyBlinky : public Component {
 
     // Slot not confirmed
     frc::AddressableLED leds {PWM_BLINKY};
-    std::array<frc::AddressableLED::LEDData, BLINKY_BLINKY_LED_TOTAL> mainLEDBuffer;
-    std::array<frc::AddressableLED::LEDData, BLINKY_BLINKY_LED_SIDE_TOTAL> sideBuffer;
-    std::array<frc::AddressableLED::LEDData, BLINKY_BLINKY_LED_STATUS_TOTAL> statusBuffer;
+    std::array<frc::AddressableLED::LEDData, PreferencesBlinkyBlinky::LED_TOTAL> mainLEDBuffer;
+    std::array<frc::AddressableLED::LEDData, PreferencesBlinkyBlinky::LED_SIDE_STRIP_TOTAL> sideBuffer;
+    std::array<frc::AddressableLED::LEDData, PreferencesBlinkyBlinky::LED_STATUS_STRIP_TOTAL> statusBuffer;
 
     void applyPercentOverLeds(std::function<frc::AddressableLED::LEDData(double)> func);
 
