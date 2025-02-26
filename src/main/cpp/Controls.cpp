@@ -1,16 +1,17 @@
 #include "Controls.h"
 
-Controls::Controls(Drive* drive_, Gamepiece* gamepiece_, BlinkyBlinky* blinkyBlinky_, Hang* hang_):
+Controls::Controls(Drive* drive_, Gamepiece* gamepiece_, BlinkyBlinky* blinkyBlinky_, Hang* hang_, Limelight* limelight_):
     drive(drive_),
     gamepiece(gamepiece_),
     blinkyBlinky(blinkyBlinky_),
-    hang(hang_)
+    hang(hang_),
+    limelight(limelight_)
 {}
 
 void Controls::process() {
     utilizeSwitchBoard();
     // MARK: Drive
-    if (drive != nullptr && driveController.IsConnected()) {
+    if (drive != nullptr && driveController.IsConnected() && !driveDisable) {
         // Drive limiting based on elevator position
         double speedReduction = 0.0;
         
@@ -36,11 +37,16 @@ void Controls::process() {
         double rotPercent = driveController.GetRightX();
         if (fabs(rotPercent) < PreferencesControls::AXIS_DEADZONE)
             rotPercent = 0;
-        bool lockX = fabs(driveController.GetLeftTriggerAxis()) > PreferencesControls::AXIS_DEADZONE;
-        bool lockY = fabs(driveController.GetRightTriggerAxis()) > PreferencesControls::AXIS_DEADZONE;
-        bool slowDrive = driveController.GetXButtonPressed();
-        bool speedUpDrive = driveController.GetBButtonPressed();
-        bool lockRot = driveController.GetRightStickButtonPressed();
+        
+        /// Incase we need them in ~THE PIT~
+        // bool lockX = fabs(driveController.GetLeftTriggerAxis()) > PreferencesControls::AXIS_DEADZONE;
+        // bool lockY = fabs(driveController.GetRightTriggerAxis()) > PreferencesControls::AXIS_DEADZONE;
+        bool lockX = false;
+        bool lockY = false;
+
+        bool slowDrive = driveController.GetLeftBumperButtonPressed();
+        bool speedUpDrive = driveController.GetRightBumperButtonPressed();
+        bool lockRot = driveController.GetStartButtonPressed();
         bool resetIMU = driveController.GetYButtonPressed();
         bool brickMode = driveController.GetAButton();
         unsigned flags = 0;
@@ -52,8 +58,9 @@ void Controls::process() {
             flags |= Drive::ControlFlag::LOCK_ROT;
         if (brickMode)
             flags |= Drive::ControlFlag::BRICK;
-
-        // flags |= Drive::ControlFlag::FIELD_CENTRIC;
+        
+        if (fieldCentric)
+            flags |= Drive::ControlFlag::FIELD_CENTRIC;
 
         if (resetIMU)
             drive->resetOdometry();
@@ -69,68 +76,86 @@ void Controls::process() {
         // SWAP: 90_deg offset for drive
         double finalSpeedReduction = 1; //1 - speedReduction
 
-        if (fabs(driveController.GetLeftTriggerAxis()) > PreferencesControls::AXIS_DEADZONE) {
-            finalSpeedReduction -= driveController.GetLeftTriggerAxis() * 0.75;
-        }
-
         drive->driveFromPercents(yPercent * finalSpeedReduction, xPercent * finalSpeedReduction, rotPercent * finalSpeedReduction, flags);
     }
 
+    
+    bool hasBeenSetByAux = false;
     // MARK: Aux
-    if (gamepiece != nullptr && auxController.IsConnected()) {
-        bool hasBeenSetByAux = false;
-        if (auxController.IsConnected()) { // TODO: Noticed this (and its also on each check below), is this if statement extraneous?
-            bool toCoralStation = auxController.GetPOV(0) == 90;
-            bool toCoralStationLow = auxController.GetPOV(0) == 270;
-            bool toL1 = auxController.GetAButton();
-            bool toL2 = auxController.GetBButton();
-            bool toL3 = auxController.GetXButton();
-            bool toL4 = auxController.GetYButton();
-            bool toTransit = auxController.GetStartButtonPressed();
-            if (blinkyBlinky != nullptr)
-                blinkyBlinky->neuralyze = auxController.GetBackButton(); // Flash leds/signal light/limelight for Human Player attention acquisition
-
-            hasBeenSetByAux = true;
-            if (toL4)              { gamepiece->moveToPreset(Gamepiece::Preset::kL4);
-            } else if (toL3)              { gamepiece->moveToPreset(Gamepiece::Preset::kL3);
-            } else if (toL2)              { gamepiece->moveToPreset(Gamepiece::Preset::kL2);
-            } else if (toL1)              { gamepiece->moveToPreset(Gamepiece::Preset::kL1);
-            } else if (toCoralStation)    { gamepiece->moveToPreset(Gamepiece::Preset::kCORAL_STATION);
-            } else if (toCoralStationLow) { gamepiece->moveToPreset(Gamepiece::Preset::kCORAL_STATION_LOW);
-            } else if (toTransit)         { gamepiece->moveToPreset(Gamepiece::Preset::kTRANSIT); 
-            } else {
-                hasBeenSetByAux = false;
+    if (gamepiece != nullptr && auxController.IsConnected() && !auxDisable) {
+        bool shouldToggleStationPreset = fabs(auxController.GetLeftTriggerAxis()) > PreferencesControls::AXIS_DEADZONE;
+        enum class StationState {
+            kNOT_ACTIVE,
+            kLOW,
+            kHIGH
+        };
+        static StationState currentStationState = StationState::kNOT_ACTIVE;
+        if (shouldToggleStationPreset) {
+            switch (currentStationState) {
+            case StationState::kNOT_ACTIVE:
+                currentStationState = StationState::kHIGH;
+                break;
+            case StationState::kHIGH:
+                currentStationState = StationState::kLOW;
+                break;
+            case StationState::kLOW:
+                currentStationState = StationState::kHIGH;
+                break;
+            default:
+                currentStationState = StationState::kNOT_ACTIVE;
+                break;
             }
         }
-        if (driveController.IsConnected() && !hasBeenSetByAux) {
-            bool toReefLow = driveController.GetLeftBumperButtonPressed();
-            bool toReefHigh = driveController.GetRightBumperButtonPressed();
-            bool toGround = driveController.GetPOV() == 180;
-            bool toProcessor = driveController.GetPOV(0) == 270;
-            bool toNet = driveController.GetPOV() == 0;
+        bool toCoralStation = currentStationState == StationState::kHIGH;
+        bool toCoralStationLow = currentStationState == StationState::kLOW;
+        bool toL1 = auxController.GetAButton();
+        bool toL2 = auxController.GetBButton();
+        bool toL3 = auxController.GetXButton();
+        bool toL4 = auxController.GetYButton();
+        bool toStop = auxController.GetRightStickButtonPressed();
+        bool toTransit = auxController.GetStartButtonPressed();
+        bool toReefLow = auxController.GetPOV(0) == 90;
+        bool toReefHigh = auxController.GetPOV(0) == 0;
+        bool toGround = auxController.GetPOV() == 180;
+        bool toProcessor = auxController.GetPOV(0) == 270;
+        if (blinkyBlinky != nullptr)
+            blinkyBlinky->neuralyze = auxController.GetLeftBumperButtonPressed(); // Flash leds/signal light/limelight for Human Player attention acquisition
 
-            // Prioritize Highest
-            if (toReefLow)             { gamepiece->moveToPreset(Gamepiece::Preset::kREEF_LOW); 
-            } else if (toReefHigh)     { gamepiece->moveToPreset(Gamepiece::Preset::kREEF_HIGH); 
-            } else if (toProcessor)    { gamepiece->moveToPreset(Gamepiece::Preset::kPROCESSOR);
-            } else if (toGround)       { gamepiece->moveToPreset(Gamepiece::Preset::kGROUND); 
-            } else if (toNet)          { gamepiece->moveToPreset(Gamepiece::Preset::kNET);
-            }
+        hasBeenSetByAux = true;
+        bool coralStationActive = true; // It's too late to come up with a better solution
+        if (toStop)                   { coralStationActive = false; gamepiece->moveToPreset(Gamepiece::Preset::kSTOP);
+        } else if (toTransit)         { coralStationActive = false; gamepiece->moveToPreset(Gamepiece::Preset::kTRANSIT);
+        } else if (toL4)              { coralStationActive = false; gamepiece->moveToPreset(Gamepiece::Preset::kL4);
+        } else if (toL3)              { coralStationActive = false; gamepiece->moveToPreset(Gamepiece::Preset::kL3);
+        } else if (toL2)              { coralStationActive = false; gamepiece->moveToPreset(Gamepiece::Preset::kL2);
+        } else if (toL1)              { coralStationActive = false; gamepiece->moveToPreset(Gamepiece::Preset::kL1);
+        } else if (toReefLow)         { coralStationActive = false; gamepiece->moveToPreset(Gamepiece::Preset::kREEF_LOW); 
+        } else if (toReefHigh)        { coralStationActive = false; gamepiece->moveToPreset(Gamepiece::Preset::kREEF_HIGH); 
+        } else if (toProcessor)       { coralStationActive = false; gamepiece->moveToPreset(Gamepiece::Preset::kPROCESSOR);
+        } else if (toGround)          { coralStationActive = false; gamepiece->moveToPreset(Gamepiece::Preset::kGROUND); 
+        } else if (toCoralStation)    { coralStationActive = true; gamepiece->moveToPreset(Gamepiece::Preset::kCORAL_STATION);
+        } else if (toCoralStationLow) { coralStationActive = true; gamepiece->moveToPreset(Gamepiece::Preset::kCORAL_STATION_LOW);
+        } else {
+            hasBeenSetByAux = false;
         }
+        if (coralStationActive)
+            currentStationState = StationState::kNOT_ACTIVE;
+    }
+    if (gamepiece != nullptr && driveController.IsConnected() && !hasBeenSetByAux && !driveDisable) {
+        bool toNet = driveController.GetPOV() == 0;
+
+        if (toNet) 
+            gamepiece->moveToPreset(Gamepiece::Preset::kNET);
     }
 
     // #define CALGAE_SENSOR_BROKEN false// Replace with switchboard?
-    if (gamepiece->calgae != nullptr && auxController.IsConnected()) {
-        bool coralIntake = fabs(auxController.GetRightTriggerAxis()) > PreferencesControls::AXIS_DEADZONE; //fabs is extraneous but might as well 
+    if (gamepiece->calgae != nullptr && auxController.IsConnected() && !auxDisable) {
         bool algaeIntake = fabs(auxController.GetLeftTriggerAxis()) > PreferencesControls::AXIS_DEADZONE;
         bool shoot = auxController.GetRightBumperButton();
-        bool resetGamepieceState = auxController.GetLeftBumperButtonPressed();
+        bool resetGamepieceState = auxController.GetBackButtonPressed();
         bool shootDone = auxController.GetRightBumperButtonReleased();
 
-        if (coralIntake) {
-            gamepiece->calgaeAutopilot = false;
-            gamepiece->calgae->setMotorMode(Calgae::MotorModes::kCORAL_INTAKE);
-        } else if (algaeIntake) {
+        if (algaeIntake) {
             gamepiece->calgaeAutopilot = false;
             gamepiece->calgae->setMotorMode(Calgae::MotorModes::kALGAE_INTAKE);
         } else if (shoot) {
@@ -154,7 +179,7 @@ void Controls::process() {
         }
     }
 
-    if (hang != nullptr && auxController.IsConnected()) {
+    if (hang != nullptr && auxController.IsConnected() && !auxDisable && !hangDisable && !manualMode) { // No hang in manual mode
         double hangPercent = auxController.GetLeftY();
         if (fabs(hangPercent) < PreferencesControls::AXIS_DEADZONE) {
             hangPercent = 0;
@@ -169,7 +194,7 @@ void Controls::process() {
     }
 
     // Elevator Manual Movement Code, re-implement if needed
-    if (gamepiece->elevator && auxController.IsConnected() && manualMode) {
+    if (gamepiece->elevator && auxController.IsConnected() && manualMode && !auxDisable) {
         double movementPercent = -auxController.GetLeftY();
         if (fabs(movementPercent) < PreferencesControls::AXIS_DEADZONE)
             movementPercent = 0;
@@ -178,7 +203,7 @@ void Controls::process() {
 
     
     // Wrist Manual Movement Code, re-implement if needed
-    if (gamepiece->wrist && auxController.IsConnected() && manualMode) {
+    if (gamepiece->wrist && auxController.IsConnected() && manualMode && !auxDisable) {
         double movementPercent = -auxController.GetRightY();
         if (fabs(movementPercent) < PreferencesControls::AXIS_DEADZONE)
             movementPercent = 0;
@@ -199,19 +224,32 @@ void Controls::utilizeSwitchBoard() {
         return;
     }
 
-    // bool disableLimelight = switchBoard.GetRawButton(1);
-    // if (limelight != nullptr)
-    //     limelight->setFunctioningState(disableLimelight);
+    gamepiece->elevatorDisable = switchBoard.GetRawButton(1);
 
-    // bool wristMotorBroken = switchBoard.GetRawButton(2);
-    // if (gamepiece->wrist != nullptr)
-    //     gamepiece->wrist->setEncoderBroken(wristMotorBroken);
-    
+    gamepiece->wristDisable = switchBoard.GetRawButton(2);
+    if (gamepiece->wrist != nullptr)
+        gamepiece->wrist->setEncoderBroken(gamepiece->wristDisable);
+
     manualMode = switchBoard.GetRawButton(3);
+
+    hangDisable = switchBoard.GetRawButton(4);
+    driveDisable = switchBoard.GetRawButton(5);
+    auxDisable = switchBoard.GetRawButton(6);
+    fieldCentric = switchBoard.GetRawButton(7);
+
+    bool disableLimelight = switchBoard.GetRawButton(8);
+    if (limelight != nullptr)
+        limelight->setFunctioningState(disableLimelight);
+
+    if (switchBoard.GetRawButton(9)) { // LED Disable
+        if (blinkyBlinky != nullptr) {
+            blinkyBlinky->currentMode = BlinkyBlinky::Mode::OFF;
+        }
+    }
 }
 
 bool Controls::shouldPersistentConfig() {
-    // utilizeSwitchBoard(); // This is run in disable, might want to rename function
+    utilizeSwitchBoard(); // This is run in disable, might want to rename function
     if (auxController.IsConnected()) {
         if (auxController.GetLeftBumperButton() &&
             auxController.GetRightBumperButton() &&

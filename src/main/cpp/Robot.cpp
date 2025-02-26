@@ -51,7 +51,7 @@ Robot::Robot() :
 	allComponents.push_back(blinkyBlinky);
 #endif
 
-	controls = new Controls(drive, gamepiece, blinkyBlinky, hang);
+	controls = new Controls(drive, gamepiece, blinkyBlinky, hang, &limelight);
 }
 
 void Robot::RobotInit() {

@@ -45,6 +45,9 @@ class Gamepiece : public Component {
     Calgae* calgae;
     Wrist* wrist;
     Elevator* elevator;
+    
+    bool elevatorDisable = false;
+    bool wristDisable = false;
   private:
     std::string targetPresetAsString();
 

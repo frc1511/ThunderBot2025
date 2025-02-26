@@ -77,4 +77,6 @@ class Wrist : public Component {
 
     frc::DutyCycleEncoder encoder {DIO_WRIST_ENCODER}; // The through bore encoder
     bool encoderBroken = false;
+
+    friend class Gamepiece;
 };

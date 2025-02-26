@@ -310,19 +310,21 @@ void Drive::updateOdometry() {
 
     LimelightHelpers::SetRobotOrientation("", poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0);
 
-    std::pair<bool, LimelightHelpers::PoseEstimate> limelightResult = limelight->getEstimatedBotPose();
+    if (auto limelightResult = limelight->getEstimatedBotPose()) {
+        return;
+        bool limelightReliable = (*limelightResult).first;
+        LimelightHelpers::PoseEstimate mt1 = (*limelightResult).second;
 
-    bool limelightReliable = limelightResult.first;
-    LimelightHelpers::PoseEstimate mt1 = limelightResult.second;
+        frc::SmartDashboard::PutBoolean("limelight reliable", limelightReliable);
 
-    frc::SmartDashboard::PutBoolean("limelight reliable", limelightReliable);
+        if (!limelightReliable) return;
+        poseEstimator.SetVisionMeasurementStdDevs({0.3, 0.3, 0.3});
+        poseEstimator.AddVisionMeasurement(
+            mt1.pose,
+            mt1.timestampSeconds
+        );
 
-    if (!limelightReliable) return;
-    poseEstimator.SetVisionMeasurementStdDevs({0.3, 0.3, 0.3});
-    poseEstimator.AddVisionMeasurement(
-        mt1.pose,
-        mt1.timestampSeconds
-    );
+    }
 }
 
 wpi::array<frc::SwerveModuleState, 4> Drive::getModuleStates() {

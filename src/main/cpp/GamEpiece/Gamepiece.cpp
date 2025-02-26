@@ -60,8 +60,10 @@ void Gamepiece::moveToTarget() {
 
     // If moving down, move wrist first
     // If moving up, move elevator first
-
-    if (wrist != nullptr){
+    
+    if (wrist != nullptr && wristDisable) {
+        wrist->setSpeed(0);
+    } else if (wrist != nullptr && !wristDisable) {
         // (isMovingDown || (isMovingUp && elevatorMoveDone))) {
         wristAutopilot = true;
         switch (targetPreset) {
@@ -77,7 +79,7 @@ void Gamepiece::moveToTarget() {
         case Gamepiece::kTRANSIT:           wrist->toPreset(Wrist::Preset::kTRANSIT);            break;
         case Gamepiece::kREEF_HIGH:         wrist->toPreset(Wrist::Preset::kREEF);               break;
         case Gamepiece::kREEF_LOW:          wrist->toPreset(Wrist::Preset::kREEF);               break;
-        // kSTOP preset should be handled by controls
+        case Gamepiece::kSTOP:              wrist->setSpeed(0);                                  break;
         default:
             // Not a preset where we do something? Don't do anything
             wristAutopilot = false; 
@@ -89,7 +91,9 @@ void Gamepiece::moveToTarget() {
         wristMoveDone = true;
     }
 
-    if (elevator != nullptr)
+    if (elevator != nullptr && elevatorDisable) {
+        elevator->goToPreset(Elevator::Preset::kSTOP);
+    } else if (elevator != nullptr && !elevatorDisable)
         //(isMovingUp || (isMovingDown && wristMoveDone)))
     {
         elevatorAutopilot = true;
@@ -106,7 +110,7 @@ void Gamepiece::moveToTarget() {
         case Gamepiece::kTRANSIT:           elevator->goToPreset(Elevator::Preset::kTRANSIT);           break;
         case Gamepiece::kREEF_HIGH:         elevator->goToPreset(Elevator::Preset::kREEF_HIGH);         break;
         case Gamepiece::kREEF_LOW:          elevator->goToPreset(Elevator::Preset::kREEF_LOW);          break;
-        // kSTOP preset should be handled by controls
+        case Gamepiece::kSTOP:              elevator->goToPreset(Elevator::Preset::kSTOP);              break;
         default:
             // Not a preset where we do something? Don't do anything
             elevatorAutopilot = false; 

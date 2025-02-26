@@ -15,7 +15,7 @@
 
 class Controls : public Component {
   public:
-    Controls(Drive* drive_, Gamepiece* gamepiece_, BlinkyBlinky* blinkyBlinky_, Hang* hang_);
+    Controls(Drive* drive_, Gamepiece* gamepiece_, BlinkyBlinky* blinkyBlinky_, Hang* hang_, Limelight* limelight_);
 
     void process();
     void sendFeedback();
@@ -34,4 +34,9 @@ class Controls : public Component {
     frc::GenericHID switchBoard {2};
 
     bool manualMode = false;
+    bool driveDisable = false;
+    bool fieldCentric = false;
+    bool auxDisable = false;
+    bool hangDisable = false;
+    bool ledDisable = false;
 };

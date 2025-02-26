@@ -2,10 +2,10 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
-std::pair<bool, LimelightHelpers::PoseEstimate> Limelight::getEstimatedBotPose() {
+std::optional<std::pair<bool, LimelightHelpers::PoseEstimate>> Limelight::getEstimatedBotPose() {
     if (!isFunctioning) {
         // If it's not functioning, don't use it's values!
-        return std::make_pair(false, LimelightHelpers::PoseEstimate());
+        return std::nullopt;
     }
 
     LimelightHelpers::PoseEstimate mt1 = LimelightHelpers::getBotPoseEstimate_wpiBlue(PreferencesLimelight::LIMELIGHT_NAME);
