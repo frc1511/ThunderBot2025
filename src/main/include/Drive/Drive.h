@@ -108,7 +108,7 @@ public:
     /**
      * Runs a trajectory.
      */
-    void runTrajectory(const CSVTrajectory* trajectory, const std::map<u_int32_t, Action*>& actionMap);
+    void runTrajectory(const CSVTrajectory* trajectory, const std::map<unsigned int, Action*>& actionMap);
 
     void setupInitialTrajectoryPosition(const CSVTrajectory* trajectory);
 
@@ -244,13 +244,13 @@ private:
     const CSVTrajectory* trajectory = nullptr;
 
     // The available actions.
-    const std::map<u_int32_t, Action*>* trajectoryActions = nullptr;
+    const std::map<unsigned int, Action*>* trajectoryActions = nullptr;
 
     // Actions that are completed.
-    std::vector<u_int32_t> doneTrajectoryActions;
+    std::vector<unsigned int> doneTrajectoryActions;
 
     // The current action.
-    std::map<units::second_t, u_int32_t>::const_iterator trajectoryActionIter;
+    std::map<units::second_t, unsigned int>::const_iterator trajectoryActionIter;
 
     frc::Timer trajectoryTimer;
 

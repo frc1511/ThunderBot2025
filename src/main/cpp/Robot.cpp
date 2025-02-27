@@ -5,16 +5,16 @@
 #include "Robot.h"
 
 Robot::Robot() :
-				lastMode(Component::MatchMode::DISABLED),
-				limelight(),
-				drive(nullptr),
-				calgae(nullptr),
-				wrist(nullptr),
-				elevator(nullptr),
-				controls(nullptr),
-				auto_(nullptr),
-				hang(nullptr),
-				allComponents()
+				lastMode(Component::MatchMode::DISABLED)//,
+				// limelight(),
+				// drive(nullptr),
+				// calgae(nullptr),
+				// wrist(nullptr),
+				// elevator(nullptr),
+				// controls(nullptr),
+				// auto_(nullptr),
+				// hang(nullptr),
+				// allComponents()
 {
 #ifdef ENABLE_DRIVE
 	drive = new Drive(&limelight);
@@ -141,7 +141,9 @@ void Robot::TestPeriodic() {
 	// }
 }
 
-void Robot::SimulationInit() {}
+void Robot::SimulationInit() {
+	printf("YIPPEE\n");
+}
 void Robot::SimulationPeriodic() {}
 
 void Robot::reset(Component::MatchMode mode) {

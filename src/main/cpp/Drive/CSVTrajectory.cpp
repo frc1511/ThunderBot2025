@@ -18,7 +18,7 @@ CSVTrajectory::CSVTrajectory(std::filesystem::path path, bool inverted) {
         units::meter_t yPos(Parser::parseNumber(currIter, fileStr.cend())); ++currIter;
         units::meters_per_second_t velocity(Parser::parseNumber(currIter, fileStr.cend())); ++currIter;
         frc::Rotation2d rotation = units::radian_t(Parser::parseNumber(currIter, fileStr.cend())); ++currIter;
-        u_int32_t action = static_cast<u_int32_t>(Parser::parseNumber(currIter, fileStr.cend())); ++currIter;
+        unsigned int action = static_cast<unsigned int>(Parser::parseNumber(currIter, fileStr.cend())); ++currIter;
 
         if (inverted) {
             xPos = PreferencesTrajectory::FIELD_X - xPos;

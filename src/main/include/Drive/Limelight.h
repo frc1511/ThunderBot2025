@@ -8,11 +8,11 @@
 
 class Limelight{
   public:
-    std::pair<bool, LimelightHelpers::PoseEstimate> getEstimatedBotPose();
+    bool getEstimatedBotPose();
 
     void setFunctioningState(bool isFunctioning_);
   private:
-    LimelightHelpers::PoseEstimate limelightMeasurement;
+    nullptr_t limelightMeasurement;
     frc::DriverStation::Alliance allianceColor = frc::DriverStation::GetAlliance().value();
     
     bool isFunctioning = true;

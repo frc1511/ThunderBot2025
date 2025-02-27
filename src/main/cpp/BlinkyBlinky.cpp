@@ -66,7 +66,7 @@ void BlinkyBlinky::process() {
                 static int blueWavePosition = 0;
                 applyPercentOverLeds([&](double percent) -> LEDData {
                     LEDData color {};
-                    int brightness = (abs((percent - 0.5) * 100) + blueWavePosition) % 100;
+                    int brightness = (int)(abs((percent - 0.5) * 100) + blueWavePosition) % 100;
                     color.SetHSV(120, 255, brightness);
                     return color;
                 });
@@ -103,22 +103,23 @@ void BlinkyBlinky::process() {
         }
 
         switch (currentMode) {
-        case Mode::OFF:
-            sideBuffer.fill(LEDData(0, 0, 0)); // Black (off)
-            break;
-        case Mode::RAINBOW:
-            static int rainbowPosition = 0;
-            applyPercentOverLeds([&](double percent) -> LEDData {
-                LEDData color {};
-                int hue = int(percent * 180 + rainbowPosition) % 180;
-                color.SetHSV(hue, 255, 100);
-                return color;
-            });
-            rainbowPosition++;
-            break;
-        
-        default:
-            break;
+            case Mode::OFF:
+                sideBuffer.fill(LEDData(0, 0, 0)); // Black (off)
+                break;
+            case Mode::RAINBOW: { // To lock rainbowPosition to this part of the switch
+                    static int rainbowPosition = 0;
+                    applyPercentOverLeds([&](double percent) -> LEDData {
+                        LEDData color {};
+                        int hue = int(percent * 180 + rainbowPosition) % 180;
+                        color.SetHSV(hue, 255, 100);
+                        return color;
+                    });
+                    rainbowPosition++;
+                }
+                break;
+            
+            default:
+                break;
         }
     }
 

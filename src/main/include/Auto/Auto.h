@@ -126,7 +126,7 @@ private:
     };
     ShootCoral shootCoral;
 
-    std::map<u_int32_t, Action*> actions {
+    std::map<unsigned int, Action*> actions {
         {1 << 0, &toL1}, // Ground
         {1 << 1, &toL1}, // L1
         {1 << 2, &toL1}, // L2

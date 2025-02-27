@@ -98,7 +98,7 @@ units::degree_t Wrist::getEncoderDegrees() {
 }
 
 double Wrist::feedForwardPower() {
-    double radFromUp = getEncoderDegrees().value() * (std::numbers::pi / 180);
+    double radFromUp = getEncoderDegrees().value() * (3.141592653589793 / 180);
     frc::SmartDashboard::PutNumber("Wrist Rad From Up", radFromUp);
 
     if (getEncoderDegrees() > 45_deg) {

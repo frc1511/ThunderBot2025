@@ -53,9 +53,9 @@ public:
     /**
      * Returns the actions with their attributed timestamps.
      */
-    inline const std::map<units::second_t, u_int32_t>& getActions() const { return actions; }
+    inline const std::map<units::second_t, unsigned int>& getActions() const { return actions; }
 
 private:
     std::map<units::second_t, State> states;
-    std::map<units::second_t, u_int32_t> actions;
+    std::map<units::second_t, unsigned int> actions;
 };

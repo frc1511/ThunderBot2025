@@ -119,11 +119,11 @@ void SwerveModule::setTurningMotor(units::radian_t angle)
      * Fix the discontinuity problem by converting a -2π to 2π value into -π to π value.
      * If the value is above π rad or below -π rad...
      */
-    if(units::math::abs(angleDelta).value() > std::numbers::pi) {
+    if(units::math::abs(angleDelta).value() > 3.141592653589793) {
         const int sign = std::signbit(angleDelta.value()) ? -1 : 1;
         
         // Subtract 2π rad, or add 2π rad depending on the sign.
-        angleDelta = units::radian_t(angleDelta.value() - (2 * std::numbers::pi) * sign);
+        angleDelta = units::radian_t(angleDelta.value() - (2 * 3.141592653589793) * sign);
     }
     
     units::turn_t output = angleDelta;
