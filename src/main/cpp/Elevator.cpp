@@ -118,7 +118,7 @@ bool Elevator::atPreset() { //detects if at preset
     if (!encoderZeroed) // if we are at the bottom we are not at our preset
         return false;
 
-    if (fabs(getPosition().value()) - Position[targetPreset].value() < PreferencesElevator::TARGET_TOLERANCE) { // If the diff from our preset is less than our tol, we at the preset
+    if (fabs(getPosition().value() - Position[targetPreset].value()) < PreferencesElevator::TARGET_TOLERANCE) { // If the diff from our preset is less than our tol, we at the preset
         return true;
     }
     // if we aren't at our preset, we aren't at our preset
@@ -147,7 +147,7 @@ double Elevator::computeSpeedForPreset() {
     }
     bool isDirectionUp = difference > 0_tr;
 
-    double speedFactorUp = std::clamp(fabs(difference.value()) * 0.1, 0.2, 1.0);
+    double speedFactorUp = std::clamp(fabs(difference.value()) * 0.1, 0.1, 1.0);
 
     if (isDirectionUp) {
         return PreferencesElevator::MAX_UP_SPEED * speedFactorUp;

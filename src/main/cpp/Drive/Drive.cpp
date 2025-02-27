@@ -133,8 +133,9 @@ void Drive::driveWithVelocities(units::meters_per_second_t xVel, units::meters_p
     if (flags & ControlFlag::LOCK_Y) newYVel = 0_mps;
     if (flags & ControlFlag::LOCK_ROT) newAngVel = 0_rad_per_s;
 
-    newXVel *= speedLimiting;
-    newYVel *= speedLimiting;
+    newXVel   *= speedLimiting;
+    newYVel   *= speedLimiting;
+    newAngVel *= speedLimiting;
 
     // Stop the robot in brick mode no matter what.
     if (flags & ControlFlag::BRICK) {
@@ -218,6 +219,7 @@ void Drive::sendFeedback() {
 
 
     // Drive feedback.
+    frc::SmartDashboard::PutNumber("Drive_SpeedLimiting",           speedLimiting);
     frc::SmartDashboard::PutNumber("Drive_PoseX_m",                 pose.X().value());
     frc::SmartDashboard::PutNumber("Drive_PoseY_m",                 pose.Y().value());
     frc::SmartDashboard::PutNumber("Drive_PoseRot_deg",             getRotation().Degrees().value());
@@ -494,7 +496,7 @@ void Drive::slowYourRoll() {
 }
 
 void Drive::unslowYourRoll() {
-    speedLimiting = std::clamp(speedLimiting - .1, 0.0, 1.0);
+    speedLimiting = std::clamp(speedLimiting + .1, 0.0, 1.0);
 }
 
 SwerveFeedback::SwerveFeedback(wpi::array<SwerveModule*, 4>* _swerveModules):

@@ -119,7 +119,7 @@ void Controls::process() {
         bool toGround = auxController.GetPOV() == 180;
         bool toProcessor = auxController.GetPOV(0) == 270;
         if (blinkyBlinky != nullptr)
-            blinkyBlinky->neuralyze = auxController.GetLeftBumperButtonPressed(); // Flash leds/signal light/limelight for Human Player attention acquisition
+            blinkyBlinky->neuralyze = auxController.GetLeftBumperButton(); // Flash leds/signal light/limelight for Human Player attention acquisition
 
         hasBeenSetByAux = true;
         bool coralStationActive = true; // It's too late to come up with a better solution
@@ -141,6 +141,9 @@ void Controls::process() {
         if (coralStationActive)
             currentStationState = StationState::kNOT_ACTIVE;
     }
+
+    // MARK: GamEpiece
+
     if (gamepiece != nullptr && driveController.IsConnected() && !hasBeenSetByAux && !driveDisable) {
         bool toNet = driveController.GetPOV() == 0;
 
@@ -150,7 +153,7 @@ void Controls::process() {
 
     // #define CALGAE_SENSOR_BROKEN false// Replace with switchboard?
     if (gamepiece->calgae != nullptr && auxController.IsConnected() && !auxDisable) {
-        bool algaeIntake = fabs(auxController.GetLeftTriggerAxis()) > PreferencesControls::AXIS_DEADZONE;
+        bool algaeIntake = fabs(auxController.GetRightTriggerAxis()) > PreferencesControls::AXIS_DEADZONE;
         bool shoot = auxController.GetRightBumperButton();
         bool resetGamepieceState = auxController.GetBackButtonPressed();
         bool shootDone = auxController.GetRightBumperButtonReleased();
@@ -203,7 +206,7 @@ void Controls::process() {
 
     
     // Wrist Manual Movement Code, re-implement if needed
-    if (gamepiece->wrist && auxController.IsConnected() && manualMode && !auxDisable) {
+    if (gamepiece->wrist != nullptr && auxController.IsConnected() && manualMode && !auxDisable) {
         double movementPercent = -auxController.GetRightY();
         if (fabs(movementPercent) < PreferencesControls::AXIS_DEADZONE)
             movementPercent = 0;

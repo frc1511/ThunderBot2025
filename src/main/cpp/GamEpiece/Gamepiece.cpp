@@ -63,8 +63,9 @@ void Gamepiece::moveToTarget() {
     
     if (wrist != nullptr && wristDisable) {
         wrist->setSpeed(0);
-    } else if (wrist != nullptr && !wristDisable) {
-        // (isMovingDown || (isMovingUp && elevatorMoveDone))) {
+    } else if (wrist != nullptr && !wristDisable &&
+              (isMovingDown || (isMovingUp && elevatorMoveDone)))
+        {
         wristAutopilot = true;
         switch (targetPreset) {
         case Gamepiece::kCORAL_STATION_LOW: wrist->toPreset(Wrist::Preset::kCORAL_STATION_LOW);  break;
@@ -93,8 +94,8 @@ void Gamepiece::moveToTarget() {
 
     if (elevator != nullptr && elevatorDisable) {
         elevator->goToPreset(Elevator::Preset::kSTOP);
-    } else if (elevator != nullptr && !elevatorDisable)
-        //(isMovingUp || (isMovingDown && wristMoveDone)))
+    } else if (elevator != nullptr && !elevatorDisable &&
+              (isMovingUp || (isMovingDown && wristMoveDone)))
     {
         elevatorAutopilot = true;
         switch (targetPreset) {

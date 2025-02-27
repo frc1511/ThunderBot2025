@@ -23,9 +23,11 @@ Robot::Robot() :
 
 #ifdef ENABLE_CALGAE
 	calgae = new Calgae();
+	allComponents.push_back(calgae);
+#endif
+#ifdef ENABLE_WRIST
 	wrist = new Wrist();
 	allComponents.push_back(wrist);
-	allComponents.push_back(calgae);
 #endif
 
 #ifdef ENABLE_ELEVATOR

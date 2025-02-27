@@ -31,9 +31,9 @@ void BlinkyBlinky::process() {
                 double elevatorPercentHeight = gamepiece->elevator->getPercentHeight();
                 double litLEDS = elevatorPercentHeight * PreferencesBlinkyBlinky::LED_SIDE_STRIP_TOTAL;
                 int majorLEDS = floor(litLEDS);
-                double finalFade = std::clamp(majorLEDS % 1, 0, 1);
+                double finalFade = std::clamp((int(litLEDS * 100) % 100) / 100.0, 0.0, 1.0);
                 int sideBufferSize = (int)sideBuffer.size();
-                for (int i = 0; i < sideBufferSize; i++) {
+                for (int i = 0; i < sideBufferSize; i++) { 
                     if (i <= majorLEDS) {
                         if (i == majorLEDS) {
                             sideBuffer[i] = LEDData(0, 255 * finalFade, 0); // Green
@@ -87,7 +87,7 @@ void BlinkyBlinky::process() {
 
         // MARK: NEURALYZE
         if (neuralyze) {
-            flash(2, -1);
+            flash(3, -1);
             overridePatterns = true;
             currentSideStatus = "Neuralyze";
         }

@@ -24,18 +24,14 @@ class Alert {
                                                 .title = "Elevator Disabled",
                                                 .description = "Elevator Disabled",
                                                 .displayTime = 12_s,};
-    inline static const elastic::Notification controlsAlert = {.level = elastic::NotificationLevel::WARNING,
-                                                .title = "Controls Disabled",
-                                                .description = "Controls Disabled",
-                                                .displayTime = 15_s,};
     inline static const elastic::Notification autoAlert = {.level = elastic::NotificationLevel::WARNING,
                                                 .title = "Autonomous Disabled",
                                                 .description = "Autonomous Disabled",
-                                                .displayTime = 18_s,};
+                                                .displayTime = 15_s,};
     inline static const elastic::Notification blinkyBlinkyAlert = {.level = elastic::NotificationLevel::WARNING,
                                                 .title = "Blinky Blinky Disabled",
                                                 .description = "Blinky Blinky Disabled",
-                                                .displayTime = 21_s,};
+                                                .displayTime = 18_s,};
 
     static void sendComponentDisableAlerts() {
         // Check IOMap for these bad boys
@@ -50,9 +46,6 @@ class Alert {
         #endif
         #ifndef ENABLE_ELEVATOR
             elastic::SendNotification(elevatorAlert);
-        #endif
-        #ifndef ENABLE_CONTROLS
-            elastic::SendNotification(controlsAlert);
         #endif
         #ifndef ENABLE_AUTO
             elastic::SendNotification(autoAlert);
