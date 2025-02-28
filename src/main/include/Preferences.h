@@ -98,6 +98,7 @@ struct PreferencesCalgae {
 
 struct PreferencesWrist {
     static const double MAX_SPEED;
+    static const double MAX_PIT_SPEED;
     static const units::degree_t UP_ZERO;
     static const double MAX_FEED_FORWARD_POWER_HIGH_ANGLE;
     static const double MAX_FEED_FORWARD_POWER_LOW_ANGLE;
@@ -112,6 +113,8 @@ struct PreferencesWrist {
 struct PreferencesElevator {
     static const double MAX_DOWN_SPEED;
     static const double MAX_UP_SPEED;
+    static const double MAX_DOWN_PIT_SPEED;
+    static const double MAX_UP_PIT_SPEED;
     static const double TARGET_TOLERANCE; // in turn_t
 };
 

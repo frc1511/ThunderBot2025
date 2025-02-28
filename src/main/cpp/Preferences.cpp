@@ -88,6 +88,7 @@ const double PreferencesCalgae::MOTOR_SPEED_INTAKE_REGRAB = 0.5;
 // Wrist
 
 const double PreferencesWrist::MAX_SPEED = 0.4;
+const double PreferencesWrist::MAX_PIT_SPEED = 0.2;
 const units::degree_t PreferencesWrist::UP_ZERO = 100_deg;
 const double PreferencesWrist::MAX_FEED_FORWARD_POWER_HIGH_ANGLE = 0.07;
 const double PreferencesWrist::MAX_FEED_FORWARD_POWER_LOW_ANGLE = 0.1;
@@ -105,6 +106,8 @@ const units::degree_t PreferencesWrist::UNSAFE_MIN = 80_deg;
 
 const double PreferencesElevator::MAX_DOWN_SPEED = 0.7;
 const double PreferencesElevator::MAX_UP_SPEED = 0.7;
+const double PreferencesElevator::MAX_DOWN_PIT_SPEED = 0.5;
+const double PreferencesElevator::MAX_UP_PIT_SPEED = 0.5;
 const double PreferencesElevator::TARGET_TOLERANCE = 0.2; // in turn_t
 
 

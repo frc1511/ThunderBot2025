@@ -110,6 +110,9 @@ double Wrist::feedForwardPower() {
 
 void Wrist::setSpeed(double speed) {
     speed = std::clamp(speed, -PreferencesWrist::MAX_SPEED, PreferencesWrist::MAX_SPEED);
+    if (settings.pitMode)
+        speed = std::clamp(speed, -PreferencesWrist::MAX_PIT_SPEED, PreferencesWrist::MAX_PIT_SPEED);
+        
     if (speed < 0 && getEncoderDegrees() < PreferencesWrist::LOWEST_ANGLE) {
         speed = 0;
     }

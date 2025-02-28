@@ -101,24 +101,35 @@ void BlinkyBlinky::process() {
         if (currentMode == Mode::UNSET) {
             currentMode = Mode::RAINBOW;
         }
-
-        switch (currentMode) {
-        case Mode::OFF:
-            sideBuffer.fill(LEDData(0, 0, 0)); // Black (off)
-            break;
-        case Mode::RAINBOW:
-            static int rainbowPosition = 0;
+        
+        if (settings.pitMode) { // (fr) Nous sommes en le Pit Mode | We are in pit mode
+            static double pitModePosition = 0;
             applyPercentOverLeds([&](double percent) -> LEDData {
                 LEDData color {};
-                int hue = int(percent * 180 + rainbowPosition) % 180;
+                int hue = int((1 - fabs(percent - 0.5)) * 90 + pitModePosition) % 90 + 90;
                 color.SetHSV(hue, 255, 100);
                 return color;
             });
-            rainbowPosition++;
-            break;
-        
-        default:
-            break;
+            pitModePosition += 0.5;
+        } else {
+            switch (currentMode) {
+            case Mode::OFF:
+                sideBuffer.fill(LEDData(0, 0, 0)); // Black (off)
+                break;
+            case Mode::RAINBOW:
+                static int rainbowPosition = 0;
+                applyPercentOverLeds([&](double percent) -> LEDData {
+                    LEDData color {};
+                    int hue = int(percent * 180 + rainbowPosition) % 180;
+                    color.SetHSV(hue, 255, 100);
+                    return color;
+                });
+                rainbowPosition++;
+                break;
+            
+            default:
+                break;
+            }
         }
     }
 
