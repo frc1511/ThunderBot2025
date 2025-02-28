@@ -59,6 +59,7 @@ Robot::Robot() :
 void Robot::RobotInit() {
 	if (auto_ != nullptr)
 		auto_->autoSelectorInit();
+	Alert::startTimer();
 }
 
 void Robot::RobotPeriodic() {
@@ -70,8 +71,6 @@ void Robot::RobotPeriodic() {
 
 void Robot::AutonomousInit() {
     reset(Component::MatchMode::AUTO);
-	Alert::sendComponentDisableAlerts();
-	Alert::reAllowControllerAlerts();
 }
 void Robot::AutonomousPeriodic() {
 	for (Component* component : allComponents)
@@ -80,8 +79,6 @@ void Robot::AutonomousPeriodic() {
 
 void Robot::TeleopInit() {
     reset(Component::MatchMode::TELEOP);
-	Alert::sendComponentDisableAlerts();
-	Alert::reAllowControllerAlerts();
 }
 void Robot::TeleopPeriodic() {
 	controls->process();

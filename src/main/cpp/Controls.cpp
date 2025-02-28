@@ -215,9 +215,9 @@ void Controls::process() {
 }
 
 void Controls::sendFeedback() {
-    Alert::sendControllerDisableAndDisconnectedAlerts(auxController.IsConnected(), driveController.IsConnected());
+    Alert::sendDisconnectAndDisableStates(auxController.IsConnected(), driveController.IsConnected(), switchBoard.IsConnected());
+    Alert::sendFeedback();
     frc::SmartDashboard::PutBoolean("Controls Manual Mode", manualMode);
-    
 }
 
 void Controls::utilizeSwitchBoard() {
