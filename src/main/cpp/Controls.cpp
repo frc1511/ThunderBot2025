@@ -218,11 +218,11 @@ void Controls::process() {
 }
 
 void Controls::sendFeedback() {
-    Alert::sendControllerDisableAndDisconnectedAlerts(auxController.IsConnected(), driveController.IsConnected());
+    Alert::sendDisconnectAndDisableStates(auxController.IsConnected(), driveController.IsConnected(), switchBoard.IsConnected());
+    Alert::sendFeedback();
     frc::SmartDashboard::PutBoolean("Controls Manual Mode", manualMode);
     frc::SmartDashboard::PutBoolean("Controls Pit Mode", settings.pitMode);
     frc::SmartDashboard::PutBoolean("Controls Field Centric", fieldCentric);
-    
 }
 
 void Controls::utilizeSwitchBoard() {
