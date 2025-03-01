@@ -176,13 +176,5 @@ double Elevator::computeSpeedForPreset() {
     return -PreferencesElevator::MAX_DOWN_SPEED * speedFactorDown;
 }
 
-void Elevator::setWristExistence(bool doesExist) {
-    wristExists = doesExist;
-}
-
-void Elevator::setWristSafety(bool isSafe) {
-    wristIsUnsafe = isSafe;
-}
-
 // Mason spread the love on 1/28/25 at 8:19:43 >:)
 // This is false (mason)

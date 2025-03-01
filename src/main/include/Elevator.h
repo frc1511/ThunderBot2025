@@ -52,9 +52,8 @@ class Elevator : public Component {
 
     Preset getCurrentPreset();
 
-    void setWristExistence(bool doesExist);
-    void setWristSafety(bool isSafe);
-
+    bool wristExists = false;
+    bool wristIsUnsafe = true;
   private:
     bool atMaxHeight();
     bool atMinHeight();
@@ -95,9 +94,6 @@ class Elevator : public Component {
     frc::DigitalInput upperLimitSwitch {DIO_ELEVATOR_TOP_LIMITSWITCH};
 
     double startDownPosition = 0;
-
-    bool wristExists = false;
-    bool wristIsUnsafe = true;
 
     friend class Controls;
 };

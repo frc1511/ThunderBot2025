@@ -5,11 +5,11 @@ Gamepiece::Gamepiece(Calgae *calgae_, Wrist *wrist_, Elevator *elevator_)
   wrist(wrist_),
   elevator(elevator_)
 {
-    elevator->setWristExistence(wrist != nullptr);
+    elevator->wristExists = (wrist != nullptr);
 }
 
 void Gamepiece::process() {
-    elevator->setWristSafety(wrist->wristIsUnsafe());
+    elevator->wristIsUnsafe = wrist->wristIsUnsafe();
     moveToTarget();
 }
 
