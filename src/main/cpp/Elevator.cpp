@@ -143,10 +143,6 @@ void Elevator::manualMovement(double speed) { // allows input of speed and turns
     manualControl = true;
 }
 
-void Elevator::setSensorBroken(bool isBroken) { // TODO: this still needs to be implemented
-    sensorBroken = isBroken;
-}
-
 double Elevator::computeSpeedForPreset() { 
     if (targetPreset == Preset::kSTOP) {
         return 0;

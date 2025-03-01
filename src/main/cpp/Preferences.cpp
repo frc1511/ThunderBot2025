@@ -134,7 +134,7 @@ const int PreferencesBlinkyBlinky::ALGAE_STATUS_ID = 3;
 // Hang
 
 const double PreferencesHang::MAX_POSITION = 1;
-const double PreferencesHang::MAX_HANG_SPEED_UP = 0.5; // TODO: CHANGE LATER
+const double PreferencesHang::MAX_HANG_SPEED_UP = 0.5;
 const double PreferencesHang::MAX_HANG_SPEED_DOWN = -0.5;
 const double PreferencesHang::BACKTRACKING_SPEED = -0.1;
 const double PreferencesHang::BACKTRACKING_DISTANCE = 1;

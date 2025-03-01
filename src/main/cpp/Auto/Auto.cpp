@@ -4,7 +4,14 @@ Auto::Auto(Drive *drive_, Limelight *limelight_, Gamepiece *gamepiece_)
 : drive(drive_),
   limelight(limelight_),
   gamepiece(gamepiece_),
-  toL1(gamepiece_),
+  toTransit(gamepiece_, Gamepiece::Preset::kTRANSIT),
+  toL1(gamepiece_, Gamepiece::Preset::kL1),
+  toL2(gamepiece_, Gamepiece::Preset::kL2),
+  toL3(gamepiece_, Gamepiece::Preset::kL3),
+  toL4(gamepiece_, Gamepiece::Preset::kL4),
+  toCoralStation(gamepiece_, Gamepiece::Preset::kCORAL_STATION),
+  toReefLow(gamepiece_, Gamepiece::Preset::kREEF_LOW),
+  toReefHigh(gamepiece_, Gamepiece::Preset::kREEF_HIGH),
   shootCoral(gamepiece_)
 {}
 void Auto::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
@@ -42,41 +49,12 @@ void Auto::process() { //called during auto
         case DO_NOTHING:
             doNothing();
             break;
-        case _TEST:
-            test();
-            break;
-        case _SQUARE:
-            square();
-            break;
         case LEAVE:
             leave();
             break;
-        case LEAVE_GO_TO_LEFT_CORAL:
-            leaveLeftCoral();
+        default:
+            runPath();
             break;
-        case LEAVE_GO_TO_RIGHT_CORAL:
-            leaveRightCoral();
-            break;
-        case L1Center:
-            L1CoralCenter();
-            break;
-        case L1Left:
-            L1CoralLeft();
-            break;
-        case L1Right:
-            L1CoralRight();
-            break;
-    }
-}
-
-void Auto::test() {
-    if (step == 0) {
-        drive->setupInitialTrajectoryPosition(&paths->at(Path::_TEST));
-        drive->runTrajectory(&paths->at(Path::_TEST), actions);
-        step++;
-    } else if (step == 1 && drive->isFinished()) {
-        printf("Finished Drive!\n");
-        step++;
     }
 }
 
@@ -92,65 +70,17 @@ void Auto::leave() {
     }
 }
 
-void Auto::leaveLeftCoral() {
+void Auto::runPath() {
     if (step == 0) {
-        drive->setupInitialTrajectoryPosition(&paths->at(Path::LEAVE_GO_TO_LEFT_CORAL));
-        drive->runTrajectory(&paths->at(Path::LEAVE_GO_TO_LEFT_CORAL), actions);
-        step++;
-    } else if (step == 1 && drive->isFinished()) {
-        printf("Finished Drive!\n");
-        step++;
-    }
-}
-
-void Auto::leaveRightCoral() {
-    if (step == 0) {
-        drive->setupInitialTrajectoryPosition(&paths->at(Path::LEAVE_GO_TO_RIGHT_CORAL));
-        drive->runTrajectory(&paths->at(Path::LEAVE_GO_TO_RIGHT_CORAL), actions);
-        step++;
-    } else if (step == 1 && drive->isFinished()) {
-        printf("Finished Drive!\n");
-        step++;
-    }
-}
-
-void Auto::L1CoralCenter() {
-    if (step == 0) {
-        drive->setupInitialTrajectoryPosition(&paths->at(Path::L1Center));
-        drive->runTrajectory(&paths->at(Path::L1Center), actions);
-        step++;
-    } else if (step == 1 && drive->isFinished()) {
-        step++;
-    }
-}
-
-void Auto::L1CoralLeft() {
-    if (step == 0) {
-        drive->setupInitialTrajectoryPosition(&paths->at(Path::L1Left));
-        drive->runTrajectory(&paths->at(Path::L1Left), actions);
-        step++;
-    } else if (step == 1 && drive->isFinished()) {
-        step++;
-    }
-}
-
-void Auto::L1CoralRight() {
-    if (step == 0) {
-        drive->setupInitialTrajectoryPosition(&paths->at(Path::L1Right));
-        drive->runTrajectory(&paths->at(Path::L1Right), actions);
-        step++;
-    } else if (step == 1 && drive->isFinished()) {
-        step++;
-    }
-}
-
-void Auto::square() {
-    if (step == 0) {
-        drive->setupInitialTrajectoryPosition(&paths->at(Path::_SQUARE));
-        drive->runTrajectory(&paths->at(Path::_SQUARE), actions);
-        step++;
-    } else if (step == 1 && drive->isFinished()) {
-        printf("Finished Drive!\n");
+        auto path = autoModePaths.find(mode);
+        if (path == autoModePaths.end()) {
+            printf("Programmer: You forgot to update `autoModePaths` to accomadate your new path!\n");
+            step++;
+            return;
+        }
+        auto pathPtr = &paths->at(path->second);
+        drive->setupInitialTrajectoryPosition(pathPtr);
+        drive->runTrajectory(pathPtr, actions);
         step++;
     }
 }

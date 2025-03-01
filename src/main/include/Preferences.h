@@ -139,7 +139,7 @@ struct PreferencesBlinkyBlinky
 struct PreferencesHang
 {
     static const double MAX_POSITION;
-    static const double MAX_HANG_SPEED_UP; // TODO: CHANGE LATER
+    static const double MAX_HANG_SPEED_UP;
     static const double MAX_HANG_SPEED_DOWN;
     static const double BACKTRACKING_SPEED;
     static const double BACKTRACKING_DISTANCE;

@@ -45,7 +45,6 @@ class Elevator : public Component {
     bool atPreset();
 
     void manualMovement(double speed);
-    void setSensorBroken(bool isBroken);
 
     bool isDisabled = false;
 
@@ -77,7 +76,6 @@ class Elevator : public Component {
     double manualMovementSpeed = 0;
     bool manualControl = false;
     
-    bool sensorBroken = false;
     bool encoderZeroed = false;
 
     units::turn_t getPosition();
