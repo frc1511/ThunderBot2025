@@ -1,6 +1,6 @@
-#include "Elevator.h" 
-Elevator::Elevator(Wrist *wrist_)
-: wrist(wrist_) {
+#include "Elevator.h"
+
+Elevator::Elevator() {
     doConfiguration(false);
 }
 
@@ -28,8 +28,8 @@ void Elevator::process() {
     if (atMaxHeight() && motorSpeed > 0)
         motorSpeed = 0;
 
-    if (wrist != nullptr)
-        if (wrist->wristIsUnsafe())
+    if (wristExists)
+        if (wristIsUnsafe)
             motorSpeed = 0;
 
     if (settings.pitMode && isDisabled) {
