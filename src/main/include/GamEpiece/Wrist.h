@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Basic/Component.h"
-#include "Basic/IOMap.h"
-#include "Preferences.h"
-
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/PWM.h>
 #include <frc/DutyCycleEncoder.h>
 #include <units/angle.h>
+
+#include "Basic/Component.h"
+#include "Basic/IOMap.h"
+#include "Preferences.h"
 
 class Wrist : public Component {
   public:
@@ -70,6 +70,7 @@ class Wrist : public Component {
     std::string presetAsString();
 
     bool manual = false;
+
     units::degree_t manualAngle = 0_deg;
     units::degree_t startPosition = 0_deg;
 

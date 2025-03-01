@@ -10,16 +10,20 @@ void Wrist::process() {
     if (!encoder.IsConnected()) {
         encoderBroken = true;
     }
+
     if (!encoderBroken && withinEncoderSafeZone()) {
         units::degree_t targetPosition = Positions[currentPreset];
+
         if (!manual) {
             if (atPreset()) {
                 setSpeed(0);
+
                 return;
             }
         } else {
             targetPosition = manualAngle;
         }
+
         units::degree_t difference = targetPosition - getEncoderDegrees();
 
         double speedFactor = std::clamp(difference.value() * 0.1, -1.0, 1.0);
@@ -31,7 +35,7 @@ void Wrist::process() {
     }
 }
 
-void Wrist::doConfiguration(bool persist) {}
+void Wrist::doConfiguration(bool persist) { }
 
 void Wrist::sendFeedback() {
     frc::SmartDashboard::PutBoolean("Wrist Manual",          manual);
@@ -49,10 +53,12 @@ bool Wrist::withinEncoderSafeZone() {
         printf("WRIST ENCODER FAILURE\n");
         return false;
     }
+
     if (getEncoderDegrees() > PreferencesWrist::HIGHEST_ANGLE + PreferencesWrist::ENCODER_FAILURE_OUTBOUND) {
         printf("WRIST ENCODER FAILURE\n");
         return false;
     }
+
     return true;
 }
 
@@ -86,6 +92,7 @@ void Wrist::manualMovement(units::degree_t angle) {
 bool Wrist::wristIsUnsafe() {
     if (getEncoderDegrees() > PreferencesWrist::UNSAFE_MIN && !encoderBroken)
         return true;
+
     return false;
 }
 
@@ -116,9 +123,11 @@ void Wrist::setSpeed(double speed) {
     if (speed < 0 && getEncoderDegrees() < PreferencesWrist::LOWEST_ANGLE) {
         speed = 0;
     }
+
     if (speed > 0 && getEncoderDegrees() > PreferencesWrist::HIGHEST_ANGLE) {
         speed = 0;
     }
+
     speed += feedForwardPower();
     frc::SmartDashboard::PutNumber("Wrist Speed", speed);
     motor.SetSpeed(speed);
@@ -126,25 +135,15 @@ void Wrist::setSpeed(double speed) {
 
 std::string Wrist::presetAsString() {
     switch (currentPreset) {
-    case Preset::kGROUND:
-        return "Ground";
-    case Preset::kSTATION:
-        return "Coral Station";
-    case Preset::kTROUGH:
-        return "L1 (Trough)";
-    case Preset::kBRANCH2_3:
-        return "L2 & L3";
-    case Preset::kBRANCH4:
-        return "L4";
-    case Preset::kPROCESSOR:
-        return "Processor";
-    case Preset::kTRANSIT:
-        return "Transit";
-    case Preset::kREEF:
-        return "Reef";
-    case Preset::kCORAL_STATION_LOW:
-        return "Coral Station Low";
-    default:
-       return "ERROR: Unknown/Incorrect";
+        case Preset::kGROUND: return "Ground";
+        case Preset::kSTATION: return "Coral Station";
+        case Preset::kTROUGH: return "L1 (Trough)";
+        case Preset::kBRANCH2_3: return "L2 & L3";
+        case Preset::kBRANCH4: return "L4";
+        case Preset::kPROCESSOR: return "Processor";
+        case Preset::kTRANSIT: return "Transit";
+        case Preset::kREEF: return "Reef";
+        case Preset::kCORAL_STATION_LOW: return "Coral Station Low";
+        default: return "ERROR: Unknown/Incorrect";
     }
 }

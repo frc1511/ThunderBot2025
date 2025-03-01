@@ -4,31 +4,32 @@ Calgae::Calgae() {
     doConfiguration(false);
 }
 
-Calgae::~Calgae() {
-}
+Calgae::~Calgae() { }
 
-void Calgae::doConfiguration(bool persist) {}
+void Calgae::doConfiguration(bool persist) { }
 
 void Calgae::resetToMatchMode(Component::MatchMode lastMode, Component::MatchMode mode) {
     stopMotors();
+
     isAuto = false;
+
     switch (mode) {
-    case Component::MatchMode::DISABLED:
-        stopMotors();
-        break;
-    case Component::MatchMode::AUTO:
-        isAuto = true;
-        lastGamepieceState = GamepieceState::kCORAL; // "I don't see why not." -Noah, "Huh?" -Trevor
-        break;
-    case Component::MatchMode::TELEOP:
-        updateGamepieceState();
-        lastGamepieceState = currentGamepieceState;
-        break;
-    default:
-        motorSpeed = MotorSpeed::kSTOPPED;
-        lastGamepieceState = GamepieceState::kNONE;
-        stopMotors();
-        break;
+        case Component::MatchMode::DISABLED:
+            stopMotors();
+            break;
+        case Component::MatchMode::AUTO:
+            isAuto = true;
+            lastGamepieceState = GamepieceState::kCORAL; // "I don't see why not." -Noah, "Huh?" -Trevor
+            break;
+        case Component::MatchMode::TELEOP:
+            updateGamepieceState();
+            lastGamepieceState = currentGamepieceState;
+            break;
+        default:
+            motorSpeed = MotorSpeed::kSTOPPED;
+            lastGamepieceState = GamepieceState::kNONE;
+            stopMotors();
+            break;
     }
 }
 
@@ -60,8 +61,8 @@ void Calgae::process() {
                 motorSpeed = MotorSpeed::kSTOPPED; // Set speed to stop
                 // Uh Oh! These will only be false if we shot it out (or manually reset), so the gamepiece was removed without us shooting it
                 if ((lastGamepieceState == GamepieceState::kCORAL) || 
-                     lastGamepieceState == GamepieceState::kALGAE) 
-                { // If we lost the gamepiece
+                     lastGamepieceState == GamepieceState::kALGAE) {
+                 // If we lost the gamepiece
                     regrabTimeout.Start();
                     if (regrabTimeout.Get() >= 2_s) {
                         motorSpeed = MotorSpeed::kSTOPPED;
@@ -78,7 +79,6 @@ void Calgae::process() {
                 motorSpeed = MotorSpeed::kALGAE_SPEED; // Set speed to algae
                 break;
             case MotorModes::kSHOOT: // If we are told to shoot, do it even though we don't have anything sensed, in case we lose detection early while shooting.
-                
                 if (lastGamepieceState == GamepieceState::kCORAL) { // If we had coral
                     motorSpeed = MotorSpeed::kCORAL_SPEED;
                 } else if (lastGamepieceState == GamepieceState::kALGAE) { // If we had algae
@@ -88,7 +88,6 @@ void Calgae::process() {
                 }
                 runMotors(presetShooterSpeeds[motorSpeed]);
                 return; // Return early so we don't intake further down
-
             case MotorModes::kDONE_SHOOTING:
                 lastGamepieceState = GamepieceState::kNONE;
                 motorSpeed = MotorSpeed::kSTOPPED;
@@ -102,14 +101,16 @@ void Calgae::process() {
         return;
 
     } else if ((currentGamepieceState == GamepieceState::kCORAL) || 
-               (currentGamepieceState == GamepieceState::kALGAE)) 
-        { // If we have Coral/Algae, so shoot or nothing
+               (currentGamepieceState == GamepieceState::kALGAE)) {
+         // If we have Coral/Algae, so shoot or nothing
         if (currentGamepieceState == GamepieceState::kCORAL) { // We have coral
             lastGamepieceState = GamepieceState::kCORAL;
         }
+
         if (currentGamepieceState == GamepieceState::kALGAE) { // We have algae
             lastGamepieceState = GamepieceState::kALGAE;
         }
+
         switch (motorMode) {
             case MotorModes::kSTOP: // If we aren't being told to move motors
                 motorSpeed = MotorSpeed::kSTOPPED; // Set speed to stop
@@ -135,7 +136,8 @@ void Calgae::process() {
 
         runMotors(presetShooterSpeeds[motorSpeed]);  // Run motors out at the speed ^
         return;
-    } 
+    }
+
     if (motorMode == MotorModes::kSHOOT_OVERRIDE) { // For when the sensor is broken
         motorSpeed = MotorSpeed::kALGAE_SPEED; // Stronger to accomodate for algae because we can't tell what we have
         runMotors(presetShooterSpeeds[motorSpeed]);
@@ -154,6 +156,7 @@ void Calgae::resetHadGamepiece() {
 bool Calgae::atSpeed() {
     return true; // TODO: Implement NOTE: This might not be neccessary (or even possible, as interfacing with the motor for PID seems difficult without an encoder, let someone know if otherwise)
 }
+
 bool Calgae::coralRetroreflectiveTripped() {
     return !coralRetroreflective.Get();
 }
@@ -178,11 +181,6 @@ void Calgae::stopMotors() {
 
 void Calgae::runMotors(double speed) {
     speed = std::clamp(speed, -1.0, 1.0);
-    // #define TMP
-    #ifdef TMP
-    if (speed > 0)
-        speed = 1.0
-    #endif
     motor.Set(speed); // NOTE: + is for IN, - is for OUT
 }
 
@@ -220,10 +218,10 @@ bool Calgae::hasAlgae() {
 
 std::string Calgae::lastGamepieceStateToString() {
     switch (lastGamepieceState) {
-    case GamepieceState::kNONE: return "None";
-    case GamepieceState::kCORAL: return "Algae";
-    case GamepieceState::kALGAE: return "Coral";
-    default: return "Error reading lastGamepieceState";
+        case GamepieceState::kNONE: return "None";
+        case GamepieceState::kCORAL: return "Algae";
+        case GamepieceState::kALGAE: return "Coral";
+        default: return "Error reading lastGamepieceState";
     }
 }
 

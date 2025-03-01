@@ -1,16 +1,14 @@
 #pragma once
 
-#include "Basic/Component.h"
-#include "Basic/IOMap.h"
-#include "Preferences.h"
-#include "Gamepiece/Wrist.h"
-
 #include <rev/SparkMax.h>
 #include <rev/config/SparkMaxConfig.h>
 #include <frc/DigitalInput.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
-class Controls;
+#include "Basic/Component.h"
+#include "Basic/IOMap.h"
+#include "Preferences.h"
+#include "Gamepiece/Wrist.h"
 
 class Elevator : public Component {
   public:
@@ -23,10 +21,7 @@ class Elevator : public Component {
 
     bool getLowerLimit();
     bool getUpperLimit();
-  private:
-    bool atMaxHeight();
-    bool atMinHeight();
-  public:
+
     enum Preset { //need measurements for the height of these sections, RN we have guesstimates with no units. ~G
         kSTOP,
         kGROUND, 
@@ -43,9 +38,12 @@ class Elevator : public Component {
         kCORAL_STATION_LOW,
         _enum_MAX,
     };
+
     void goToPreset(Preset preset);
+
     // if manual this returns true
     bool atPreset();
+
     void manualMovement(double speed);
     void setSensorBroken(bool isBroken);
 
@@ -54,7 +52,11 @@ class Elevator : public Component {
     double getPercentHeight();
 
     Preset getCurrentPreset();
+
   private:
+    bool atMaxHeight();
+    bool atMinHeight();
+
     units::turn_t Position[Preset::_enum_MAX] {
         0_tr,     // Stopped (Does not move to 0 turns)
         0_tr,     // Ground

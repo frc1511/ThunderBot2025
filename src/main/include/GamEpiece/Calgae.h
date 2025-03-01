@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Basic/Component.h"
-#include "Basic/IOMap.h"
-#include "Preferences.h"
-
 #include <frc/motorcontrol/PWMSparkMax.h>
 #include <frc/DigitalInput.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+
+#include "Basic/Component.h"
+#include "Basic/IOMap.h"
+#include "Preferences.h"
 
 class Calgae : public Component {
   public:
@@ -62,8 +62,8 @@ class Calgae : public Component {
     bool isShootDone();
 
     void autoShoot();
-  private:
 
+  private:
     /**
      * Stop all motors
      */

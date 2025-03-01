@@ -3,12 +3,14 @@ Elevator::Elevator(Wrist *wrist_)
 : wrist(wrist_) {
     doConfiguration(false);
 }
+
 void Elevator::process() {
     double motorSpeed = 0;
-    
+
     if (atMinHeight()) { // if elevator at the lower limit switch
         leftEncoder.SetPosition(0); // zero the encoders
         rightEncoder.SetPosition(0);
+
         encoderZeroed = true;
     }
 
@@ -29,20 +31,19 @@ void Elevator::process() {
     if (wrist != nullptr)
         if (wrist->wristIsUnsafe())
             motorSpeed = 0;
-    
+
     if (settings.pitMode && isDisabled) {
         motorSpeed = 0;
     }
 
     motorSpeed += 0.05; // Temp Feedfoward
 
-
     frc::SmartDashboard::PutNumber ("Elevator Motor Output", motorSpeed);
 
     motorSpeed = std::clamp(motorSpeed, -PreferencesElevator::MAX_DOWN_SPEED, PreferencesElevator::MAX_UP_SPEED);
     if (settings.pitMode)
         motorSpeed = std::clamp(motorSpeed, -PreferencesElevator::MAX_DOWN_PIT_SPEED, PreferencesElevator::MAX_UP_PIT_SPEED);
-    
+
     rightSparkMax.Set(motorSpeed);
     leftSparkMax.Set(motorSpeed);
 }
@@ -57,11 +58,11 @@ void Elevator::resetToMatchMode(MatchMode priorMode, MatchMode mode) { //resets 
 
 void Elevator::doConfiguration(bool persist) {
     rev::spark::SparkMaxConfig motorConfig {};
-    
+
     motorConfig.Inverted(false);
     motorConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kBrake);
     rightSparkMax.Configure(motorConfig, rev::spark::SparkBase::ResetMode::kNoResetSafeParameters, persist ? rev::spark::SparkBase::PersistMode::kPersistParameters : rev::spark::SparkBase::PersistMode::kNoPersistParameters);
-    
+
     motorConfig.Inverted(true);
     leftSparkMax.Configure(motorConfig, rev::spark::SparkBase::ResetMode::kNoResetSafeParameters, persist ? rev::spark::SparkBase::PersistMode::kPersistParameters : rev::spark::SparkBase::PersistMode::kNoPersistParameters);
 }
@@ -100,6 +101,7 @@ bool Elevator::getUpperLimit() {
 
 double Elevator::getPercentHeight() {
     double percentHeight = getPosition() / Position[Preset::kNET];
+
     return percentHeight;
 }
 
@@ -116,6 +118,7 @@ void Elevator::goToPreset(Preset target) {
     if (targetPreset != target) { // If we have a new preset
         startDownPosition = getPosition().value();
     }
+
     targetPreset = target;
     manualControl = false;
 }
@@ -123,6 +126,7 @@ void Elevator::goToPreset(Preset target) {
 bool Elevator::atPreset() { //detects if at preset
     if(manualControl || targetPreset == kSTOP) // if in manual control or stopped we are always at our preset
         return true;
+
     if (!encoderZeroed) // if we are at the bottom we are not at our preset
         return false;
 
@@ -130,6 +134,7 @@ bool Elevator::atPreset() { //detects if at preset
         return true;
     }
     // if we aren't at our preset, we aren't at our preset
+
     return false;
 }
 
@@ -153,6 +158,7 @@ double Elevator::computeSpeedForPreset() {
     if (fabs(difference.value()) < PreferencesElevator::TARGET_TOLERANCE) {
         return 0;
     }
+
     bool isDirectionUp = difference > 0_tr;
 
     double speedFactorUp = std::clamp(fabs(difference.value()) * 0.1, 0.1, 1.0);
@@ -160,7 +166,7 @@ double Elevator::computeSpeedForPreset() {
     if (isDirectionUp) {
         return PreferencesElevator::MAX_UP_SPEED * speedFactorUp;
     }
-    
+
     double diffFromStart = startDownPosition - getPosition().value();
 
     double speedFactorDown = std::clamp(fabs(diffFromStart) * 0.2, 0.2, 1.0);

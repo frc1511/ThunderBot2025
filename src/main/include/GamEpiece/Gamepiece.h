@@ -1,11 +1,11 @@
 #pragma once
 
+#include <frc/smartdashboard/SmartDashboard.h>
+
 #include "Basic/Component.h"
 #include "Elevator.h"
 #include "Calgae.h"
 #include "Wrist.h"
-
-#include <frc/smartdashboard/SmartDashboard.h>
 
 class Gamepiece : public Component {
   public:
@@ -48,6 +48,7 @@ class Gamepiece : public Component {
     
     bool elevatorDisable = false;
     bool wristDisable = false;
+
   private:
     std::string targetPresetAsString();
 

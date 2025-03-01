@@ -9,13 +9,11 @@ SwerveModule::SwerveModule(int driveID, int turningID, int canCoderID, units::de
   absEncoderOffset(offset),
   turnRequest(ctre::phoenix6::controls::PositionVoltage{0_tr}.WithSlot(0)),
   driveRequest(ctre::phoenix6::controls::VelocityVoltage{(units::turns_per_second_t)0}.WithSlot(0))
-
 {
     doConfiguration(false);
 }
 
-void SwerveModule::doConfiguration(bool persist)
-{
+void SwerveModule::doConfiguration(bool persist) {
     // Can Coder
     ctre::phoenix6::configs::MagnetSensorConfigs magnetConfig;
     magnetConfig.SensorDirection = ctre::phoenix6::signals::SensorDirectionValue::CounterClockwise_Positive;
@@ -76,13 +74,12 @@ void SwerveModule::doConfiguration(bool persist)
     driveMotor.GetConfigurator().Apply(driveCurrentLimit);
 }
 
-void SwerveModule::setState(frc::SwerveModuleState state)
-{
+void SwerveModule::setState(frc::SwerveModuleState state) {
     frc::SwerveModuleState currentState = getState();
 
     frc::SwerveModuleState optimizedState;
 
-    // Turn off optimization in crater mode to help with configuration.
+    // Turn off optimization in pit mode to help with configuration.
     optimizedState = state;
     if (!OPTIMIZATION_BYPASS) {
         /**
@@ -100,33 +97,32 @@ void SwerveModule::setState(frc::SwerveModuleState state)
      * from snapping back to 0 when the robot comes to a stop).
      */
     // Rotate the swerve module to the desired angle.
-    
+
     if (units::math::abs(optimizedState.speed) > 0.01_mps) {
         setTurningMotor(optimizedState.angle.Radians());
     }
-    
+
     // Set the drive motor's velocity.
     setDriveMotor(optimizedState.speed);
 }
 
-void SwerveModule::setTurningMotor(units::radian_t angle)
-{
+void SwerveModule::setTurningMotor(units::radian_t angle) {
     // Subtract the absolute rotation from the target rotation to get the angle to turn.
     units::radian_t angleDelta(angle - getCANcoderRotation());
-    
+
     /**
      * Fix the discontinuity problem by converting a -2π to 2π value into -π to π value.
      * If the value is above π rad or below -π rad...
      */
     if(units::math::abs(angleDelta).value() > std::numbers::pi) {
         const int sign = std::signbit(angleDelta.value()) ? -1 : 1;
-        
+
         // Subtract 2π rad, or add 2π rad depending on the sign.
         angleDelta = units::radian_t(angleDelta.value() - (2 * std::numbers::pi) * sign);
     }
-    
+
     units::turn_t output = angleDelta;
-    
+
     // Add the current relative rotation to get the position to reference.
     output += getTurningMotorPosition();
 
@@ -134,17 +130,15 @@ void SwerveModule::setTurningMotor(units::radian_t angle)
     turningMotor.SetControl(turnRequest.WithPosition(output));
 }
 
-void SwerveModule::setDriveMotor(units::meters_per_second_t velocity)
-{
+void SwerveModule::setDriveMotor(units::meters_per_second_t velocity) {
     const units::turns_per_second_t tps = units::turns_per_second_t(velocity.value() * PreferencesDriveMotor::METERS_TO_TURNS);
-    // driveRequest.Acceleration = units::turns_per_second_squared_t((1 - accelReduction) * DRIVE_PREFERENCES.MAX_ACCEL.value() * SWERVE_PREFERENCE.DRIVE_MOTOR.METERS_TO_TURNS);
     driveRequest.WithAcceleration(units::turns_per_second_squared_t((1 - accelReduction) *  DrivePreferences::MAX_ACCEL.value() * PreferencesDriveMotor::METERS_TO_TURNS));
     driveMotor.SetControl(driveRequest.WithVelocity(tps));
 }
 
 void SwerveModule::setAccelerationReduction(double reduction) {
     accelReduction = reduction;
-};
+}
 
 void SwerveModule::setDriveMotorsNeutralMode(ctre::phoenix6::signals::NeutralModeValue neutralMode) {
     ctre::phoenix6::configs::MotorOutputConfigs driveMotorOutput {};
@@ -159,51 +153,42 @@ void SwerveModule::stop() {
     zeroDriveEncoder();
 }
 
-units::turn_t SwerveModule::getTurningMotorPosition()
-{
+units::turn_t SwerveModule::getTurningMotorPosition() {
     return turningMotor.GetPosition().GetValue();
 }
 
-frc::SwerveModuleState SwerveModule::getState()                                                              
-{
+frc::SwerveModuleState SwerveModule::getState() {
     // The velocity and rotation of the swerve module.
     return { getDriveVelocity(), getCANcoderRotation() };
 }
 
-frc::SwerveModulePosition SwerveModule::getPosition()
-{
+frc::SwerveModulePosition SwerveModule::getPosition() {
     // The velocity and rotation of the swerve module.
     return { getDrivePosition(), getCANcoderRotation() };
 }
 
-void SwerveModule::zeroDriveEncoder()
-{
+void SwerveModule::zeroDriveEncoder() {
     driveMotor.SetPosition(0_tr);
 }
 
-units::radian_t SwerveModule::getRawCANcoderRotation()
-{
+units::radian_t SwerveModule::getRawCANcoderRotation() {
     return canCoder.GetAbsolutePosition().GetValue();
 }
 
-units::radian_t SwerveModule::getCANcoderRotation()
-{
+units::radian_t SwerveModule::getCANcoderRotation() {
     units::radian_t rawRotation = getRawCANcoderRotation();
     return rawRotation - absEncoderOffset;
 }
 
-units::meters_per_second_t SwerveModule::getDriveVelocity()
-{
+units::meters_per_second_t SwerveModule::getDriveVelocity() {
     return units::meters_per_second_t(driveMotor.GetVelocity().GetValue().value() * PreferencesDriveMotor::TURNS_TO_METERS);
 }
 
-units::meter_t SwerveModule::getDrivePosition()
-{
+units::meter_t SwerveModule::getDrivePosition() {
     return units::meter_t(driveMotor.GetPosition().GetValueAsDouble() * PreferencesDriveMotor::TURNS_TO_METERS);
 }
 
-void SwerveModule::sendDebugInfo(std::size_t moduleIndex)
-{
+void SwerveModule::sendDebugInfo(std::size_t moduleIndex) {
     frc::SmartDashboard::PutNumber(fmt::format("Module_{}_RawCANcoderRotation_deg",      moduleIndex), units::degree_t(getRawCANcoderRotation()).value());
     frc::SmartDashboard::PutNumber(fmt::format("Module_{}_CANcoderRotation_deg",         moduleIndex), units::degree_t(getCANcoderRotation()).value());
     frc::SmartDashboard::PutNumber(fmt::format("Module_{}_EncoderOffset_deg",            moduleIndex), units::degree_t(absEncoderOffset).value());
@@ -215,15 +200,15 @@ void SwerveModule::sendDebugInfo(std::size_t moduleIndex)
     frc::SmartDashboard::PutNumber(fmt::format("Module_{}_DriveMotorEncoderDistance_m",  moduleIndex), getDrivePosition().value());
 
     frc::SmartDashboard::PutNumber(fmt::format("Module_{}_DriveVelocity_mps",            moduleIndex), getDriveVelocity().value());
-    
+
     frc::SmartDashboard::PutNumber(fmt::format("Module_{}_TurningMotorTempC",            moduleIndex), turningMotor.GetDeviceTemp().GetValueAsDouble());
     frc::SmartDashboard::PutNumber(fmt::format("Module_{}_DriveMotorTemp_C",             moduleIndex), driveMotor.GetDeviceTemp().GetValueAsDouble());
 
     frc::SmartDashboard::PutNumber(fmt::format("Module_{}_TurningProcessorTemp_C",       moduleIndex), turningMotor.GetProcessorTemp().GetValueAsDouble());
     frc::SmartDashboard::PutNumber(fmt::format("Module_{}_DriveProcessorTemp_C",         moduleIndex), driveMotor.GetProcessorTemp().GetValueAsDouble());
-    
+
     frc::SmartDashboard::PutNumber(fmt::format("Module_{}_CurrentDrive_A",               moduleIndex), driveMotor.GetSupplyCurrent().GetValueAsDouble());
     frc::SmartDashboard::PutNumber(fmt::format("Module_{}_CurrentTurning_A",             moduleIndex), turningMotor.GetSupplyCurrent().GetValueAsDouble());
-    
+
     // Hi Jeff!
 }

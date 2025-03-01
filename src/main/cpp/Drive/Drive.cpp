@@ -103,7 +103,6 @@ void Drive::process() {
     }
 }
 
-
 void Drive::doConfiguration(bool persist) {
     for (SwerveModule* module : swerveModules) {
         module->doConfiguration(persist);
@@ -127,7 +126,7 @@ void Drive::driveWithVelocities(units::meters_per_second_t xVel, units::meters_p
     units::meters_per_second_t newXVel    = xVel;
     units::meters_per_second_t newYVel    = yVel;
     units::radians_per_second_t newAngVel = angVel;
-    
+
     // Apply the locked axis flags.
     if (flags & ControlFlag::LOCK_X) newXVel = 0_mps;
     if (flags & ControlFlag::LOCK_Y) newYVel = 0_mps;
@@ -156,15 +155,14 @@ void Drive::executeVelocityData() {
     }
 
     frc::Pose2d currPose(getEstimatedPose());
-    
+
     frc::ChassisSpeeds velocities;
 
     // Generate chassis speeds depending on the control mode.
     if (controlData.flags & ControlFlag::FIELD_CENTRIC) {
         // Generate chassis speeds based on the rotation of the robot relative to the field.
         velocities = frc::ChassisSpeeds::FromFieldRelativeSpeeds(controlData.xVel, controlData.yVel, controlData.angVel, currPose.Rotation());//whooshWhoosh->getHeadingAngle());// currPose.Rotation());
-    }
-    else {
+    } else {
         // Chassis speeds are robot-centric.
         velocities = { controlData.xVel, controlData.yVel, controlData.angVel };
     }
@@ -181,7 +179,7 @@ void Drive::setModuleStates(frc::ChassisSpeeds speeds) {
 
     // Generate individual module states using the chassis velocities.
     wpi::array<frc::SwerveModuleState, 4> moduleStates(kinematics.ToSwerveModuleStates(speeds));
-    
+
     kinematics.DesaturateWheelSpeeds(&moduleStates, DrivePreferences::DRIVE_MANUAL_MAX_VEL);
 
     // Set the states of the individual modules.
@@ -212,11 +210,10 @@ void Drive::sendFeedback() {
 
     swerveFeedback.robotRotation = getRotation();
     frc::SmartDashboard::PutData("Swerve_Feedback", &swerveFeedback);
-    
+
     feedbackField.SetRobotPose(pose);
     frc::SmartDashboard::PutData("Field", &feedbackField);
     frc::SmartDashboard::PutData("debug_TrajectoryTargetField", &trajectoryField);
-
 
     // Drive feedback.
     frc::SmartDashboard::PutNumber("Drive_SpeedLimiting",           speedLimiting);
@@ -255,7 +252,7 @@ bool Drive::isFinished() const { // Can this const be moved to the beginning of 
 
 void Drive::calibrateIMU() {
     pigeon.Reset();
-    
+
     imuCalibrated = true;
 
     resetOdometry();
@@ -300,7 +297,6 @@ void Drive::resetPIDControllers() {
 
     manualThetaPIDController.Reset(rotation);
     trajectoryThetaPIDController.Reset(rotation);
-
 }
 
 void Drive::updateOdometry() {
@@ -320,12 +316,12 @@ void Drive::updateOdometry() {
         frc::SmartDashboard::PutBoolean("limelight reliable", limelightReliable);
 
         if (!limelightReliable) return;
+
         poseEstimator.SetVisionMeasurementStdDevs({0.3, 0.3, 0.3});
         poseEstimator.AddVisionMeasurement(
             mt1.pose,
             mt1.timestampSeconds
         );
-
     }
 }
 
@@ -352,6 +348,7 @@ void Drive::makeBrick() {
 
 void Drive::runTrajectory(const CSVTrajectory* _trajectory, const std::map<u_int32_t, Action*>& actionMap) {
     driveMode = DriveMode::TRAJECTORY;
+
     // Set the trajectory.
     trajectory = _trajectory;
 
@@ -366,7 +363,6 @@ void Drive::runTrajectory(const CSVTrajectory* _trajectory, const std::map<u_int
     // Reset the trajectory timer.
     trajectoryTimer.Reset();
     trajectoryTimer.Start();
-
 }
 
 void Drive::setupInitialTrajectoryPosition(const CSVTrajectory *trajectory) {
@@ -459,7 +455,7 @@ void Drive::execTrajectory() {
     } else {
         heading = frc::Rotation2d(twist.dtheta);
     }
-    
+
     // printf("Speed: %lf, X: %lf, Y: %lf, stateRot: %lf, heading: %lf\n", state.velocity.value(), state.pose.X().value(), state.pose.Y().value(), state.pose.Rotation().Degrees().value(), heading.Degrees().value());
     // printf("(Pose) X: %lf, Y: %lf, Rot: %lf\n", currentPose.X().value(), currentPose.Y().value(), currentPose.Rotation().Degrees().value());
 
@@ -501,8 +497,8 @@ void Drive::unslowYourRoll() {
 
 SwerveFeedback::SwerveFeedback(wpi::array<SwerveModule*, 4>* _swerveModules):
  swerveModules(_swerveModules) {
-
 }
+
 void SwerveFeedback::InitSendable(wpi::SendableBuilder &builder) {
     builder.SetSmartDashboardType("SwerveDrive");
 

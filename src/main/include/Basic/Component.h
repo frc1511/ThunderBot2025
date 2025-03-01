@@ -45,6 +45,4 @@ class Component {
 
   protected:
     static Settings settings;
-
-
 };

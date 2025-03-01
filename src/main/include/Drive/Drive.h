@@ -18,12 +18,10 @@
 #include <frc/controller/ProfiledPIDController.h>
 #include <frc/controller/HolonomicDriveController.h>
 
-#include <frc/smartdashboard/Field2d.h>
-
 #include <ctre/phoenix6/Pigeon2.hpp>
 
-#include <frc/smartdashboard/Field2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/smartdashboard/Field2d.h>
 
 #include "Basic/Component.h"
 #include "Basic/IOMap.h"
@@ -34,7 +32,7 @@
 #include "Limelight.h"
 
 class SwerveFeedback : public wpi::Sendable {
-public:
+  public:
     SwerveFeedback(wpi::array<SwerveModule*, 4>* _swerveModules);
     void InitSendable(wpi::SendableBuilder& builder);
     frc::Rotation2d robotRotation = frc::Rotation2d(0_deg);
@@ -42,7 +40,7 @@ public:
 };
 
 class Drive : public Component {
-public:
+  public:
     Drive(Limelight* _limelight);
     ~Drive();
 
@@ -104,7 +102,7 @@ public:
     void resetPIDControllers();
 
     /// MARK: Trajecory
-    
+
     /**
      * Runs a trajectory.
      */
@@ -116,6 +114,7 @@ public:
 
     void slowYourRoll();
     void unslowYourRoll();
+
 private:
     void executeVelocityData();
     void setModuleStates(frc::ChassisSpeeds speeds);
@@ -146,9 +145,7 @@ private:
     DriveMode driveMode = DriveMode::STOPPED;
 
 
-
     /// MARK: Modules
-
 
 
     wpi::array<frc::Translation2d, 4> locations {
@@ -157,11 +154,13 @@ private:
         frc::Translation2d(-DrivePreferences::ROBOT_LENGTH/2, -DrivePreferences::ROBOT_WIDTH/2), // BACK RIGHT.
         frc::Translation2d(+DrivePreferences::ROBOT_LENGTH/2, -DrivePreferences::ROBOT_WIDTH/2), // FRONT RIGHT.
     };
+
     /**
      * The helper class that it used to convert chassis speeds into swerve
      * module states.
      */
     frc::SwerveDriveKinematics<4> kinematics { locations };
+
     /**
      * The helper class that it used to convert swerve
      * module states into chassis speeds.
@@ -175,6 +174,7 @@ private:
         new SwerveModule(CAN_SWERVE_DRIVE_BR, CAN_SWERVE_ROTATION_BR, CAN_SWERVE_CANCODER_BR, -28.8281245_deg + 180_deg),
         new SwerveModule(CAN_SWERVE_DRIVE_FR, CAN_SWERVE_ROTATION_FR, CAN_SWERVE_CANCODER_FR, 142.11914_deg + 180_deg),
     };
+
 
     /// MARK: Field Centric
 
@@ -202,9 +202,6 @@ private:
 
     bool imuCalibrated = false;
 
-
- 
-
     /**
      * Returns the states of the swerve modules. (velocity and rotatation)
      */
@@ -215,17 +212,16 @@ private:
      */
     wpi::array<frc::SwerveModulePosition, 4> getModulePositions();
 
-
     /**
      * Updates the position and rotation of the drivetrain on the field.
      */
     void updateOdometry();
 
+
     /// MARK: Trajectory
 
 
     frc::Pose2d targetPose;
-
 
     // PID Controller for X and Y axis drivetrain movement.
     frc::PIDController xPIDController { DrivePreferences::PID_XY.Kp, DrivePreferences::PID_XY.Ki, DrivePreferences::PID_XY.Kd },
@@ -236,10 +232,10 @@ private:
         DrivePreferences::PID_THETA.Kp, DrivePreferences::PID_THETA.Ki, DrivePreferences::PID_THETA.Kd,
         frc::TrapezoidProfile<units::radians>::Constraints(DrivePreferences::DRIVE_AUTO_MAX_ANG_VEL, DrivePreferences::DRIVE_AUTO_MAX_ANG_ACCEL)
     };
-    
+
    // The drive controller that will handle the drivetrain movement.
     frc::HolonomicDriveController driveController;
-    
+
     // The trajectory that is currently being run.
     const CSVTrajectory* trajectory = nullptr;
 
@@ -256,7 +252,7 @@ private:
 
     frc::Field2d feedbackField {};
     frc::Field2d trajectoryField {};
-    
+
     /**
      * Executes the instructions for when the robot is running a trajectory.
      */
@@ -264,10 +260,15 @@ private:
 
     double speedLimiting = 1.0; // This multiplies
 
+
     /// MARK: Limelight
+
 
     Limelight* limelight;
 
+
     /// MARK: Dashboard Extras
+
+
     SwerveFeedback swerveFeedback {&swerveModules};
 };

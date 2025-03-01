@@ -3,13 +3,11 @@
 #include "Libraries/elasticlib.h"
 #include "Basic/IOMap.h"
 
-#include "frc/Timer.h"
+#include <frc/Timer.h>
 
 class Alert {
   public:
-
-// MARK: Component Disable Alerts
-
+    // MARK: Component Disable Alerts
     inline static const elastic::Notification driveAlert =        {.level = elastic::NotificationLevel::INFO,
                                                                    .title = "Drive Disabled",
                                                                    .description = "Drive Disabled",
@@ -35,8 +33,7 @@ class Alert {
                                                                    .description = "Blinky Blinky Disabled",
                                                                    .displayTime = 2_s,};
 
-// MARK: Controller Alerts
-
+    // MARK: Controller Alerts
     inline static const elastic::Notification driveDisabledAlert             = {.level = elastic::NotificationLevel::WARNING,
                                                                                 .title = "Drive Disabled",
                                                                                 .description = "Drive Disabled or Drive Controller Disconnected",
@@ -112,7 +109,6 @@ class Alert {
             #ifndef ENABLE_CALGAE
                 elastic::SendNotification(calgaeAlert);
             #endif
-
         } else if (currentTime >= 6.0 && numberOfAlertsTried == 3) {
             numberOfAlertsTried++;
             #ifndef ENABLE_DRIVE
@@ -134,6 +130,5 @@ class Alert {
                 elastic::SendNotification(driveDisabledAlert);
             }
         }
-
     }
 };

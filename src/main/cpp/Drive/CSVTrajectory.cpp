@@ -42,22 +42,17 @@ CSVTrajectory::~CSVTrajectory() { }
 CSVTrajectory::State CSVTrajectory::sample(units::second_t time) const {
     decltype(states)::const_iterator upperBound = states.upper_bound(time),
                                      lowerBound = states.lower_bound(time);
-    
+
     bool noUpper = (upperBound == states.cend()),
          noLower = (lowerBound == states.cbegin());
 
-    // No defined states D:
-    if (noUpper && noLower) {
+    if (noUpper && noLower) { // No defined states D:
         return State{ frc::Pose2d(), 0_mps };
-    }
-    // Return the highest defined state if there is no upper bound.
-    else if (noUpper) {
+    } else if (noUpper) { // Return the highest defined state if there is no upper bound.
         State s(lowerBound->second);
         s.velocity = 0_mps;
         return s;
-    }
-    // Return the lowest defined state if there is no lower bound.
-    else if (noLower) {
+    } else if (noLower) { // Return the lowest defined state if there is no lower bound.
         State s(upperBound->second);
         s.velocity = 0_mps;
         return s;
