@@ -92,8 +92,10 @@ void Gamepiece::moveToTarget() {
         wristMoveDone = true;
     }
 
+    elevator->isDisabled = elevatorDisable;
     if (elevator != nullptr && elevatorDisable) {
         elevator->goToPreset(Elevator::Preset::kSTOP);
+        
     } else if (elevator != nullptr && !elevatorDisable &&
               (isMovingUp || (isMovingDown && wristMoveDone)))
     {

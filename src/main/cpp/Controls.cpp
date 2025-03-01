@@ -15,9 +15,10 @@ void Controls::process() {
         // Drive limiting based on elevator position
         double speedReduction = 0.0;
         
-        if (gamepiece->elevator != nullptr) {
+        if (gamepiece->elevator != nullptr && !EPDSLDisable) {
             // Percentage from L3 -> NET
-            double elevatorPercent = ((gamepiece->elevator->getPosition() - gamepiece->elevator->Position[Elevator::Preset::kL3]) / gamepiece->elevator->Position[Elevator::Preset::kNET]).value() - 1;
+            double elevatorPercent = ((gamepiece->elevator->getPosition()                    - gamepiece->elevator->Position[Elevator::Preset::kL3]) / 
+                                      (gamepiece->elevator->Position[Elevator::Preset::kNET] - gamepiece->elevator->Position[Elevator::Preset::kL3])).value();
 
             if (elevatorPercent > 0) {
                 elevatorPercent = pow(elevatorPercent, 2);
@@ -73,10 +74,12 @@ void Controls::process() {
             drive->unslowYourRoll();
         }
 
-        // SWAP: 90_deg offset for drive
-        double finalSpeedReduction = 1; //1 - speedReduction
+        double finalSpeedReduction = std::clamp(1 - speedReduction, 0.0, 1.0);
+        
+        frc::SmartDashboard::PutNumber("Controls Final Speed Reduction", finalSpeedReduction);
 
-        drive->driveFromPercents(yPercent * finalSpeedReduction, xPercent * finalSpeedReduction, rotPercent * finalSpeedReduction, flags);
+        // SWAP: 90_deg offset for drive
+        drive->driveFromPercents(yPercent * -finalSpeedReduction, xPercent * -finalSpeedReduction, rotPercent * -finalSpeedReduction, flags);
     }
 
     
@@ -218,11 +221,12 @@ void Controls::sendFeedback() {
     Alert::sendDisconnectAndDisableStates(auxController.IsConnected(), driveController.IsConnected(), switchBoard.IsConnected());
     Alert::sendFeedback();
     frc::SmartDashboard::PutBoolean("Controls Manual Mode", manualMode);
+    frc::SmartDashboard::PutBoolean("Controls Pit Mode", settings.pitMode);
+    frc::SmartDashboard::PutBoolean("Controls Field Centric", fieldCentric);
 }
 
 void Controls::utilizeSwitchBoard() {
     if (!switchBoard.IsConnected()) {
-        printf("Switch Board Not Connected to port 2\n");
         manualMode = false;
         return;
     }
@@ -249,6 +253,8 @@ void Controls::utilizeSwitchBoard() {
             blinkyBlinky->currentMode = BlinkyBlinky::Mode::OFF;
         }
     }
+    EPDSLDisable = switchBoard.GetRawButton(10);
+    settings.pitMode = switchBoard.GetRawButton(11);
 }
 
 bool Controls::shouldPersistentConfig() {

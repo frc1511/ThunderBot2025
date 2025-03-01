@@ -49,6 +49,8 @@ class Elevator : public Component {
     void manualMovement(double speed);
     void setSensorBroken(bool isBroken);
 
+    bool isDisabled = false;
+
     double getPercentHeight();
 
     Preset getCurrentPreset();
@@ -92,5 +94,6 @@ class Elevator : public Component {
 
     Wrist *wrist;
 
+    friend class Gamepiece;
     friend class Controls;
 };

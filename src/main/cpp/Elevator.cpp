@@ -18,7 +18,6 @@ void Elevator::process() {
         motorSpeed = manualMovementSpeed;
     } else {
         motorSpeed = computeSpeedForPreset();
-        frc::SmartDashboard::PutNumber ("Elevator Motor Output", motorSpeed);
     }
 
     if (atMinHeight() && motorSpeed < 0) // stop moving when at either limit switch
@@ -31,9 +30,18 @@ void Elevator::process() {
         if (wrist->wristIsUnsafe())
             motorSpeed = 0;
     
+    if (settings.pitMode && isDisabled) {
+        motorSpeed = 0;
+    }
+
     motorSpeed += 0.05; // Temp Feedfoward
 
+
+    frc::SmartDashboard::PutNumber ("Elevator Motor Output", motorSpeed);
+
     motorSpeed = std::clamp(motorSpeed, -PreferencesElevator::MAX_DOWN_SPEED, PreferencesElevator::MAX_UP_SPEED);
+    if (settings.pitMode)
+        motorSpeed = std::clamp(motorSpeed, -PreferencesElevator::MAX_DOWN_PIT_SPEED, PreferencesElevator::MAX_UP_PIT_SPEED);
     
     rightSparkMax.Set(motorSpeed);
     leftSparkMax.Set(motorSpeed);

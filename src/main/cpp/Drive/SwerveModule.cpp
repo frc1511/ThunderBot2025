@@ -65,9 +65,8 @@ void SwerveModule::doConfiguration(bool persist)
     ctre::phoenix6::configs::MotorOutputConfigs driveMotorOutput {};
     driveMotorOutput.Inverted = true;
 
-    setDriveMotorsNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
-
     driveMotor.GetConfigurator().Apply(driveMotorOutput);
+    setDriveMotorsNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
 
     ctre::phoenix6::configs::CurrentLimitsConfigs driveCurrentLimit {};
     driveCurrentLimit.WithSupplyCurrentLimit(PreferencesDriveMotor::MAX_AMPERAGE);

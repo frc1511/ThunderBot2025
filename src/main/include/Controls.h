@@ -39,4 +39,5 @@ class Controls : public Component {
     bool auxDisable = false;
     bool hangDisable = false;
     bool ledDisable = false;
+    bool EPDSLDisable = false; // Elevator Proportional Drive Speed Limiting
 };
