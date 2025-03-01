@@ -90,7 +90,7 @@ bool Elevator::atMaxHeight() {
     if (!sensorBroken) {
         return getUpperLimit();
     } else {
-        if (getPercentHeight() > .95) {
+        if (getPosition() > Position[kNET]-(units::turn_t)PreferencesElevator::TARGET_TOLERANCE) {
             return true;
         } else {
             return false;
@@ -102,12 +102,11 @@ bool Elevator::atMinHeight() {
     if (!sensorBroken) {
         return getLowerLimit();
     } else {
-        if (getPercentHeight() < .05) {
+        if (getPosition() < (units::turn_t)PreferencesElevator::TARGET_TOLERANCE) {
             return true;
         } else {
             return false;
         }
-        
     }
 }
 
