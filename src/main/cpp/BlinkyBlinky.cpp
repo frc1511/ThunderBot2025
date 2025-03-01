@@ -33,6 +33,7 @@ void BlinkyBlinky::process() {
                 int majorLEDS = floor(litLEDS);
                 double finalFade = std::clamp((int(litLEDS * 100) % 100) / 100.0, 0.0, 1.0);
                 int sideBufferSize = (int)sideBuffer.size();
+
                 for (int i = 0; i < sideBufferSize; i++) { 
                     if (i <= majorLEDS) {
                         if (i == majorLEDS) {
@@ -64,12 +65,14 @@ void BlinkyBlinky::process() {
         if (hang != nullptr) {
             if (hang->isHung()) {
                 static int blueWavePosition = 0;
+
                 applyPercentOverLeds([&](double percent) -> LEDData {
                     LEDData color {};
                     int brightness = (abs((percent - 0.5) * 100) + blueWavePosition) % 100;
                     color.SetHSV(120, 255, brightness);
                     return color;
                 });
+
                 blueWavePosition += 2;
                 currentSideStatus = "Hang Blue Wave";
                 overridePatterns = true;
@@ -101,7 +104,7 @@ void BlinkyBlinky::process() {
         if (currentMode == Mode::UNSET) {
             currentMode = Mode::RAINBOW;
         }
-        
+
         if (settings.pitMode) { // (fr) Nous sommes en le Pit Mode | We are in pit mode
             static double pitModePosition = 0;
             applyPercentOverLeds([&](double percent) -> LEDData {
@@ -110,31 +113,35 @@ void BlinkyBlinky::process() {
                 color.SetHSV(hue, 255, 100);
                 return color;
             });
+
             pitModePosition += 0.5;
         } else {
             switch (currentMode) {
-            case Mode::OFF:
-                sideBuffer.fill(LEDData(0, 0, 0)); // Black (off)
-                break;
-            case Mode::RAINBOW:
-                static int rainbowPosition = 0;
-                applyPercentOverLeds([&](double percent) -> LEDData {
-                    LEDData color {};
-                    int hue = int(percent * 180 + rainbowPosition) % 180;
-                    color.SetHSV(hue, 255, 100);
-                    return color;
-                });
-                rainbowPosition++;
-                break;
-            
-            default:
-                break;
+                case Mode::OFF:
+                    sideBuffer.fill(LEDData(0, 0, 0)); // Black (off)
+                    break;
+                case Mode::RAINBOW:
+                    static int rainbowPosition = 0;
+
+                    applyPercentOverLeds([&](double percent) -> LEDData {
+                        LEDData color {};
+                        int hue = int(percent * 180 + rainbowPosition) % 180;
+                        color.SetHSV(hue, 255, 100);
+                        return color;
+                    });
+
+                    rainbowPosition++;
+                    break;
+                
+                default:
+                    break;
             }
         }
     }
 
     int sideBufferSize = (int)sideBuffer.size();
     int mainBufferSize = (int)mainLEDBuffer.size();
+
     for (int i = 0; i < sideBufferSize; i++) {
         mainLEDBuffer[i] = sideBuffer[i];
         mainLEDBuffer[mainBufferSize - PreferencesBlinkyBlinky::LED_SIDE_STRIP_TOTAL + i] = sideBuffer[i];
@@ -163,7 +170,7 @@ void BlinkyBlinky::process() {
         } else {
             statusBuffer[PreferencesBlinkyBlinky::CORAL_STATUS_ID] = LEDData(255, 0, 0);        // Red
         }
-        
+
         if (gamepiece->calgae->algaeRetroreflectiveTripped()) {
             statusBuffer[PreferencesBlinkyBlinky::ALGAE_STATUS_ID] = LEDData(0, 255, 0);        // Green
         } else {
@@ -184,11 +191,11 @@ void BlinkyBlinky::process() {
     }
 
     int statusBufferSize = (int)statusBuffer.size();
+
     for (int i = 0; i < statusBufferSize; i++) {
         mainLEDBuffer[PreferencesBlinkyBlinky::LED_SIDE_STRIP_TOTAL + PreferencesBlinkyBlinky::LED_STATUS_STRIP_TOTAL - i - 1] = statusBuffer[i];
     }
-    
-    
+
     leds.SetData(mainLEDBuffer);
 
     currentMode = Mode::UNSET;
@@ -202,6 +209,7 @@ void BlinkyBlinky::sendFeedback() {
 void BlinkyBlinky::applyPercentOverLeds(std::function<frc::AddressableLED::LEDData(double)> func) {
     // ~AI~ Wrote this
     int sideBufferSize = (int)sideBuffer.size();
+
     for (int i = 0; i < sideBufferSize; ++i) {
         double percent = i / (double)sideBufferSize;
         sideBuffer[i] = func(percent);
@@ -210,14 +218,16 @@ void BlinkyBlinky::applyPercentOverLeds(std::function<frc::AddressableLED::LEDDa
 
 void BlinkyBlinky::flash(int spacing, int flashCount) {
     using LEDData = frc::AddressableLED::LEDData;
-    
+
     if (flashTimer % (spacing * 2) < spacing) {
         sideBuffer.fill(LEDData(255, 255, 255)); //white 
         statusBuffer.fill(LEDData(255, 255, 255));
     } else {
         sideBuffer.fill(LEDData(0, 0, 0));
     }
+
     flashTimer++;
+
     if (flashTimer >= (spacing * (flashCount + 1)) && flashCount != -1) {
         flashFinished = true;
         flashTimer = 0;

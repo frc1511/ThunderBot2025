@@ -38,6 +38,7 @@ class Robot : public frc::TimedRobot {
 
 	void SimulationInit() override;
 	void SimulationPeriodic() override;
+
   private:
 	void reset(Component::MatchMode mode);
 	Component::MatchMode lastMode = Component::MatchMode::DISABLED;

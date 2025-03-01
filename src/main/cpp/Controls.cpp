@@ -6,7 +6,7 @@ Controls::Controls(Drive* drive_, Gamepiece* gamepiece_, BlinkyBlinky* blinkyBli
     blinkyBlinky(blinkyBlinky_),
     hang(hang_),
     limelight(limelight_)
-{}
+{ }
 
 void Controls::process() {
     utilizeSwitchBoard();
@@ -14,7 +14,7 @@ void Controls::process() {
     if (drive != nullptr && driveController.IsConnected() && !driveDisable) {
         // Drive limiting based on elevator position
         double speedReduction = 0.0;
-        
+
         if (gamepiece->elevator != nullptr && !EPDSLDisable) {
             // Percentage from L3 -> NET
             double elevatorPercent = ((gamepiece->elevator->getPosition()                    - gamepiece->elevator->Position[Elevator::Preset::kL3]) / 
@@ -38,8 +38,8 @@ void Controls::process() {
         double rotPercent = driveController.GetRightX();
         if (fabs(rotPercent) < PreferencesControls::AXIS_DEADZONE)
             rotPercent = 0;
-        
-        /// Incase we need them in ~THE PIT~
+
+        /// In case we need them in ~THE PIT~
         // bool lockX = fabs(driveController.GetLeftTriggerAxis()) > PreferencesControls::AXIS_DEADZONE;
         // bool lockY = fabs(driveController.GetRightTriggerAxis()) > PreferencesControls::AXIS_DEADZONE;
         bool lockX = false;
@@ -51,64 +51,68 @@ void Controls::process() {
         bool resetIMU = driveController.GetYButtonPressed();
         bool brickMode = driveController.GetAButton();
         unsigned flags = 0;
+
         if (lockX)
             flags |= Drive::ControlFlag::LOCK_X;
+
         if (lockY)
-            flags |= Drive::ControlFlag::LOCK_Y; 
+            flags |= Drive::ControlFlag::LOCK_Y;
+
         if (lockRot)
             flags |= Drive::ControlFlag::LOCK_ROT;
+
         if (brickMode)
             flags |= Drive::ControlFlag::BRICK;
-        
+
         if (fieldCentric)
             flags |= Drive::ControlFlag::FIELD_CENTRIC;
 
         if (resetIMU)
             drive->resetOdometry();
 
-        if (slowDrive) {
+        if (slowDrive)
             drive->slowYourRoll();
-        }
 
-        if (speedUpDrive) {
+        if (speedUpDrive)
             drive->unslowYourRoll();
-        }
 
         double finalSpeedReduction = std::clamp(1 - speedReduction, 0.0, 1.0);
-        
+
         frc::SmartDashboard::PutNumber("Controls Final Speed Reduction", finalSpeedReduction);
 
         // SWAP: 90_deg offset for drive
         drive->driveFromPercents(yPercent * -finalSpeedReduction, xPercent * -finalSpeedReduction, rotPercent * -finalSpeedReduction, flags);
     }
 
-    
     bool hasBeenSetByAux = false;
     // MARK: Aux
     if (gamepiece != nullptr && auxController.IsConnected() && !auxDisable) {
         bool shouldToggleStationPreset = fabs(auxController.GetLeftTriggerAxis()) > PreferencesControls::AXIS_DEADZONE;
+
         enum class StationState {
             kNOT_ACTIVE,
             kLOW,
             kHIGH
         };
         static StationState currentStationState = StationState::kNOT_ACTIVE;
+
         if (shouldToggleStationPreset) {
             switch (currentStationState) {
-            case StationState::kNOT_ACTIVE:
-                currentStationState = StationState::kHIGH;
-                break;
-            case StationState::kHIGH:
-                currentStationState = StationState::kLOW;
-                break;
-            case StationState::kLOW:
-                currentStationState = StationState::kHIGH;
-                break;
-            default:
-                currentStationState = StationState::kNOT_ACTIVE;
-                break;
+                case StationState::kNOT_ACTIVE:
+                    currentStationState = StationState::kHIGH;
+                    break;
+                case StationState::kHIGH:
+                    currentStationState = StationState::kLOW;
+                    break;
+                case StationState::kLOW:
+                    currentStationState = StationState::kHIGH;
+                    break;
+                default:
+                    currentStationState = StationState::kNOT_ACTIVE;
+                    break;
             }
         }
+
         bool toCoralStation = currentStationState == StationState::kHIGH;
         bool toCoralStationLow = currentStationState == StationState::kLOW;
         bool toL1 = auxController.GetAButton();
@@ -136,11 +140,12 @@ void Controls::process() {
         } else if (toReefHigh)        { coralStationActive = false; gamepiece->moveToPreset(Gamepiece::Preset::kREEF_HIGH); 
         } else if (toProcessor)       { coralStationActive = false; gamepiece->moveToPreset(Gamepiece::Preset::kPROCESSOR);
         } else if (toGround)          { coralStationActive = false; gamepiece->moveToPreset(Gamepiece::Preset::kGROUND); 
-        } else if (toCoralStation)    { coralStationActive = true; gamepiece->moveToPreset(Gamepiece::Preset::kCORAL_STATION);
-        } else if (toCoralStationLow) { coralStationActive = true; gamepiece->moveToPreset(Gamepiece::Preset::kCORAL_STATION_LOW);
+        } else if (toCoralStation)    { coralStationActive = true;  gamepiece->moveToPreset(Gamepiece::Preset::kCORAL_STATION);
+        } else if (toCoralStationLow) { coralStationActive = true;  gamepiece->moveToPreset(Gamepiece::Preset::kCORAL_STATION_LOW);
         } else {
             hasBeenSetByAux = false;
         }
+
         if (coralStationActive)
             currentStationState = StationState::kNOT_ACTIVE;
     }
@@ -179,6 +184,7 @@ void Controls::process() {
                 gamepiece->calgae->setMotorMode(Calgae::MotorModes::kSTOP);
             }
         }
+
         if (resetGamepieceState) {
             gamepiece->calgaeAutopilot = false;
             gamepiece->calgae->resetHadGamepiece();
@@ -187,6 +193,7 @@ void Controls::process() {
 
     if (hang != nullptr && auxController.IsConnected() && !auxDisable && !hangDisable && !manualMode) { // No hang in manual mode
         double hangPercent = auxController.GetLeftY();
+
         if (fabs(hangPercent) < PreferencesControls::AXIS_DEADZONE) {
             hangPercent = 0;
             hang->setControlMode(Hang::ControlMode::STOPPED);
@@ -202,6 +209,7 @@ void Controls::process() {
     // Elevator Manual Movement Code, re-implement if needed
     if (gamepiece->elevator && auxController.IsConnected() && manualMode && !auxDisable) {
         double movementPercent = -auxController.GetLeftY();
+
         if (fabs(movementPercent) < PreferencesControls::AXIS_DEADZONE)
             movementPercent = 0;
         gamepiece->elevator->manualMovement(movementPercent / 3);
@@ -211,6 +219,7 @@ void Controls::process() {
     // Wrist Manual Movement Code, re-implement if needed
     if (gamepiece->wrist != nullptr && auxController.IsConnected() && manualMode && !auxDisable) {
         double movementPercent = -auxController.GetRightY();
+
         if (fabs(movementPercent) < PreferencesControls::AXIS_DEADZONE)
             movementPercent = 0;
         gamepiece->wrist->manualMovement(units::degree_t(movementPercent / 3));
@@ -220,6 +229,7 @@ void Controls::process() {
 void Controls::sendFeedback() {
     Alert::sendDisconnectAndDisableStates(auxController.IsConnected(), driveController.IsConnected(), switchBoard.IsConnected());
     Alert::sendFeedback();
+
     frc::SmartDashboard::PutBoolean("Controls Manual Mode", manualMode);
     frc::SmartDashboard::PutBoolean("Controls Pit Mode", settings.pitMode);
     frc::SmartDashboard::PutBoolean("Controls Field Centric", fieldCentric);
@@ -232,19 +242,17 @@ void Controls::utilizeSwitchBoard() {
     }
 
     gamepiece->elevatorDisable = switchBoard.GetRawButton(1);
-
     gamepiece->wristDisable = switchBoard.GetRawButton(2);
-    if (gamepiece->wrist != nullptr)
-        gamepiece->wrist->setEncoderBroken(gamepiece->wristDisable);
-
     manualMode = switchBoard.GetRawButton(3);
-
     hangDisable = switchBoard.GetRawButton(4);
     driveDisable = switchBoard.GetRawButton(5);
     auxDisable = switchBoard.GetRawButton(6);
     fieldCentric = switchBoard.GetRawButton(7);
-
     bool disableLimelight = switchBoard.GetRawButton(8);
+
+    if (gamepiece->wrist != nullptr)
+        gamepiece->wrist->setEncoderBroken(gamepiece->wristDisable);
+
     if (limelight != nullptr)
         limelight->setFunctioningState(disableLimelight);
 
@@ -253,18 +261,22 @@ void Controls::utilizeSwitchBoard() {
             blinkyBlinky->currentMode = BlinkyBlinky::Mode::OFF;
         }
     }
+
     EPDSLDisable = switchBoard.GetRawButton(10);
     settings.pitMode = switchBoard.GetRawButton(11);
 }
 
 bool Controls::shouldPersistentConfig() {
     utilizeSwitchBoard(); // This is run in disable, might want to rename function
+
     if (auxController.IsConnected()) {
         if (auxController.GetLeftBumperButton() &&
             auxController.GetRightBumperButton() &&
             auxController.GetStartButtonPressed()) {
+
             return true;
         }
     }
+
     return false;
 }

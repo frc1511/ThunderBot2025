@@ -59,11 +59,13 @@ Robot::Robot() :
 void Robot::RobotInit() {
 	if (auto_ != nullptr)
 		auto_->autoSelectorInit();
+
 	Alert::startTimer();
 }
 
 void Robot::RobotPeriodic() {
 	controls->sendFeedback();
+
 	for (Component* component : allComponents) {
 	 	component->sendFeedback();
 	}
@@ -82,6 +84,7 @@ void Robot::TeleopInit() {
 }
 void Robot::TeleopPeriodic() {
 	controls->process();
+
 	for (Component* component : allComponents) {
 		component->process();
 	}
@@ -94,6 +97,7 @@ void Robot::DisabledPeriodic() {
 	#ifdef ENABLE_BLINKY_BLINKY
 	blinkyBlinky->process();
 	#endif
+
 	if (controls->shouldPersistentConfig()) {
 		for (Component* component : allComponents) {
 			component->doConfiguration(true);
@@ -140,13 +144,15 @@ void Robot::TestPeriodic() {
 	// }
 }
 
-void Robot::SimulationInit() {}
-void Robot::SimulationPeriodic() {}
+void Robot::SimulationInit() { }
+void Robot::SimulationPeriodic() { }
 
 void Robot::reset(Component::MatchMode mode) {
 	if (auto_)
 		auto_->resetToMatchMode(lastMode, mode);
+	
 	controls->resetToMatchMode(lastMode, mode);
+
 	for (Component* component : allComponents) {
 		component->resetToMatchMode(lastMode, mode);
 	}

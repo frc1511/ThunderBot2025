@@ -15,12 +15,12 @@
 #include "Preferences.h"
 
 class SwerveModule {
-public:
+  public:
     SwerveModule(int driveID, int turningID, int canCoderID, units::degree_t offset);
     void doConfiguration(bool persist);
     void setState(frc::SwerveModuleState state);
     void sendDebugInfo(std::size_t moduleIndex); // Replaces sendFeedback();
-    
+
     void zeroDriveEncoder();
 
     frc::SwerveModuleState getState();
@@ -34,19 +34,19 @@ public:
     void setAccelerationReduction(double reduction);
 
     void setDriveMotorsNeutralMode(ctre::phoenix6::signals::NeutralModeValue neutralMode);
+
 private:
-
-
     units::radian_t getRawCANcoderRotation();
     units::radian_t getCANcoderRotation();
 
     units::turn_t getTurningMotorPosition();
-    
+
     units::meters_per_second_t getDriveVelocity();
     units::meter_t getDrivePosition();
 
     // The drive motor.
     ctre::phoenix6::hardware::TalonFX driveMotor;
+
     // The turning motor.
     ctre::phoenix6::hardware::TalonFX turningMotor;
 
@@ -55,7 +55,6 @@ private:
 
     // The offset of the turning absolute encoder.
     units::radian_t absEncoderOffset;
-
     
     ctre::phoenix6::controls::PositionVoltage turnRequest;
     ctre::phoenix6::controls::VelocityVoltage driveRequest;

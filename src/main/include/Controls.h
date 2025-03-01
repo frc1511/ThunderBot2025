@@ -21,8 +21,8 @@ class Controls : public Component {
     void sendFeedback();
     void utilizeSwitchBoard();
     bool shouldPersistentConfig();
- private:
 
+ private:
     Drive* drive;
     Gamepiece* gamepiece;
     BlinkyBlinky* blinkyBlinky;

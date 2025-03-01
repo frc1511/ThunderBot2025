@@ -1,15 +1,15 @@
 #pragma once
 
-#include "Basic/IOMap.h"
-#include "Preferences.h"
-#include "Basic/Component.h"
-
 #include <rev/config/SparkMaxConfig.h>
 #include <rev/SparkMax.h>
 #include <rev/SparkRelativeEncoder.h>
 #include <frc/DigitalInput.h>
 #include <frc/Relay.h>
 #include <frc/Timer.h>
+
+#include "Basic/IOMap.h"
+#include "Preferences.h"
+#include "Basic/Component.h"
 
 class Hang : public Component {
   public:
@@ -39,15 +39,15 @@ class Hang : public Component {
         CHECKING_UP_STATE
     };
 
-  void setControlMode(ControlMode controlMode);
+    void setControlMode(ControlMode controlMode);
 
   private:
     void updateRealSolenoidState();
     void setSolenoidState(SolenoidState state);
     double getMotorPosition();
-    
+
     ControlMode currentMode = ControlMode::STOPPED;
-    
+
     SolenoidAction solenoidAction = SolenoidAction::NONE;
     SolenoidState realSolenoidState = SolenoidState::DOWN;
     SolenoidState desiredSolenoidState = SolenoidState::DOWN;

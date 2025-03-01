@@ -11,7 +11,7 @@ std::optional<std::pair<bool, LimelightHelpers::PoseEstimate>> Limelight::getEst
     LimelightHelpers::PoseEstimate mt1 = LimelightHelpers::getBotPoseEstimate_wpiBlue(PreferencesLimelight::LIMELIGHT_NAME);
     if (allianceColor == frc::DriverStation::Alliance::kRed) 
         LimelightHelpers::PoseEstimate mt1 = LimelightHelpers::getBotPoseEstimate_wpiRed(PreferencesLimelight::LIMELIGHT_NAME);
-    
+
     bool shouldUpdate = true;
     if (mt1.tagCount == 0)
         shouldUpdate = false;
@@ -19,6 +19,7 @@ std::optional<std::pair<bool, LimelightHelpers::PoseEstimate>> Limelight::getEst
         if (mt1.rawFiducials[0].ambiguity > .8) {
             shouldUpdate = false;
         }
+
         if (mt1.rawFiducials[0].distToCamera > 3) { // distToCamera is in meters
             shouldUpdate = false;
         }
@@ -29,7 +30,7 @@ std::optional<std::pair<bool, LimelightHelpers::PoseEstimate>> Limelight::getEst
             shouldUpdate = false;
         }
     }
-        
+
     return std::make_pair(shouldUpdate, mt1);
 }
 

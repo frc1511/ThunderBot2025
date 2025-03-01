@@ -1,8 +1,8 @@
 #pragma once
 
 #include <functional>
-
 #include <frc/AddressableLED.h>
+
 #include "Basic/Component.h"
 #include "Basic/IOMap.h"
 #include "Preferences.h"
@@ -26,7 +26,7 @@ class BlinkyBlinky : public Component {
     Mode currentMode = Mode::RAINBOW;
   
     bool neuralyze = false;
-  
+
   private:
     bool isDisabled = true;
     std::string currentSideStatus = "NONE";

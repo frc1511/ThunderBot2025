@@ -5,7 +5,7 @@
 #include <functional>
 
 class Parser {
-public:
+  public:
     using Iter = std::string::const_iterator;
     using ConditionFunc = std::function<bool(char)>;
 
