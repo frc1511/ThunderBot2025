@@ -7,14 +7,17 @@ Elevator::Elevator() {
 void Elevator::process() {
     double motorSpeed = 0;
 
-    if (atMinHeight()) { // if elevator at the lower limit switch
-        leftEncoder.SetPosition(0); // zero the encoders
-        rightEncoder.SetPosition(0);
+    if (!sensorBroken) {
+        if (atMinHeight()) { // if elevator at the lower limit switch
+            zeroMotors(); // zero the encoders
 
+            encoderZeroed = true;
+        }
+    } else if (!encoderZeroed && sensorBroken) {
         encoderZeroed = true;
     }
 
-    if (!encoderZeroed) { // if elevator not at the lower limit switch
+    if (!encoderZeroed && !sensorBroken) { // if elevator not at the lower limit switch
         motorSpeed = -0.03; // move down slowly until at the lower limit switch
     } else if (manualControl) {
         motorSpeed = manualMovementSpeed;
@@ -84,11 +87,28 @@ void Elevator::sendFeedback() {
 }
 
 bool Elevator::atMaxHeight() {
-    return getUpperLimit();
+    if (!sensorBroken) {
+        return getUpperLimit();
+    } else {
+        if (getPercentHeight() > .95) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 bool Elevator::atMinHeight() {
-    return getLowerLimit();
+    if (!sensorBroken) {
+        return getLowerLimit();
+    } else {
+        if (getPercentHeight() < .05) {
+            return true;
+        } else {
+            return false;
+        }
+        
+    }
 }
 
 bool Elevator::getLowerLimit() {
@@ -104,7 +124,6 @@ double Elevator::getPercentHeight() {
 
     return percentHeight;
 }
-
 
 Elevator::Preset Elevator::getCurrentPreset() {
     return targetPreset;
@@ -143,7 +162,7 @@ void Elevator::manualMovement(double speed) { // allows input of speed and turns
     manualControl = true;
 }
 
-void Elevator::setSensorBroken(bool isBroken) { // TODO: this still needs to be implemented
+void Elevator::setSensorBroken(bool isBroken) {
     sensorBroken = isBroken;
 }
 
@@ -174,6 +193,11 @@ double Elevator::computeSpeedForPreset() {
     speedFactorDown *= std::clamp(fabs(difference.value()) * 0.1, 0.2, 1.0);
 
     return -PreferencesElevator::MAX_DOWN_SPEED * speedFactorDown;
+}
+
+void Elevator::zeroMotors() {
+    leftEncoder.SetPosition(0);
+    rightEncoder.SetPosition(0);
 }
 
 // Mason spread the love on 1/28/25 at 8:19:43 >:)

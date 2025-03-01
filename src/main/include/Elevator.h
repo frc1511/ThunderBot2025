@@ -52,6 +52,8 @@ class Elevator : public Component {
 
     Preset getCurrentPreset();
 
+    void zeroMotors();
+
   private:
     bool atMaxHeight();
     bool atMinHeight();

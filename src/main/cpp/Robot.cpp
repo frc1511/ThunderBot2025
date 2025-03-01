@@ -61,6 +61,8 @@ void Robot::RobotInit() {
 		auto_->autoSelectorInit();
 
 	Alert::startTimer();
+
+	gamepiece->elevator->zeroMotors();
 }
 
 void Robot::RobotPeriodic() {
