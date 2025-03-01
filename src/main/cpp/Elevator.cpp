@@ -1,6 +1,6 @@
-#include "Elevator.h" 
-Elevator::Elevator(Wrist *wrist_)
-: wrist(wrist_) {
+#include "Elevator.h"
+
+Elevator::Elevator() {
     doConfiguration(false);
 }
 
@@ -28,8 +28,8 @@ void Elevator::process() {
     if (atMaxHeight() && motorSpeed > 0)
         motorSpeed = 0;
 
-    if (wrist != nullptr)
-        if (wrist->wristIsUnsafe())
+    if (wristExists)
+        if (wristIsUnsafe)
             motorSpeed = 0;
 
     if (settings.pitMode && isDisabled) {
@@ -174,6 +174,14 @@ double Elevator::computeSpeedForPreset() {
     speedFactorDown *= std::clamp(fabs(difference.value()) * 0.1, 0.2, 1.0);
 
     return -PreferencesElevator::MAX_DOWN_SPEED * speedFactorDown;
+}
+
+void Elevator::setWristExistence(bool doesExist) {
+    wristExists = doesExist;
+}
+
+void Elevator::setWristSafety(bool isSafe) {
+    wristIsUnsafe = isSafe;
 }
 
 // Mason spread the love on 1/28/25 at 8:19:43 >:)
