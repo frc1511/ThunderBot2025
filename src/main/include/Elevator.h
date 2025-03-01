@@ -52,8 +52,6 @@ class Elevator : public Component {
 
     Preset getCurrentPreset();
 
-    bool wristExists = false;
-    bool wristIsUnsafe = true;
   private:
     bool atMaxHeight();
     bool atMinHeight();
@@ -95,5 +93,9 @@ class Elevator : public Component {
 
     double startDownPosition = 0;
 
+    bool wristExists = false;
+    bool wristIsUnsafe = true;
+
+    friend class Gamepiece;
     friend class Controls;
 };

@@ -59,6 +59,4 @@ class Gamepiece : public Component {
     bool isMovingDown = false;
     bool wristMoveDone = false;
     bool elevatorMoveDone = false;
-
-    friend class Elevator;
 };
