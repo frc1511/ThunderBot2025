@@ -112,6 +112,7 @@ private:
         Gamepiece::Preset preset;
         Action::Result process() override {
             gamepiece->moveToPreset(preset);
+            printf("GPIAP: %d\n", gamepiece->isAtPreset() ? Action::Result::DONE : Action::Result::WORKING);
             return gamepiece->isAtPreset() ? Action::Result::DONE : Action::Result::WORKING;
         };
     };
@@ -129,6 +130,7 @@ private:
         ShootCoral(Gamepiece *gamepiece_) : gamepiece(gamepiece_) {};
         Gamepiece *gamepiece;
         Action::Result process() override {
+            printf("Shooting\n");
             gamepiece->calgae->autoShoot();
             return gamepiece->calgae->isShootDone() ? Action::Result::DONE : Action::Result::WORKING;
         };
@@ -136,15 +138,15 @@ private:
     ShootCoral shootCoral;
 
     std::map<u_int32_t, Action*> actions {
-        {1 << 0, &toTransit},  // Transit
-        {1 << 1, &toL1},       // L1
-        {1 << 2, &toL2},       // L2
-        {1 << 3, &toL3},       // L3
-        {1 << 4, &toL4},       // L4
-        {1 << 5, &toL4},       // Coral Station
-        {1 << 6, &toReefLow},  // Reef Low
-        {1 << 7, &toReefHigh}, // Reef High
-        {1 << 8, &shootCoral}
+        {1 << 0, &toTransit},      // Transit
+        {1 << 1, &toL1},           // L1
+        {1 << 2, &toL2},           // L2
+        {1 << 3, &toL3},           // L3
+        {1 << 4, &toL4},           // L4
+        {1 << 5, &toCoralStation}, // Coral Station
+        {1 << 6, &toReefLow},      // Reef Low
+        {1 << 7, &toReefHigh},     // Reef High
+        {1 << 8, &shootCoral}      // Shoot Coral
     };
 
     std::string autoSelected;

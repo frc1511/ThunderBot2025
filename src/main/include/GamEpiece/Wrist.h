@@ -8,6 +8,7 @@
 #include "Basic/Component.h"
 #include "Basic/IOMap.h"
 #include "Preferences.h"
+#include "Alerts.h"
 
 class Wrist : public Component {
   public:
@@ -45,6 +46,9 @@ class Wrist : public Component {
     bool wristIsUnsafe();
 
   private:
+
+    bool atPreset0Out();
+
     Preset currentPreset = Preset::kTRANSIT;
 
     units::degree_t Positions[Preset::_enum_MAX] = {
@@ -53,7 +57,7 @@ class Wrist : public Component {
         -19_deg,   // Trough
         -0_deg,    // Branch 2 & 3
          53.1_deg, // Branch 4
-         25_deg,   // Processor
+         28_deg,   // Processor
         -37_deg,   // Transit
          0_deg,    // Reef
         -37_deg,   // Coral Station Low

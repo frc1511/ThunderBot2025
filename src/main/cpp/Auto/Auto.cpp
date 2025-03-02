@@ -121,7 +121,6 @@ void Auto::sendFeedback() {
     }
 
     frc::SmartDashboard::PutData("Auto Modes", &autoSelector);
-    
 
     frc::SmartDashboard::PutNumber("Autonomous_Step", step);
     frc::SmartDashboard::PutBoolean("Autonomous_DriveFinished", drive->isFinished());

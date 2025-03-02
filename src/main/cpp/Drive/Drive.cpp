@@ -386,31 +386,40 @@ void Drive::execTrajectory() {
     if (trajectoryActionIter != trajectory->getActions().cend()) {
         const auto& [action_time, actions] = *trajectoryActionIter;
         // Check if it's time to execute the action.
+        printf("Exec Actions Batch Ready\n");
         if (time >= action_time) {
             actionExecuted = true;
             // Loop through the available actions.
             for (auto it(trajectoryActions->cbegin()); it != trajectoryActions->cend(); ++it) {
                 const auto& [id, action] = *it;
+                printf("A: %d\n", id);
                 // Narrow the list down to only actions that have not been completed yet.
                 if (std::find(doneTrajectoryActions.cbegin(), doneTrajectoryActions.cend(), id) == doneTrajectoryActions.cend()) {
                     // If the action's bit is set in the bit field.
+                    printf("%d, %d\n", actions, id);
                     if (actions & id) {
                         // Execute the action.
+                        printf("ACTION_CALLOUT\n");
                         Action::Result res = action->process();
+                        printf("Lockup?\n");
                         // If the action has completed.
                         if (res == Action::Result::DONE) {
+                            printf("DONE!:)\n");
                             // Remember that it's done.
                             doneTrajectoryActions.push_back(id);
                         }
 
-                        if (!actionExecuting)
-                            actionExecuting = res == Action::Result::WORKING;
+                        actionExecuting = res == Action::Result::WORKING;
+                        
+                        if (actionExecuting)
+                            break;
                     }
                 }
             }
         }
     }
-
+    printf("AE:  %d\n", actionExecuting);
+    printf("AED: %d\n", actionExecuted);
     // Stop the trajectory because an action is still running.
     if (actionExecuting) {
         trajectoryTimer.Stop();
@@ -426,7 +435,10 @@ void Drive::execTrajectory() {
     }
 
     // If the trajectory is done, then stop it.
-    if (time > trajectory->getDuration()) {// && driveController.AtReference()) { 
+    if (time > trajectory->getDuration()) {
+        stop();
+    } 
+    if (time > trajectory->getDuration() && !actionExecuting) {// && driveController.AtReference()) { 
         driveMode = DriveMode::STOPPED;
         return;
     }

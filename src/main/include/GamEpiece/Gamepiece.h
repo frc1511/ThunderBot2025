@@ -13,6 +13,7 @@ class Gamepiece : public Component {
 
     void process();
     void doConfiguration(bool persist);
+    void resetToMatchMode(Component::MatchMode lastMode, Component::MatchMode mode);
     void sendFeedback();
 
     enum Preset {

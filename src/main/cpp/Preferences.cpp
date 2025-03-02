@@ -93,6 +93,7 @@ const units::degree_t PreferencesWrist::UP_ZERO = 100_deg;
 const double PreferencesWrist::MAX_FEED_FORWARD_POWER_HIGH_ANGLE = 0.07;
 const double PreferencesWrist::MAX_FEED_FORWARD_POWER_LOW_ANGLE = 0.1;
 const units::degree_t PreferencesWrist::ANGLE_TOLERANCE = 1_deg;
+const units::degree_t PreferencesWrist::ANGLE_TOLERANCE_AUTO = 3_deg;
 const units::degree_t PreferencesWrist::LOWEST_ANGLE = -35_deg;
 
 const units::degree_t PreferencesWrist::HIGHEST_ANGLE = 100_deg;

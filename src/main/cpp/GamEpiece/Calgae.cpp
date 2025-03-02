@@ -38,6 +38,7 @@ void Calgae::sendFeedback() {
     frc::SmartDashboard::PutBoolean("Calgae Coral Retroreflective"               , coralRetroreflectiveTripped()           );
     frc::SmartDashboard::PutBoolean("Calgae Algae Retroreflective Raw"           , algaeRetroreflective.Get()              );
     frc::SmartDashboard::PutBoolean("Calgae Algae Retroreflective"               , algaeRetroreflectiveTripped()           );
+    frc::SmartDashboard::PutBoolean("Calgae Has Gamepiece"                       , hasGamepiece()                          );
     frc::SmartDashboard::PutString ("Calgae Last Gamepiece"                      , lastGamepieceStateToString()            );
     frc::SmartDashboard::PutBoolean("Calgae Algae Retroreflective"               , algaeRetroreflectiveTripped()           );
     frc::SmartDashboard::PutString ("Calgae Motor Target Speed"                  , motorSpeedToString()                    );
@@ -197,8 +198,7 @@ void Calgae::updateGamepieceState() {
 }
 
 bool Calgae::hasGamepiece() {
-    switch (currentGamepieceState)
-    {
+    switch (currentGamepieceState) {
     case kALGAE:
         return true;
     case kCORAL:
@@ -219,8 +219,8 @@ bool Calgae::hasAlgae() {
 std::string Calgae::lastGamepieceStateToString() {
     switch (lastGamepieceState) {
         case GamepieceState::kNONE: return "None";
-        case GamepieceState::kCORAL: return "Algae";
-        case GamepieceState::kALGAE: return "Coral";
+        case GamepieceState::kCORAL: return "Coral";
+        case GamepieceState::kALGAE: return "Algae";
         default: return "Error reading lastGamepieceState";
     }
 }
@@ -228,8 +228,8 @@ std::string Calgae::lastGamepieceStateToString() {
 std::string Calgae::motorSpeedToString() {
     switch (motorSpeed) {
     case MotorSpeed::kSTOPPED: return "Stopped";
-    case MotorSpeed::kCORAL_SPEED: return "Algae";
-    case MotorSpeed::kALGAE_SPEED: return "Coral";
+    case MotorSpeed::kCORAL_SPEED: return "Coral";
+    case MotorSpeed::kALGAE_SPEED: return "Algae";
     case MotorSpeed::kREGRAB_SPEED: return "Regrab";
     default: return "Error reading motorSpeed";
     }

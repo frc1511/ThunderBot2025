@@ -103,6 +103,7 @@ struct PreferencesWrist {
     static const double MAX_FEED_FORWARD_POWER_HIGH_ANGLE;
     static const double MAX_FEED_FORWARD_POWER_LOW_ANGLE;
     static const units::degree_t ANGLE_TOLERANCE;
+    static const units::degree_t ANGLE_TOLERANCE_AUTO;
     static const units::degree_t LOWEST_ANGLE;
 
     static const units::degree_t HIGHEST_ANGLE;

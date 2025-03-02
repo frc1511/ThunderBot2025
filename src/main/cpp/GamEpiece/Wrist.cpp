@@ -11,11 +11,19 @@ void Wrist::process() {
         encoderBroken = true;
     }
 
+    if (encoderBroken || !withinEncoderSafeZone()) {
+        static frc::Timer timer {};
+        if (timer.Get() >= 2_s || !timer.IsRunning()) {
+            Alert::displayAlert(Alert::wristSensor);
+            timer.Restart();
+        }
+    }
+
     if (!encoderBroken && withinEncoderSafeZone()) {
         units::degree_t targetPosition = Positions[currentPreset];
 
         if (!manual) {
-            if (atPreset()) {
+            if (atPreset0Out()) {
                 setSpeed(0);
 
                 return;
@@ -69,11 +77,18 @@ void Wrist::toPreset(Wrist::Preset preset) {
     manual = false;
 }
 
-bool Wrist::atPreset() {
+bool Wrist::atPreset0Out() {
     units::degree_t targetPosition = Positions[currentPreset];
     units::degree_t difference = targetPosition - getEncoderDegrees();
 
     return fabs(difference.value()) < PreferencesWrist::ANGLE_TOLERANCE.value();
+}
+
+bool Wrist::atPreset() {
+    units::degree_t targetPosition = Positions[currentPreset];
+    units::degree_t difference = targetPosition - getEncoderDegrees();
+
+    return fabs(difference.value()) < PreferencesWrist::ANGLE_TOLERANCE_AUTO.value();
 }
 
 void Wrist::setEncoderBroken(bool isBroken) {
