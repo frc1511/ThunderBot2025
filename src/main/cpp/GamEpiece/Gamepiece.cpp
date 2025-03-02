@@ -15,11 +15,18 @@ void Gamepiece::process() {
 
 void Gamepiece::doConfiguration(bool persist) { }
 
+void Gamepiece::resetToMatchMode(Component::MatchMode lastMode, Component::MatchMode mode) {
+    if (mode == Component::MatchMode::AUTO) {
+        moveToPreset(Preset::kTRANSIT);
+    }
+}
+
 void Gamepiece::sendFeedback() {
-    frc::SmartDashboard::PutBoolean("Calgae Autopilot",   calgaeAutopilot);
-    frc::SmartDashboard::PutBoolean("Wrist Autopilot",    wristAutopilot);
-    frc::SmartDashboard::PutBoolean("Elevator Autopilot", elevatorAutopilot);
-    frc::SmartDashboard::PutString ("Target Preset",      targetPresetAsString());
+    frc::SmartDashboard::PutBoolean("Calgae Autopilot",    calgaeAutopilot);
+    frc::SmartDashboard::PutBoolean("Wrist Autopilot",     wristAutopilot);
+    frc::SmartDashboard::PutBoolean("Elevator Autopilot",  elevatorAutopilot);
+    frc::SmartDashboard::PutString ("Target Preset",       targetPresetAsString());
+    frc::SmartDashboard::PutBoolean("Gamepiece at Target", isAtPreset());
 }
 
 void Gamepiece::moveToPreset(Preset preset) {
@@ -129,10 +136,6 @@ void Gamepiece::moveToTarget() {
 }
 
 bool Gamepiece::isAtPreset() {
-    if (calgae != nullptr) 
-        if (!calgae->atSpeed())
-            return false;
-
     if (wrist != nullptr)
         if (!wrist->atPreset())
             return false;

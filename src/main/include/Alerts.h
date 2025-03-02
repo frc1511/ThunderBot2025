@@ -47,6 +47,12 @@ class Alert {
                                                                                 .description = "Switchboard Disconnected",
                                                                                 .displayTime = 2_s,};
 
+    // MARK: Other Errors
+    inline static const elastic::Notification wristSensor   =  {.level = elastic::NotificationLevel::ERROR,
+                                                                .title = "Wrist Disconnected",
+                                                                .description = "Wrist Disconnected",
+                                                                .displayTime = 1_s,};
+
     inline static bool driveDisabled = false;
     inline static bool auxDisabled = false;
     inline static bool switchBoardDisconnected = false;
@@ -75,6 +81,10 @@ class Alert {
 
     static void startTimer() {
         alertTimer.Start();
+    }
+
+    static void displayAlert(elastic::Notification alert) {
+        elastic::SendNotification(alert);
     }
 
     static void sendFeedback() {

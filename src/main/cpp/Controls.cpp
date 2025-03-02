@@ -21,7 +21,7 @@ void Controls::process() {
                                       (gamepiece->elevator->Position[Elevator::Preset::kNET] - gamepiece->elevator->Position[Elevator::Preset::kL3])).value();
 
             if (elevatorPercent > 0) {
-                elevatorPercent = pow(elevatorPercent, 2);
+                elevatorPercent = 0.97 - pow(elevatorPercent - 1, 2);
                 elevatorPercent = std::clamp(elevatorPercent, 0.0, 1.0);
                 speedReduction = elevatorPercent;
             }
@@ -50,6 +50,7 @@ void Controls::process() {
         bool lockRot = driveController.GetStartButtonPressed();
         bool resetIMU = driveController.GetYButtonPressed();
         bool brickMode = driveController.GetAButton();
+        bool robotCentricFromController = fabs(driveController.GetRightTriggerAxis()) > PreferencesControls::AXIS_DEADZONE;
         unsigned flags = 0;
 
         if (lockX)
@@ -64,7 +65,7 @@ void Controls::process() {
         if (brickMode)
             flags |= Drive::ControlFlag::BRICK;
 
-        if (fieldCentric)
+        if (fieldCentric && !robotCentricFromController)
             flags |= Drive::ControlFlag::FIELD_CENTRIC;
 
         if (resetIMU)
@@ -120,13 +121,13 @@ void Controls::process() {
         bool toL3 = auxController.GetXButton();
         bool toL4 = auxController.GetYButton();
         bool toStop = auxController.GetRightStickButtonPressed();
-        bool toTransit = auxController.GetStartButtonPressed();
+        bool toTransit = auxController.GetLeftBumperButton();
         bool toReefLow = auxController.GetPOV(0) == 90;
         bool toReefHigh = auxController.GetPOV(0) == 0;
         bool toGround = auxController.GetPOV() == 180;
         bool toProcessor = auxController.GetPOV(0) == 270;
         if (blinkyBlinky != nullptr)
-            blinkyBlinky->neuralyze = auxController.GetLeftBumperButton(); // Flash leds/signal light/limelight for Human Player attention acquisition
+            blinkyBlinky->neuralyze = auxController.GetStartButton(); // Flash leds/signal light/limelight for Human Player attention acquisition
 
         hasBeenSetByAux = true;
         bool coralStationActive = true; // It's too late to come up with a better solution

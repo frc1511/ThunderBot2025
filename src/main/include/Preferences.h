@@ -103,6 +103,7 @@ struct PreferencesWrist {
     static const double MAX_FEED_FORWARD_POWER_HIGH_ANGLE;
     static const double MAX_FEED_FORWARD_POWER_LOW_ANGLE;
     static const units::degree_t ANGLE_TOLERANCE;
+    static const units::degree_t ANGLE_TOLERANCE_AUTO;
     static const units::degree_t LOWEST_ANGLE;
 
     static const units::degree_t HIGHEST_ANGLE;
@@ -139,7 +140,7 @@ struct PreferencesBlinkyBlinky
 struct PreferencesHang
 {
     static const double MAX_POSITION;
-    static const double MAX_HANG_SPEED_UP; // TODO: CHANGE LATER
+    static const double MAX_HANG_SPEED_UP;
     static const double MAX_HANG_SPEED_DOWN;
     static const double BACKTRACKING_SPEED;
     static const double BACKTRACKING_DISTANCE;
@@ -149,5 +150,6 @@ struct PreferencesHang
 
 struct PreferencesLimelight
 {
-    static const std::string LIMELIGHT_NAME;
+    static const std::string LIMELIGHT_FRONT;
+    static const std::string LIMELIGHT_BACK;
 };

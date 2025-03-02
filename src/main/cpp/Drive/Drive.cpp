@@ -307,21 +307,19 @@ void Drive::updateOdometry() {
     poseEstimator.Update(getRotation(), getModulePositions());
 
     LimelightHelpers::SetRobotOrientation("", poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0);
+    auto estimatedBotPose = limelight->getEstimatedBotPose();
+    if (estimatedBotPose) {
+        for (auto pose : *estimatedBotPose) {
+            bool limelightReliable = pose.first;
+            LimelightHelpers::PoseEstimate mt1 = pose.second;
 
-    if (auto limelightResult = limelight->getEstimatedBotPose()) {
-        return;
-        bool limelightReliable = (*limelightResult).first;
-        LimelightHelpers::PoseEstimate mt1 = (*limelightResult).second;
-
-        frc::SmartDashboard::PutBoolean("limelight reliable", limelightReliable);
-
-        if (!limelightReliable) return;
-
-        poseEstimator.SetVisionMeasurementStdDevs({0.3, 0.3, 0.3});
-        poseEstimator.AddVisionMeasurement(
-            mt1.pose,
-            mt1.timestampSeconds
-        );
+            if (!limelightReliable) break;
+            printf("Limelight Update\n");
+            poseEstimator.AddVisionMeasurement(
+                mt1.pose,
+                mt1.timestampSeconds
+            );
+        }
     }
 }
 
@@ -403,14 +401,15 @@ void Drive::execTrajectory() {
                             doneTrajectoryActions.push_back(id);
                         }
 
-                        if (!actionExecuting)
-                            actionExecuting = res == Action::Result::WORKING;
+                        actionExecuting = res == Action::Result::WORKING;
+                        
+                        if (actionExecuting)
+                            break;
                     }
                 }
             }
         }
     }
-
     // Stop the trajectory because an action is still running.
     if (actionExecuting) {
         trajectoryTimer.Stop();
@@ -426,10 +425,15 @@ void Drive::execTrajectory() {
     }
 
     // If the trajectory is done, then stop it.
-    if (time > trajectory->getDuration()) {// && driveController.AtReference()) { 
+    if (time > trajectory->getDuration() && !actionExecuting) {// && driveController.AtReference()) { 
         driveMode = DriveMode::STOPPED;
+        printf("Done\n");
         return;
     }
+    if (time > trajectory->getDuration()) {
+        stop();
+        return;
+    } 
 
     // Sample the trajectory at the current time for the desired state of the robot.
     CSVTrajectory::State state(trajectory->sample(time));

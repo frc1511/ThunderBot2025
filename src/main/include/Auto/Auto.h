@@ -26,15 +26,15 @@ public:
 
 private:
     enum class AutoMode {
-        DO_NOTHING                 = 0,
-        _TEST                      = 1,
-        _SQUARE                    = 2,
-        LEAVE                      = 3,
-        LEAVE_GO_TO_LEFT_CORAL     = 4,
-        LEAVE_GO_TO_RIGHT_CORAL    = 5,
-        L1Center                   = 6,
-        L1Left                     = 7,
-        L1Right                    = 8,
+        DO_NOTHING,
+        _TEST,
+        _SQUARE,
+        LEAVE,
+        LEAVE_GO_TO_LEFT_CORAL,
+        LEAVE_GO_TO_RIGHT_CORAL,
+        L1Center,
+        L1Left,
+        L1Right,
     };
     Drive *drive;
     Limelight *limelight;
@@ -45,15 +45,7 @@ private:
     // Match Autos
     void doNothing();
     void leave();
-    void leaveLeftCoral();
-    void leaveRightCoral();
-    void L1CoralCenter();
-    void L1CoralLeft();
-    void L1CoralRight();
-
-    // Debug Autos
-    void test();
-    void square();
+    void runPath();
 
     const std::map<AutoMode, const char*> autoModeNames {
         { AutoMode::DO_NOTHING,              "Do Nothing"},
@@ -67,7 +59,6 @@ private:
         { AutoMode::L1Right,                 "1 Coral L1 Right"},
     };
     int step = 0;
-
     enum class Path {
         _TEST,
         _SQUARE,
@@ -77,6 +68,16 @@ private:
         L1Center,
         L1Left,
         L1Right,
+    };
+    const std::map<AutoMode, Path> autoModePaths {
+        {AutoMode::_TEST, Path::_TEST},
+        {AutoMode::_SQUARE, Path::_SQUARE},
+        {AutoMode::LEAVE, Path::LEAVE},
+        {AutoMode::LEAVE_GO_TO_LEFT_CORAL, Path::LEAVE_GO_TO_LEFT_CORAL},
+        {AutoMode::LEAVE_GO_TO_RIGHT_CORAL, Path::LEAVE_GO_TO_RIGHT_CORAL},
+        {AutoMode::L1Center, Path::L1Center},
+        {AutoMode::L1Left, Path::L1Left},
+        {AutoMode::L1Right, Path::L1Right},
     };
     const std::map<Path, CSVTrajectory> bluePaths {
         { Path::_TEST,                   CSVTrajectory{ DEPLOY_DIR "match_winning_auto.csv", false } },
@@ -104,35 +105,50 @@ private:
 
 
 
-    class ToL1 : public Action {
+    class ToGPPreset : public Action {
       public:
-        ToL1(Gamepiece *gamepiece_) : gamepiece(gamepiece_) {};
+        ToGPPreset(Gamepiece *gamepiece_, Gamepiece::Preset preset_) : gamepiece(gamepiece_), preset(preset_) {};
         Gamepiece *gamepiece;
+        Gamepiece::Preset preset;
         Action::Result process() override {
-            gamepiece->moveToPreset(Gamepiece::Preset::kL1);
+            gamepiece->moveToPreset(preset);
             return gamepiece->isAtPreset() ? Action::Result::DONE : Action::Result::WORKING;
         };
     };
-    ToL1 toL1;
+    ToGPPreset toTransit;
+    ToGPPreset toL1;
+    ToGPPreset toL2;
+    ToGPPreset toL3;
+    ToGPPreset toL4;
+    ToGPPreset toCoralStation;
+    ToGPPreset toReefLow;
+    ToGPPreset toReefHigh;
 
     class ShootCoral : public Action {
       public:
         ShootCoral(Gamepiece *gamepiece_) : gamepiece(gamepiece_) {};
         Gamepiece *gamepiece;
         Action::Result process() override {
-            gamepiece->calgae->autoShoot();
+            if (gamepiece->calgae == nullptr) 
+                return Action::Result::DONE;
+                
+            if (!gamepiece->calgae->isAutoShooting)
+                gamepiece->calgae->autoShoot();
             return gamepiece->calgae->isShootDone() ? Action::Result::DONE : Action::Result::WORKING;
         };
     };
     ShootCoral shootCoral;
 
     std::map<u_int32_t, Action*> actions {
-        {1 << 0, &toL1}, // Ground
-        {1 << 1, &toL1}, // L1
-        {1 << 2, &toL1}, // L2
-        {1 << 3, &toL1}, // L3
-        {1 << 4, &toL1}, // L4
-        {1 << 5, &shootCoral}
+        {1 << 0, &toTransit},      // Transit
+        {1 << 1, &toL1},           // L1
+        {1 << 2, &toL2},           // L2
+        {1 << 3, &toL3},           // L3
+        {1 << 4, &toL4},           // L4
+        {1 << 5, &toCoralStation}, // Coral Station
+        {1 << 6, &toReefLow},      // Reef Low
+        {1 << 7, &toReefHigh},     // Reef High
+        {1 << 8, &shootCoral}      // Shoot Coral
     };
 
     std::string autoSelected;

@@ -93,6 +93,7 @@ const units::degree_t PreferencesWrist::UP_ZERO = 100_deg;
 const double PreferencesWrist::MAX_FEED_FORWARD_POWER_HIGH_ANGLE = 0.07;
 const double PreferencesWrist::MAX_FEED_FORWARD_POWER_LOW_ANGLE = 0.1;
 const units::degree_t PreferencesWrist::ANGLE_TOLERANCE = 1_deg;
+const units::degree_t PreferencesWrist::ANGLE_TOLERANCE_AUTO = 3_deg;
 const units::degree_t PreferencesWrist::LOWEST_ANGLE = -35_deg;
 
 const units::degree_t PreferencesWrist::HIGHEST_ANGLE = 100_deg;
@@ -134,7 +135,7 @@ const int PreferencesBlinkyBlinky::ALGAE_STATUS_ID = 3;
 // Hang
 
 const double PreferencesHang::MAX_POSITION = 1;
-const double PreferencesHang::MAX_HANG_SPEED_UP = 0.5; // TODO: CHANGE LATER
+const double PreferencesHang::MAX_HANG_SPEED_UP = 0.5;
 const double PreferencesHang::MAX_HANG_SPEED_DOWN = -0.5;
 const double PreferencesHang::BACKTRACKING_SPEED = -0.1;
 const double PreferencesHang::BACKTRACKING_DISTANCE = 1;
@@ -145,4 +146,5 @@ const units::second_t PreferencesHang::DISENGAGE_DURATION = 0.3_s;
 /***********************************************************/
 // Limelight
 
-const std::string PreferencesLimelight::LIMELIGHT_NAME = "limelight";
+const std::string PreferencesLimelight::LIMELIGHT_FRONT = "limelight-front";
+const std::string PreferencesLimelight::LIMELIGHT_BACK = "limelight-back";

@@ -469,7 +469,7 @@ namespace LimelightHelpers
         int valsPerFiducial = 7;
         int expectedTotalVals = 11 + valsPerFiducial * tagCount;
         
-        if (poseArray.size() == expectedTotalVals) 
+        if ((int)poseArray.size() == expectedTotalVals) 
         {
             for (int i = 0; i < tagCount; i++) 
             {
