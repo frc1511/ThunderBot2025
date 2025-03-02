@@ -150,5 +150,6 @@ struct PreferencesHang
 
 struct PreferencesLimelight
 {
-    static const std::string LIMELIGHT_NAME;
+    static const std::string LIMELIGHT_FRONT;
+    static const std::string LIMELIGHT_BACK;
 };

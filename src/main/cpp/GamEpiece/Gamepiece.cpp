@@ -133,10 +133,6 @@ void Gamepiece::moveToTarget() {
 }
 
 bool Gamepiece::isAtPreset() {
-    if (calgae != nullptr) 
-        if (!calgae->atSpeed())
-            return false;
-
     if (wrist != nullptr)
         if (!wrist->atPreset())
             return false;

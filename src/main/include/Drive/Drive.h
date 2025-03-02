@@ -191,7 +191,7 @@ private:
         getModulePositions(),
         frc::Pose2d(),
         { 0.01, 0.01, 0.01 }, // Standard deviations of model states.
-        { 0.1, 0.1, 0.1 } // Standard deviations of the vision measurements.
+        { 0.7, 0.7, 0.7 } // Standard deviations of the vision measurements.
     };
 
     // PID Controller for angular drivetrain movement.

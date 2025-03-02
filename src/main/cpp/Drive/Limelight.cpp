@@ -2,15 +2,24 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
-std::optional<std::pair<bool, LimelightHelpers::PoseEstimate>> Limelight::getEstimatedBotPose() {
+std::optional<std::map<bool, LimelightHelpers::PoseEstimate>> Limelight::getEstimatedBotPose() {
     if (!isFunctioning) {
         // If it's not functioning, don't use it's values!
         return std::nullopt;
     }
 
-    LimelightHelpers::PoseEstimate mt1 = LimelightHelpers::getBotPoseEstimate_wpiBlue(PreferencesLimelight::LIMELIGHT_NAME);
+    std::map<bool, LimelightHelpers::PoseEstimate> poses = {
+        getLimelightPose(PreferencesLimelight::LIMELIGHT_FRONT),
+        getLimelightPose(PreferencesLimelight::LIMELIGHT_BACK),
+    };
+
+    return poses;
+}
+
+std::pair<bool,LimelightHelpers::PoseEstimate> Limelight::getLimelightPose(std::string name) {
+    LimelightHelpers::PoseEstimate mt1 = LimelightHelpers::getBotPoseEstimate_wpiBlue(name);
     if (allianceColor == frc::DriverStation::Alliance::kRed) 
-        LimelightHelpers::PoseEstimate mt1 = LimelightHelpers::getBotPoseEstimate_wpiRed(PreferencesLimelight::LIMELIGHT_NAME);
+        LimelightHelpers::PoseEstimate mt1 = LimelightHelpers::getBotPoseEstimate_wpiRed(name);
 
     bool shouldUpdate = true;
     if (mt1.tagCount == 0)

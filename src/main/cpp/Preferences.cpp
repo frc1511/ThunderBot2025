@@ -146,4 +146,5 @@ const units::second_t PreferencesHang::DISENGAGE_DURATION = 0.3_s;
 /***********************************************************/
 // Limelight
 
-const std::string PreferencesLimelight::LIMELIGHT_NAME = "limelight";
+const std::string PreferencesLimelight::LIMELIGHT_FRONT = "limelight-front";
+const std::string PreferencesLimelight::LIMELIGHT_BACK = "limelight-back";

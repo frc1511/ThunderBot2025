@@ -112,7 +112,6 @@ private:
         Gamepiece::Preset preset;
         Action::Result process() override {
             gamepiece->moveToPreset(preset);
-            printf("GPIAP: %d\n", gamepiece->isAtPreset() ? Action::Result::DONE : Action::Result::WORKING);
             return gamepiece->isAtPreset() ? Action::Result::DONE : Action::Result::WORKING;
         };
     };
@@ -130,8 +129,11 @@ private:
         ShootCoral(Gamepiece *gamepiece_) : gamepiece(gamepiece_) {};
         Gamepiece *gamepiece;
         Action::Result process() override {
-            printf("Shooting\n");
-            gamepiece->calgae->autoShoot();
+            if (gamepiece->calgae == nullptr) 
+                return Action::Result::DONE;
+                
+            if (!gamepiece->calgae->isAutoShooting)
+                gamepiece->calgae->autoShoot();
             return gamepiece->calgae->isShootDone() ? Action::Result::DONE : Action::Result::WORKING;
         };
     };

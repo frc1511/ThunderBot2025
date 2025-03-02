@@ -18,6 +18,7 @@ void Calgae::resetToMatchMode(Component::MatchMode lastMode, Component::MatchMod
             stopMotors();
             break;
         case Component::MatchMode::AUTO:
+            updateGamepieceState();
             isAuto = true;
             lastGamepieceState = GamepieceState::kCORAL; // "I don't see why not." -Noah, "Huh?" -Trevor
             break;
@@ -43,6 +44,7 @@ void Calgae::sendFeedback() {
     frc::SmartDashboard::PutBoolean("Calgae Algae Retroreflective"               , algaeRetroreflectiveTripped()           );
     frc::SmartDashboard::PutString ("Calgae Motor Target Speed"                  , motorSpeedToString()                    );
     frc::SmartDashboard::PutNumber ("Calgae Motor Out Voltage"                   , motor.GetVoltage().value()              );
+    frc::SmartDashboard::PutBoolean("Calgae Is Shoot Done"                       , isShootDone()                           );
 }
 
 void Calgae::process() {
@@ -50,9 +52,12 @@ void Calgae::process() {
     motorSpeed = MotorSpeed::kSTOPPED; // In case we make it through the below logic without getting a speed
 
     if (isAuto) {
-        if (shootTimer.Get() >= 0.5_s) {
-            shootTimer.Stop();
+        if (isShootDone()) {
+            motorSpeed = MotorSpeed::kSTOPPED;
+            isAutoShooting = false;
             resetHadGamepiece();
+            stopMotors();
+            return;
         }
     }
 
@@ -154,10 +159,6 @@ void Calgae::resetHadGamepiece() {
     lastGamepieceState = GamepieceState::kNONE;
 }
 
-bool Calgae::atSpeed() {
-    return true; // TODO: Implement NOTE: This might not be neccessary (or even possible, as interfacing with the motor for PID seems difficult without an encoder, let someone know if otherwise)
-}
-
 bool Calgae::coralRetroreflectiveTripped() {
     return !coralRetroreflective.Get();
 }
@@ -172,6 +173,7 @@ bool Calgae::isShootDone() {
 
 void Calgae::autoShoot() {
     isAuto = true;
+    isAutoShooting = true;
     shootTimer.Restart();
     setMotorMode(Calgae::MotorModes::kSHOOT);
 }
