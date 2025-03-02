@@ -31,7 +31,7 @@ Robot::Robot() :
 #endif
 
 #ifdef ENABLE_ELEVATOR
-	elevator = new Elevator(wrist);
+	elevator = new Elevator();
 	allComponents.push_back(elevator);
 #endif
 
@@ -61,6 +61,8 @@ void Robot::RobotInit() {
 		auto_->autoSelectorInit();
 
 	Alert::startTimer();
+
+	gamepiece->elevator->zeroMotors();
 }
 
 void Robot::RobotPeriodic() {

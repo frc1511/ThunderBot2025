@@ -8,11 +8,10 @@
 #include "Basic/Component.h"
 #include "Basic/IOMap.h"
 #include "Preferences.h"
-#include "Gamepiece/Wrist.h"
 
 class Elevator : public Component {
   public:
-    Elevator(Wrist *wrist_);
+    Elevator();
     void process() override;
 
     void resetToMatchMode(MatchMode priorMode, MatchMode mode) override;
@@ -51,6 +50,8 @@ class Elevator : public Component {
     double getPercentHeight();
 
     Preset getCurrentPreset();
+
+    void zeroMotors();
 
   private:
     bool atMaxHeight();
@@ -92,7 +93,8 @@ class Elevator : public Component {
 
     double startDownPosition = 0;
 
-    Wrist *wrist;
+    bool wristExists = false;
+    bool wristIsUnsafe = true;
 
     friend class Gamepiece;
     friend class Controls;

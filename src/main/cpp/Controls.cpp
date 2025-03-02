@@ -175,7 +175,7 @@ void Controls::process() {
             #ifndef CALGAE_SENSOR_BROKEN 
                 gamepiece->calgae->setMotorMode(Calgae::MotorModes::kSHOOT);
             #else 
-                calgae->setMotorMode(Calgae::MotorModes::kSHOOT_OVERRIDE);
+                gamepiece->calgae->setMotorMode(Calgae::MotorModes::kSHOOT_OVERRIDE);
             #endif
         } else if (shootDone) {
             gamepiece->calgaeAutopilot = false;
