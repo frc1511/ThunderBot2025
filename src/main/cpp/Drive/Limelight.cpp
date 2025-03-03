@@ -9,8 +9,8 @@ std::optional<std::map<bool, LimelightHelpers::PoseEstimate>> Limelight::getEsti
     }
 
     std::map<bool, LimelightHelpers::PoseEstimate> poses = {
-        getLimelightPose(PreferencesLimelight::LIMELIGHT_FRONT),
         getLimelightPose(PreferencesLimelight::LIMELIGHT_BACK),
+        getLimelightPose(PreferencesLimelight::LIMELIGHT_FRONT), 
     };
 
     return poses;
@@ -25,7 +25,7 @@ std::pair<bool,LimelightHelpers::PoseEstimate> Limelight::getLimelightPose(std::
     if (mt1.tagCount == 0)
         shouldUpdate = false;
     if (mt1.tagCount == 1 && mt1.rawFiducials.size() == 1) {
-        if (mt1.rawFiducials[0].ambiguity > .8) {
+        if (mt1.rawFiducials[0].ambiguity > .4) {
             shouldUpdate = false;
         }
 
@@ -35,7 +35,7 @@ std::pair<bool,LimelightHelpers::PoseEstimate> Limelight::getLimelightPose(std::
     }
 
     for (auto fiducial : mt1.rawFiducials) {
-        if (fiducial.ambiguity > .9) {
+        if (fiducial.ambiguity > .5) {
             shouldUpdate = false;
         }
     }

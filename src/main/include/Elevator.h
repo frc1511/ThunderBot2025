@@ -53,6 +53,8 @@ class Elevator : public Component {
 
     void zeroMotors();
 
+    void setSensorBroken(bool isBroken);
+
   private:
     bool atMaxHeight();
     bool atMinHeight();
@@ -78,6 +80,7 @@ class Elevator : public Component {
     bool manualControl = false;
     
     bool encoderZeroed = false;
+    bool sensorBroken = false;
 
     units::turn_t getPosition();
     double computeSpeedForPreset();

@@ -140,6 +140,7 @@ private:
         STOPPED,
         VELOCITY,
         TRAJECTORY,
+        LINEUP,
     };
 
     DriveMode driveMode = DriveMode::STOPPED;
@@ -191,7 +192,7 @@ private:
         getModulePositions(),
         frc::Pose2d(),
         { 0.01, 0.01, 0.01 }, // Standard deviations of model states.
-        { 0.7, 0.7, 0.7 } // Standard deviations of the vision measurements.
+        { 0.2, 0.2, 999.99 } // Standard deviations of the vision measurements.
     };
 
     // PID Controller for angular drivetrain movement.
@@ -257,6 +258,7 @@ private:
      * Executes the instructions for when the robot is running a trajectory.
      */
     void execTrajectory();
+    void driveToState(CSVTrajectory::State state);
 
     double speedLimiting = 1.0; // This multiplies
 
@@ -271,4 +273,14 @@ private:
 
 
     SwerveFeedback swerveFeedback {&swerveModules};
+
+
+    // MARK: TELE LINEUP AUTO DRIVING
+    void execLineup();
+
+    frc::Pose2d calculateFinalLineupPose(int posId, bool isLeftSide, bool isL4);
+
+    frc::Pose2d masterLineupPose = {2_m, 2_m, frc::Rotation2d(0_deg)};
+
+    frc::Pose2d lineupStartPose;
 };

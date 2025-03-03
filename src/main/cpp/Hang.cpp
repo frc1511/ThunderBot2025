@@ -9,7 +9,7 @@ void Hang::doConfiguration(bool persist) { }
 void Hang::process() {
     updateRealSolenoidState();
 
-    return;
+    return; //! REMOVE ME TO TEST HANG
 
     double speed = 0;
 

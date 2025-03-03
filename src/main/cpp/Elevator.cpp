@@ -39,7 +39,8 @@ void Elevator::process() {
         motorSpeed = 0;
     }
 
-    motorSpeed += 0.05; // Temp Feedfoward
+    // motorSpeed += 0.05; // Temp Feedfoward
+    motorSpeed += 0.02;
 
     frc::SmartDashboard::PutNumber ("Elevator Motor Output", motorSpeed);
 

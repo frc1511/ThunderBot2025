@@ -9,7 +9,8 @@ Gamepiece::Gamepiece(Calgae *calgae_, Wrist *wrist_, Elevator *elevator_)
 }
 
 void Gamepiece::process() {
-    elevator->wristIsUnsafe = wrist->wristIsUnsafe();
+    if (wrist != nullptr)
+        elevator->wristIsUnsafe = wrist->wristIsUnsafe();
     moveToTarget();
 }
 
@@ -55,10 +56,10 @@ void Gamepiece::moveToTarget() {
         // calgaeAutopilot = true;
         switch (targetPreset) {
             case Gamepiece::kCORAL_STATION:
-                // calgae->setMotorMode(Calgae::MotorModes::kCORAL_INTAKE); // Intake for the coral station
+                //// calgae->setMotorMode(Calgae::MotorModes::kCORAL_INTAKE); // Intake for the coral station
                 break;
             case Gamepiece::kGROUND:
-                // calgae->setMotorMode(Calgae::MotorModes::kALGAE_INTAKE); // Intake algae if on the ground
+                //// calgae->setMotorMode(Calgae::MotorModes::kALGAE_INTAKE); // Intake algae if on the ground
                 break;
             // kSTOP preset should be handled by controls
             default:

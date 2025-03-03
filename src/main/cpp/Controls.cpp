@@ -81,8 +81,12 @@ void Controls::process() {
 
         frc::SmartDashboard::PutNumber("Controls Final Speed Reduction", finalSpeedReduction);
 
+        if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {
+            finalSpeedReduction *= -1;
+        }
+
         // SWAP: 90_deg offset for drive
-        drive->driveFromPercents(yPercent * -finalSpeedReduction, xPercent * -finalSpeedReduction, rotPercent * -finalSpeedReduction, flags);
+        drive->driveFromPercents(yPercent * finalSpeedReduction, xPercent * finalSpeedReduction, rotPercent * finalSpeedReduction, flags);
     }
 
     bool hasBeenSetByAux = false;
@@ -160,7 +164,6 @@ void Controls::process() {
             gamepiece->moveToPreset(Gamepiece::Preset::kNET);
     }
 
-    // #define CALGAE_SENSOR_BROKEN false// Replace with switchboard?
     if (gamepiece->calgae != nullptr && auxController.IsConnected() && !auxDisable) {
         bool algaeIntake = fabs(auxController.GetRightTriggerAxis()) > PreferencesControls::AXIS_DEADZONE;
         bool shoot = auxController.GetRightBumperButton();
@@ -255,7 +258,7 @@ void Controls::utilizeSwitchBoard() {
         gamepiece->wrist->setEncoderBroken(gamepiece->wristDisable);
 
     if (limelight != nullptr)
-        limelight->setFunctioningState(disableLimelight);
+        limelight->setFunctioningState(!disableLimelight);
 
     if (switchBoard.GetRawButton(9)) { // LED Disable
         if (blinkyBlinky != nullptr) {

@@ -15,7 +15,7 @@ limelight(_limelight) {
     driveController.SetEnabled(true);
 
     //Initialize the field widget
-    // frc::SmartDashboard::PutData("Field", &m_field);
+    //// frc::SmartDashboard::PutData("Field", &m_field);
 }
 
 Drive::~Drive() {
@@ -45,12 +45,12 @@ void Drive::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
          * Coast all motors in disabled (good for transportation, however can
          * lead to some runaway robots).
          */
-        //setIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+        ////setIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 
         trajectoryTimer.Stop();
     } else {
         // Brake all motors when enabled to help counteract pushing.
-        //setIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+        ////setIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 
         /**
          * Calibrate the IMU if not already calibrated. This will cause the
@@ -99,6 +99,9 @@ void Drive::process() {
             break;
         case DriveMode::TRAJECTORY:
             execTrajectory();
+            break;
+        case DriveMode::LINEUP:
+            execLineup();
             break;
     }
 }
@@ -306,7 +309,8 @@ void Drive::updateOdometry() {
      */
     poseEstimator.Update(getRotation(), getModulePositions());
 
-    LimelightHelpers::SetRobotOrientation("", poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0);
+    LimelightHelpers::SetRobotOrientation(PreferencesLimelight::LIMELIGHT_FRONT, poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0);
+    LimelightHelpers::SetRobotOrientation(PreferencesLimelight::LIMELIGHT_BACK, poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0);
     auto estimatedBotPose = limelight->getEstimatedBotPose();
     if (estimatedBotPose) {
         for (auto pose : *estimatedBotPose) {
@@ -314,7 +318,6 @@ void Drive::updateOdometry() {
             LimelightHelpers::PoseEstimate mt1 = pose.second;
 
             if (!limelightReliable) break;
-            printf("Limelight Update\n");
             poseEstimator.AddVisionMeasurement(
                 mt1.pose,
                 mt1.timestampSeconds
@@ -425,15 +428,11 @@ void Drive::execTrajectory() {
     }
 
     // If the trajectory is done, then stop it.
-    if (time > trajectory->getDuration() && !actionExecuting) {// && driveController.AtReference()) { 
+    if (time > trajectory->getDuration() && !actionExecuting) {//// && driveController.AtReference()) { 
         driveMode = DriveMode::STOPPED;
         printf("Done\n");
         return;
     }
-    if (time > trajectory->getDuration()) {
-        stop();
-        return;
-    } 
 
     // Sample the trajectory at the current time for the desired state of the robot.
     CSVTrajectory::State state(trajectory->sample(time));
@@ -443,8 +442,13 @@ void Drive::execTrajectory() {
         state.velocity = 0_mps;
     }
 
+    driveToState(state);
+}
+
+void Drive::driveToState(CSVTrajectory::State state) {
+
     // Adjust the rotation because everything about this robot is 90 degrees off D:
-    // state.pose = frc::Pose2d(state.pose.Translation(), frc::Rotation2d(state.pose.Rotation() - 90_deg));
+    //// state.pose = frc::Pose2d(state.pose.Translation(), frc::Rotation2d(state.pose.Rotation() - 90_deg));
 
     // The current pose of the robot.
     frc::Pose2d currentPose(getEstimatedPose());
@@ -460,8 +464,8 @@ void Drive::execTrajectory() {
         heading = frc::Rotation2d(twist.dtheta);
     }
 
-    // printf("Speed: %lf, X: %lf, Y: %lf, stateRot: %lf, heading: %lf\n", state.velocity.value(), state.pose.X().value(), state.pose.Y().value(), state.pose.Rotation().Degrees().value(), heading.Degrees().value());
-    // printf("(Pose) X: %lf, Y: %lf, Rot: %lf\n", currentPose.X().value(), currentPose.Y().value(), currentPose.Rotation().Degrees().value());
+    //// printf("Speed: %lf, X: %lf, Y: %lf, stateRot: %lf, heading: %lf\n", state.velocity.value(), state.pose.X().value(), state.pose.Y().value(), state.pose.Rotation().Degrees().value(), heading.Degrees().value());
+    //// printf("(Pose) X: %lf, Y: %lf, Rot: %lf\n", currentPose.X().value(), currentPose.Y().value(), currentPose.Rotation().Degrees().value());
 
     /**
      * Calculate the chassis velocities based on the error between the current
@@ -489,7 +493,7 @@ void Drive::execTrajectory() {
 
     // Make the robot go vroom :D
     setModuleStates(velocities);
-}
+} 
 
 void Drive::slowYourRoll() {
     speedLimiting = std::clamp(speedLimiting - .1, 0.0, 1.0);
@@ -537,4 +541,75 @@ void SwerveFeedback::InitSendable(wpi::SendableBuilder &builder) {
     builder.AddDoubleProperty("Robot Angle", [this] () {
         return robotRotation.Radians().value();
     }, [this] (double _) {});
+}
+
+frc::Pose2d Drive::calculateFinalLineupPose(int posId, bool isLeftSide, bool isL4) {
+    frc::Pose2d reefPose = {4.493839_m, 4.025221_m, frc::Rotation2d(0_deg)}; // TODO: Move to Prefernces 
+
+    //------------------------- Rotate around reef center
+    units::radian_t rotRads = posId * (1/6) * units::radian_t(std::numbers::pi * 2);
+    /// Make the reef the origin
+    units::meter_t reefRelX = masterLineupPose.X() - reefPose.X();
+    units::meter_t reefRelY = masterLineupPose.Y() - reefPose.Y();
+    /// Rotate the pose
+    units::meter_t reefRelXPrime = (reefRelX * cosf((double)rotRads)) - (reefRelY * sinf((double)rotRads));
+    units::meter_t reefRelYPrime = (reefRelY * cosf((double)rotRads)) - (reefRelX * sinf((double)rotRads));
+    units::radian_t newRot = rotRads; // Asumming that the masterLineupPosition is at 0_rad
+    /// Reset to the field origin
+    units::meter_t rotatedX = reefRelXPrime + reefPose.X();
+    units::meter_t rotatedY = reefRelYPrime + reefPose.Y();
+
+    //------------------------- Translate for branch
+    units::meter_t moveMagnatude = 0.2_m; // TODO: Move to Prefernces 
+    moveMagnatude *= isLeftSide ? 1 : -1; // Move + for left, - for right
+
+    units::meter_t deltaX = cosf((double)newRot) * moveMagnatude;
+    units::meter_t deltaY = sinf((double)newRot) * moveMagnatude;
+
+    // Add to the rotated X&Y the move we need to do
+    units::meter_t finalX = rotatedX + deltaX;
+    units::meter_t finalY = rotatedY + deltaY;
+
+    //------------------------- Translate for L4
+    // Move back for L4
+    if (isL4) {
+        units::meter_t moveBackMagnatude = 0.2_m; // TODO: Move to Prefernces
+        units::meter_t deltaX = cosf(double(newRot + 90_deg)) * moveBackMagnatude;
+        units::meter_t deltaY = sinf(double(newRot + 90_deg)) * moveBackMagnatude;
+
+        // Add to the rotated X&Y the move we need to do
+        finalX += deltaX;
+        finalY += deltaY;
+    }
+
+    //------------------------- Flip over field for Red
+    if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
+        
+        finalX = PreferencesTrajectory::FIELD_X - finalX;
+        finalY = PreferencesTrajectory::FIELD_Y - finalY;
+    }
+
+    return frc::Pose2d(finalX, finalY, frc::Rotation2d(newRot));
+}
+
+double dist(frc::Pose2d p1, frc::Pose2d p2) {
+    // sqrt((X2 - X1)^2 + (Y2 - Y1)^2)
+    return std::sqrt(powf(double(p2.X() - p1.X()), 2) + powf(double(p2.Y() - p1.Y()), 2));
+}
+
+void Drive::execLineup() {
+    CSVTrajectory::State targetState = {};
+    targetState.pose = calculateFinalLineupPose(0, false, false); // Right branch, infront of the driverstation, not for L4
+
+    double acceleration = 1;
+    double maxVel = 2;
+    frc::Pose2d currentPose(getEstimatedPose());
+
+    double startRamp = acceleration * dist(lineupStartPose, currentPose);
+    double endRamp = acceleration * dist(targetState.pose, currentPose);
+
+    double finalVelocity = std::clamp(startRamp, 0.0, maxVel) - std::clamp(endRamp, 0.0, maxVel);
+    targetState.velocity = (units::meters_per_second_t)std::clamp(finalVelocity, 0.0, maxVel);
+
+    driveToState(targetState);
 }
