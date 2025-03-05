@@ -12,8 +12,11 @@ Auto::Auto(Drive *drive_, Limelight *limelight_, Gamepiece *gamepiece_)
   toCoralStation(gamepiece_, Gamepiece::Preset::kCORAL_STATION),
   toReefLow(gamepiece_, Gamepiece::Preset::kREEF_LOW),
   toReefHigh(gamepiece_, Gamepiece::Preset::kREEF_HIGH),
-  shootCoral(gamepiece_)
+  shootCoral(gamepiece_),
+  intakeCoral(gamepiece_, Calgae::GamepieceState::kCORAL),
+  intakeAlgae(gamepiece_, Calgae::GamepieceState::kALGAE)
 {}
+
 void Auto::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
     if (mode == MatchMode::AUTO) {
         isAuto = true;

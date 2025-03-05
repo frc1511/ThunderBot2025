@@ -34,6 +34,16 @@ class Calgae : public Component {
     };
 
     /**
+     * Possible states for the gamepiece (based on the sensors)
+     */
+    enum GamepieceState {
+        kNONE,
+        kCORAL,
+        kALGAE, 
+        kSENSOR_BROKEN
+    };
+    
+    /**
      * Set the motor modes based on controls
      */
     void setMotorMode(Calgae::MotorModes mode);
@@ -60,8 +70,10 @@ class Calgae : public Component {
     bool isShootDone();
 
     void autoShoot();
+    void autoIntake(bool isCoral);
 
     bool isAutoShooting = false;
+    bool isAutoIntaking = false;
   private:
     /**
      * Stop all motors
@@ -88,15 +100,6 @@ class Calgae : public Component {
      */
     Calgae::MotorModes motorMode = MotorModes::kSTOP;
 
-    /**
-     * Possible states for the gamepiece (based on the sensors)
-     */
-    enum GamepieceState {
-        kNONE,
-        kCORAL,
-        kALGAE, 
-        kSENSOR_BROKEN
-    };
 
     /**
      * The variable storing what our last gamepiece state was
@@ -128,7 +131,7 @@ class Calgae : public Component {
      * The set of intake speeds
      */
     double presetIntakeSpeeds [MotorSpeed::_enum_MAX] = {
-        PreferencesCalgae::MOTOR_SPEED_STOPPED, // Stopped
+        PreferencesCalgae::MOTOR_SPEED_STOPPED,      // Stopped
         PreferencesCalgae::MOTOR_SPEED_INTAKE_CORAL, // Coral
         PreferencesCalgae::MOTOR_SPEED_INTAKE_ALGAE, // Algae
         PreferencesCalgae::MOTOR_SPEED_INTAKE_REGRAB // Regrab
@@ -138,7 +141,7 @@ class Calgae : public Component {
      * The set of shooter speeds
      */
     double presetShooterSpeeds [MotorSpeed::_enum_MAX] = {
-        PreferencesCalgae::MOTOR_SPEED_STOPPED, // Stopped
+        PreferencesCalgae::MOTOR_SPEED_STOPPED,     // Stopped
         PreferencesCalgae::MOTOR_SPEED_SHOOT_CORAL, // Coral
         PreferencesCalgae::MOTOR_SPEED_SHOOT_ALGAE, // Algae
     };
@@ -150,8 +153,10 @@ class Calgae : public Component {
     frc::DigitalInput coralRetroreflective {DIO_CORAL_RETROREFLECTIVE};
     frc::DigitalInput algaeRetroreflective {DIO_ALGAE_RETROREFLECTIVE};
 
-    bool isAuto = false;
 
     frc::Timer regrabTimeout;
     frc::Timer shootTimer;
+
+    bool isAuto = false;
+    frc::Timer intakeTimeout;
 };

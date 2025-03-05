@@ -137,18 +137,38 @@ private:
             return gamepiece->calgae->isShootDone() ? Action::Result::DONE : Action::Result::WORKING;
         };
     };
+
     ShootCoral shootCoral;
 
+    class Intake : public Action {
+      public:
+        Intake(Gamepiece *gamepiece_, Calgae::GamepieceState gp_) : gamepiece(gamepiece_), gp(gp_) {};
+        Gamepiece *gamepiece;
+        Calgae::GamepieceState gp;
+        Action::Result process() override {
+            if (gamepiece->calgae == nullptr) 
+                return Action::Result::DONE;
+                
+            if (!gamepiece->calgae->isAutoIntaking)
+                gamepiece->calgae->autoIntake(gp);
+            return gamepiece->calgae->hasGamepiece() ? Action::Result::DONE : Action::Result::WORKING;
+        };
+    };
+    Intake intakeCoral;
+    Intake intakeAlgae;
+
     std::map<u_int32_t, Action*> actions {
-        {1 << 0, &toTransit},      // Transit
-        {1 << 1, &toL1},           // L1
-        {1 << 2, &toL2},           // L2
-        {1 << 3, &toL3},           // L3
-        {1 << 4, &toL4},           // L4
-        {1 << 5, &toCoralStation}, // Coral Station
-        {1 << 6, &toReefLow},      // Reef Low
-        {1 << 7, &toReefHigh},     // Reef High
-        {1 << 8, &shootCoral}      // Shoot Coral
+        {1 << 0,  &toTransit},      // Transit
+        {1 << 1,  &toL1},           // L1
+        {1 << 2,  &toL2},           // L2
+        {1 << 3,  &toL3},           // L3
+        {1 << 4,  &toL4},           // L4
+        {1 << 5,  &toCoralStation}, // Coral Station
+        {1 << 6,  &toReefLow},      // Reef Low
+        {1 << 7,  &toReefHigh},     // Reef High
+        {1 << 8,  &shootCoral},     // Shoot Coral
+        {1 << 9,  &intakeCoral},    // Intake Coral
+        {1 << 10, &intakeAlgae}     // Intake Algae
     };
 
     std::string autoSelected;

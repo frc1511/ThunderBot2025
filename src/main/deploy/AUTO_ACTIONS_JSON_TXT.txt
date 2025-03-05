@@ -7,7 +7,9 @@
       "Coral_Station",
       "Reef_Low",
       "Reef_High",
-      "Shoot_Coral"
+      "Shoot_Coral",
+      "Intake_Coral",
+      "Intake_Algae"
     ],
 
 /////////////////////////////////////////////////

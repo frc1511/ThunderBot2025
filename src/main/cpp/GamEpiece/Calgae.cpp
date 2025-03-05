@@ -59,6 +59,12 @@ void Calgae::process() {
             stopMotors();
             return;
         }
+        if (intakeTimeout.Get() > 2_s && isAutoIntaking) {
+            lastGamepieceState = GamepieceState::kALGAE;
+            motorMode = MotorModes::kSTOP;
+            intakeTimeout.Stop();
+            intakeTimeout.Reset();
+        }
     }
 
     if (currentGamepieceState == GamepieceState::kNONE) { // If we don't have a gamepiece, so intake or nothing
@@ -111,10 +117,20 @@ void Calgae::process() {
          // If we have Coral/Algae, so shoot or nothing
         if (currentGamepieceState == GamepieceState::kCORAL) { // We have coral
             lastGamepieceState = GamepieceState::kCORAL;
+            if (isAutoIntaking) {
+                intakeTimeout.Stop();
+                intakeTimeout.Reset();
+                isAutoIntaking = false;
+            }
         }
 
         if (currentGamepieceState == GamepieceState::kALGAE) { // We have algae
             lastGamepieceState = GamepieceState::kALGAE;
+            if (isAutoIntaking) {
+                intakeTimeout.Stop();
+                intakeTimeout.Reset();
+                isAutoIntaking = false;
+            }
         }
 
         switch (motorMode) {
@@ -176,6 +192,19 @@ void Calgae::autoShoot() {
     isAutoShooting = true;
     shootTimer.Restart();
     setMotorMode(Calgae::MotorModes::kSHOOT);
+}
+
+// isCoral: True -> intake coral, isCoral: False -> intake algae
+void Calgae::autoIntake(bool isCoral) {
+    isAuto = true;
+    isAutoIntaking = true;
+    intakeTimeout.Restart();
+    lastGamepieceState = GamepieceState::kNONE;
+    if (isCoral) {
+        setMotorMode(MotorModes::kCORAL_INTAKE);
+    } else {
+        setMotorMode(MotorModes::kALGAE_INTAKE);
+    }
 }
 
 void Calgae::stopMotors() {
