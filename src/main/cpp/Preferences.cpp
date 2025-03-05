@@ -16,6 +16,10 @@ const units::meters_per_second_squared_t DrivePreferences::MAX_ACCEL = 0.01_mps_
 const double DrivePreferences::DRIVE_ROTATION_SPEED_MANUAL_LIMITER_SLOWNESS_FACTOR = .5;
 const double DrivePreferences::DRIVE_VELOCITY_SPEED_MANUAL_LIMITER_SLOWNESS_FACTOR = .5;
 
+const frc::Pose2d DrivePreferences::REEF_POSE = {4.493839_m, 4.025221_m, frc::Rotation2d(0_deg)};
+const units::meter_t DrivePreferences::HORIZONTAL_REEF_MOVE = 0.2_m;
+const units::meter_t DrivePreferences::VERTICAL_REEF_MOVE = 0.2_m;
+
 const PID_t DrivePreferences::PID_XY = {
     .Kp = 7.5
 };
@@ -24,6 +28,9 @@ const PID_t DrivePreferences::PID_THETA = {
     .Kd = 0.125
 };
 
+
+/***********************************************************/
+// Swerve Drive Motor
 
 const PID_t PreferencesDriveMotor::PID = {
     .Kp = 0.1,
@@ -36,7 +43,7 @@ const double PreferencesDriveMotor::TURNS_TO_METERS = (1 / (METERS_TO_TURNS));
 
 
 /***********************************************************/
-// Turn
+// Swerve Turn
 
 const PID_t PreferencesTurnMotor::PID = {
     .Kp = 33,

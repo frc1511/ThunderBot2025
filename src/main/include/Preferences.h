@@ -6,6 +6,7 @@
 #include <units/acceleration.h>
 #include <units/angle.h>
 #include <units/current.h>
+#include <frc/geometry/Pose2d.h>
 
 struct PID_t
 {
@@ -44,6 +45,10 @@ struct DrivePreferences {
 
     static const double DRIVE_ROTATION_SPEED_MANUAL_LIMITER_SLOWNESS_FACTOR;
     static const double DRIVE_VELOCITY_SPEED_MANUAL_LIMITER_SLOWNESS_FACTOR;
+    
+    static const frc::Pose2d REEF_POSE;
+    static const units::meter_t HORIZONTAL_REEF_MOVE;
+    static const units::meter_t VERTICAL_REEF_MOVE;
 
     static const PID_t PID_XY;
     static const PID_t PID_THETA;

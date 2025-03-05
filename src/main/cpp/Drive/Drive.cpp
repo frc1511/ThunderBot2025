@@ -543,24 +543,22 @@ void SwerveFeedback::InitSendable(wpi::SendableBuilder &builder) {
     }, [this] (double _) {});
 }
 
-frc::Pose2d Drive::calculateFinalLineupPose(int posId, bool isLeftSide, bool isL4) {
-    frc::Pose2d reefPose = {4.493839_m, 4.025221_m, frc::Rotation2d(0_deg)}; // TODO: Move to Preferences 
-
+frc::Pose2d Drive::calculateFinalLineupPose(int posId, bool isLeftSide, bool isL4) { 
     //------------------------- Rotate around reef center
     units::radian_t rotRads = posId * (1/6) * units::radian_t(std::numbers::pi * 2);
     /// Make the reef the origin
-    units::meter_t reefRelX = masterLineupPose.X() - reefPose.X();
-    units::meter_t reefRelY = masterLineupPose.Y() - reefPose.Y();
+    units::meter_t reefRelX = masterLineupPose.X() - DrivePreferences::REEF_POSE.X();
+    units::meter_t reefRelY = masterLineupPose.Y() - DrivePreferences::REEF_POSE.Y();
     /// Rotate the pose
     units::meter_t reefRelXPrime = (reefRelX * cosf((double)rotRads)) - (reefRelY * sinf((double)rotRads));
     units::meter_t reefRelYPrime = (reefRelY * cosf((double)rotRads)) - (reefRelX * sinf((double)rotRads));
     units::radian_t newRot = rotRads; // Assuming that the masterLineupPosition is at 0_rad
     /// Reset to the field origin
-    units::meter_t rotatedX = reefRelXPrime + reefPose.X();
-    units::meter_t rotatedY = reefRelYPrime + reefPose.Y();
+    units::meter_t rotatedX = reefRelXPrime + DrivePreferences::REEF_POSE.X();
+    units::meter_t rotatedY = reefRelYPrime + DrivePreferences::REEF_POSE.Y();
 
     //------------------------- Translate for branch
-    units::meter_t moveMagnitude = 0.2_m; // TODO: Move to Prefernces 
+    units::meter_t moveMagnitude = DrivePreferences::HORIZONTAL_REEF_MOVE;
     moveMagnitude *= isLeftSide ? 1 : -1; // Move + for left, - for right
 
     units::meter_t deltaX = cosf((double)newRot) * moveMagnitude;
@@ -573,7 +571,7 @@ frc::Pose2d Drive::calculateFinalLineupPose(int posId, bool isLeftSide, bool isL
     //------------------------- Translate for L4
     // Move back for L4
     if (isL4) {
-        units::meter_t moveBackMagnitude = 0.2_m; // TODO: Move to Prefernces
+        units::meter_t moveBackMagnitude = DrivePreferences::VERTICAL_REEF_MOVE;
         units::meter_t deltaX = cosf(double(newRot + 90_deg)) * moveBackMagnitude;
         units::meter_t deltaY = sinf(double(newRot + 90_deg)) * moveBackMagnitude;
 
