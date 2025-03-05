@@ -115,6 +115,8 @@ class Drive : public Component {
     void slowYourRoll();
     void unslowYourRoll();
 
+    void beginLineup(bool isLeft, bool L4);
+
 private:
     void executeVelocityData();
     void setModuleStates(frc::ChassisSpeeds speeds);
@@ -282,5 +284,5 @@ private:
 
     frc::Pose2d masterLineupPose = {2_m, 2_m, frc::Rotation2d(0_deg)};
 
-    frc::Pose2d lineupStartPose;
+    frc::Pose2d lineupPose = {};
 };

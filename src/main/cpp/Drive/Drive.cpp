@@ -544,7 +544,7 @@ void SwerveFeedback::InitSendable(wpi::SendableBuilder &builder) {
 }
 
 frc::Pose2d Drive::calculateFinalLineupPose(int posId, bool isLeftSide, bool isL4) {
-    frc::Pose2d reefPose = {4.493839_m, 4.025221_m, frc::Rotation2d(0_deg)}; // TODO: Move to Prefernces 
+    frc::Pose2d reefPose = {4.493839_m, 4.025221_m, frc::Rotation2d(0_deg)}; // TODO: Move to Preferences 
 
     //------------------------- Rotate around reef center
     units::radian_t rotRads = posId * (1/6) * units::radian_t(std::numbers::pi * 2);
@@ -554,17 +554,17 @@ frc::Pose2d Drive::calculateFinalLineupPose(int posId, bool isLeftSide, bool isL
     /// Rotate the pose
     units::meter_t reefRelXPrime = (reefRelX * cosf((double)rotRads)) - (reefRelY * sinf((double)rotRads));
     units::meter_t reefRelYPrime = (reefRelY * cosf((double)rotRads)) - (reefRelX * sinf((double)rotRads));
-    units::radian_t newRot = rotRads; // Asumming that the masterLineupPosition is at 0_rad
+    units::radian_t newRot = rotRads; // Assuming that the masterLineupPosition is at 0_rad
     /// Reset to the field origin
     units::meter_t rotatedX = reefRelXPrime + reefPose.X();
     units::meter_t rotatedY = reefRelYPrime + reefPose.Y();
 
     //------------------------- Translate for branch
-    units::meter_t moveMagnatude = 0.2_m; // TODO: Move to Prefernces 
-    moveMagnatude *= isLeftSide ? 1 : -1; // Move + for left, - for right
+    units::meter_t moveMagnitude = 0.2_m; // TODO: Move to Prefernces 
+    moveMagnitude *= isLeftSide ? 1 : -1; // Move + for left, - for right
 
-    units::meter_t deltaX = cosf((double)newRot) * moveMagnatude;
-    units::meter_t deltaY = sinf((double)newRot) * moveMagnatude;
+    units::meter_t deltaX = cosf((double)newRot) * moveMagnitude;
+    units::meter_t deltaY = sinf((double)newRot) * moveMagnitude;
 
     // Add to the rotated X&Y the move we need to do
     units::meter_t finalX = rotatedX + deltaX;
@@ -573,9 +573,9 @@ frc::Pose2d Drive::calculateFinalLineupPose(int posId, bool isLeftSide, bool isL
     //------------------------- Translate for L4
     // Move back for L4
     if (isL4) {
-        units::meter_t moveBackMagnatude = 0.2_m; // TODO: Move to Prefernces
-        units::meter_t deltaX = cosf(double(newRot + 90_deg)) * moveBackMagnatude;
-        units::meter_t deltaY = sinf(double(newRot + 90_deg)) * moveBackMagnatude;
+        units::meter_t moveBackMagnitude = 0.2_m; // TODO: Move to Prefernces
+        units::meter_t deltaX = cosf(double(newRot + 90_deg)) * moveBackMagnitude;
+        units::meter_t deltaY = sinf(double(newRot + 90_deg)) * moveBackMagnitude;
 
         // Add to the rotated X&Y the move we need to do
         finalX += deltaX;
@@ -597,19 +597,43 @@ double dist(frc::Pose2d p1, frc::Pose2d p2) {
     return std::sqrt(powf(double(p2.X() - p1.X()), 2) + powf(double(p2.Y() - p1.Y()), 2));
 }
 
-void Drive::execLineup() {
-    CSVTrajectory::State targetState = {};
-    targetState.pose = calculateFinalLineupPose(0, false, false); // Right branch, infront of the driverstation, not for L4
+void Drive::beginLineup(bool isLeft, bool L4) {
+    driveMode = DriveMode::LINEUP;
 
-    double acceleration = 1;
-    double maxVel = 2;
     frc::Pose2d currentPose(getEstimatedPose());
 
-    double startRamp = acceleration * dist(lineupStartPose, currentPose);
-    double endRamp = acceleration * dist(targetState.pose, currentPose);
+    frc::Pose2d closestPose = calculateFinalLineupPose(0, isLeft, L4);
+    double lowestDist = fabs(dist(currentPose, closestPose));
 
-    double finalVelocity = std::clamp(startRamp, 0.0, maxVel) - std::clamp(endRamp, 0.0, maxVel);
-    targetState.velocity = (units::meters_per_second_t)std::clamp(finalVelocity, 0.0, maxVel);
+    for (int i = 1; i < 6; i++) {
+        frc::Pose2d currentLineupPose = calculateFinalLineupPose(i, isLeft, L4);
+
+        double currentLineupDist = fabs(dist(currentPose, currentLineupPose));
+
+        if (currentLineupDist < lowestDist) {
+            closestPose = currentLineupPose;
+            lowestDist = currentLineupDist;
+        }
+    }
+
+    lineupPose = closestPose;
+}
+
+
+void Drive::execLineup() {
+    CSVTrajectory::State targetState = {};
+
+    targetState.pose = lineupPose;
+    targetState.velocity = 0_mps; // Don't be moving if we are at the goal (in theory)
+
+    //// double acceleration = 1;
+    //// double maxVel = 2;
+
+    //// double startRamp = acceleration * dist(lineupStartPose, currentPose);
+    //// double endRamp = acceleration * dist(targetState.pose, currentPose);
+
+    //// double finalVelocity = std::clamp(startRamp, 0.0, maxVel) - std::clamp(endRamp, 0.0, maxVel);
+    //// targetState.velocity = (units::meters_per_second_t)std::clamp(finalVelocity, 0.0, maxVel); 
 
     driveToState(targetState);
 }

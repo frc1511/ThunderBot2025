@@ -65,8 +65,6 @@ void Controls::process() {
         if (brickMode)
             flags |= Drive::ControlFlag::BRICK;
 
-        if (fieldCentric && !robotCentricFromController)
-            flags |= Drive::ControlFlag::FIELD_CENTRIC;
 
         if (resetIMU)
             drive->resetOdometry();
@@ -84,9 +82,26 @@ void Controls::process() {
         if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {
             finalSpeedReduction *= -1;
         }
+        
+        static bool isLiningUp = false;
+        isLiningUp = driveController.GetBButtonPressed() ? !isLiningUp : isLiningUp; // Toggle if B pressed, else retain state
 
-        // SWAP: 90_deg offset for drive
-        drive->driveFromPercents(yPercent * finalSpeedReduction, xPercent * finalSpeedReduction, rotPercent * finalSpeedReduction, flags);
+        if (flags == 0 && xPercent == 0 && yPercent == 0 && rotPercent == 0 && isLiningUp) {
+            static bool Left = false;
+            Left = driveController.GetPOV() == 270 ? true : Left;  // Set to left if left dpad pressed, else use prexisting
+            Left = driveController.GetPOV() == 90  ? false : Left; // Set to right if right dpad pressed, else use prexisting
+            static bool L4 = false;
+            L4 = driveController.GetXButtonPressed() ? !L4 : L4;   // Toggle if start pressed, else retain state
+            drive->beginLineup(Left, L4);
+        } else {
+            isLiningUp = false;
+            if (fieldCentric && !robotCentricFromController)
+                flags |= Drive::ControlFlag::FIELD_CENTRIC;
+
+            // SWAP: 90_deg offset for drive
+            drive->driveFromPercents(yPercent * finalSpeedReduction, xPercent * finalSpeedReduction, rotPercent * finalSpeedReduction, flags);
+        }
+
     }
 
     bool hasBeenSetByAux = false;
