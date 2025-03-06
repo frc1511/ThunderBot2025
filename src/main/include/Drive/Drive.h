@@ -20,7 +20,7 @@
 
 #include <frc/smartdashboard/Field2d.h>
 
-#include <ctre/phoenix6/Pigeon2.hpp>
+#include <frc/simulation/AnalogGyroSim.h>
 
 #include <frc/smartdashboard/Field2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -179,7 +179,7 @@ private:
     /// MARK: Field Centric
 
 
-    ctre::phoenix6::hardware::Pigeon2 pigeon { CAN_PIGEON };
+    frc::sim::AnalogGyroSim pigeon { CAN_PIGEON };
 
      /**
      * The class that handles tracking the position of the robot on the field

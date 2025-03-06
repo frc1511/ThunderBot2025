@@ -2,10 +2,10 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
-bool Limelight::getEstimatedBotPose() {
-    return false;
-}
+// bool Limelight::getEstimatedBotPose() {
+//     return false;
+// }
 
-void Limelight::setFunctioningState(bool isFunctioning_) {
-    isFunctioning = isFunctioning_;
-}
+// void Limelight::setFunctioningState(bool isFunctioning_) {
+//     isFunctioning = isFunctioning_;
+// }

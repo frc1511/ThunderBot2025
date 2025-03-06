@@ -252,7 +252,7 @@ bool Drive::isFinished() const { // Can this const be moved to the beginning of 
 /// MARK: Field Centric
 
 void Drive::calibrateIMU() {
-    pigeon.Reset();
+    pigeon.ResetData();
     
     imuCalibrated = true;
 
@@ -273,7 +273,7 @@ void Drive::resetOdometry(frc::Pose2d pose) {
 
     poseEstimator.ResetPosition(getRotation(), getModulePositions(), pose);
 
-    pigeon.SetYaw(0_deg);
+    pigeon.SetAngle(0.0);
 
     for (SwerveModule* module : swerveModules) {
         module->zeroDriveEncoder();
@@ -286,7 +286,7 @@ frc::Pose2d Drive::getEstimatedPose() {
 
 frc::Rotation2d Drive::getRotation() {
     // The raw rotation from the IMU.
-    return frc::Rotation2d(pigeon.GetYaw().GetValue());
+    return frc::Rotation2d((units::angle::degree_t)pigeon.GetAngle());
 }
 
 void Drive::resetPIDControllers() {

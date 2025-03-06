@@ -7,13 +7,11 @@
 #include <units/Time.h>
 
 class Limelight{
-  public:
-    bool getEstimatedBotPose();
+  // public:
+  //   bool getEstimatedBotPose();
 
-    void setFunctioningState(bool isFunctioning_);
-  private:
-    nullptr_t limelightMeasurement;
-    frc::DriverStation::Alliance allianceColor = frc::DriverStation::GetAlliance().value();
+  //   void setFunctioningState(bool isFunctioning_);
+  // private:
     
-    bool isFunctioning = true;
+  //   bool isFunctioning = true;
 };

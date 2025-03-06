@@ -142,9 +142,9 @@ void Robot::TestPeriodic() {
 }
 
 void Robot::SimulationInit() {
-	printf("YIPPEE\n");
 }
-void Robot::SimulationPeriodic() {}
+void Robot::SimulationPeriodic() {
+}
 
 void Robot::reset(Component::MatchMode mode) {
 	if (auto_)

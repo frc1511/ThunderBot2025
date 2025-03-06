@@ -79,25 +79,25 @@ private:
         L1Right,
     };
     const std::map<Path, CSVTrajectory> bluePaths {
-        { Path::_TEST,                   CSVTrajectory{ DEPLOY_DIR "match_winning_auto.csv", false } },
-        { Path::_SQUARE,                 CSVTrajectory{ DEPLOY_DIR "square.csv",             false } },
-        { Path:: LEAVE,                  CSVTrajectory{ DEPLOY_DIR "Leave.csv",              false } },
-        { Path::LEAVE_GO_TO_LEFT_CORAL,  CSVTrajectory{ DEPLOY_DIR "GoToCoralStation1.csv",  false } },
-        { Path::LEAVE_GO_TO_RIGHT_CORAL, CSVTrajectory{ DEPLOY_DIR "GoToCoralStation2.csv",  false } },
-        { Path::L1Center,                CSVTrajectory{ DEPLOY_DIR "L1Center.csv",           false } },
-        { Path::L1Left,                  CSVTrajectory{ DEPLOY_DIR "L1Left.csv",             false } },
-        { Path::L1Right,                 CSVTrajectory{ DEPLOY_DIR "L1Right.csv",            false } },
+        // { Path::_TEST,                   CSVTrajectory{ DEPLOY_DIR "match_winning_auto.csv", false } },
+        // { Path::_SQUARE,                 CSVTrajectory{ DEPLOY_DIR "square.csv",             false } },
+        // { Path:: LEAVE,                  CSVTrajectory{ DEPLOY_DIR "Leave.csv",              false } },
+        // { Path::LEAVE_GO_TO_LEFT_CORAL,  CSVTrajectory{ DEPLOY_DIR "GoToCoralStation1.csv",  false } },
+        // { Path::LEAVE_GO_TO_RIGHT_CORAL, CSVTrajectory{ DEPLOY_DIR "GoToCoralStation2.csv",  false } },
+        // { Path::L1Center,                CSVTrajectory{ DEPLOY_DIR "L1Center.csv",           false } },
+        // { Path::L1Left,                  CSVTrajectory{ DEPLOY_DIR "L1Left.csv",             false } },
+        // { Path::L1Right,                 CSVTrajectory{ DEPLOY_DIR "L1Right.csv",            false } },
 
     };
     const std::map<Path, CSVTrajectory> redPaths {
-        { Path::_TEST,                   CSVTrajectory{ DEPLOY_DIR "match_winning_auto.csv", true  } },
-        { Path::_SQUARE,                 CSVTrajectory{ DEPLOY_DIR "square.csv",             true  } },
-        { Path::LEAVE,                   CSVTrajectory{ DEPLOY_DIR "Leave.csv",              true  } },
-        { Path::LEAVE_GO_TO_LEFT_CORAL,  CSVTrajectory{ DEPLOY_DIR "GoToCoralStation1.csv",  true  } },
-        { Path::LEAVE_GO_TO_RIGHT_CORAL, CSVTrajectory{ DEPLOY_DIR "GoToCoralStation2.csv",  true  } },
-        { Path::L1Center,                CSVTrajectory{ DEPLOY_DIR "L1Center.csv",           true } },
-        { Path::L1Left,                  CSVTrajectory{ DEPLOY_DIR "L1Left.csv",             true } },
-        { Path::L1Right,                 CSVTrajectory{ DEPLOY_DIR "L1Right.csv",            true } },
+        // { Path::_TEST,                   CSVTrajectory{ DEPLOY_DIR "match_winning_auto.csv", true  } },
+        // { Path::_SQUARE,                 CSVTrajectory{ DEPLOY_DIR "square.csv",             true  } },
+        // { Path::LEAVE,                   CSVTrajectory{ DEPLOY_DIR "Leave.csv",              true  } },
+        // { Path::LEAVE_GO_TO_LEFT_CORAL,  CSVTrajectory{ DEPLOY_DIR "GoToCoralStation1.csv",  true  } },
+        // { Path::LEAVE_GO_TO_RIGHT_CORAL, CSVTrajectory{ DEPLOY_DIR "GoToCoralStation2.csv",  true  } },
+        // { Path::L1Center,                CSVTrajectory{ DEPLOY_DIR "L1Center.csv",           true } },
+        // { Path::L1Left,                  CSVTrajectory{ DEPLOY_DIR "L1Left.csv",             true } },
+        // { Path::L1Right,                 CSVTrajectory{ DEPLOY_DIR "L1Right.csv",            true } },
     };
     const std::map<Path, CSVTrajectory>* paths = nullptr;
 

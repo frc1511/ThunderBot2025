@@ -81,7 +81,7 @@ void Auto::test() {
 }
 
 void Auto::leave() {
-    limelight->setFunctioningState(false);
+    // limelight->setFunctioningState(false);
     if (step == 0) {
         drive->setupInitialTrajectoryPosition(&paths->at(Path::LEAVE));
         drive->runTrajectory(&paths->at(Path::LEAVE), actions);
