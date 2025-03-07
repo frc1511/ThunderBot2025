@@ -210,8 +210,10 @@ void Controls::process() {
         }
     }
 
+    // MARK: Hang
+
     if (hang != nullptr && auxController.IsConnected() && !auxDisable && !hangDisable && !manualMode) { // No hang in manual mode
-        double hangPercent = auxController.GetLeftY();
+        double hangPercent = -auxController.GetLeftY();
 
         if (fabs(hangPercent) < PreferencesControls::AXIS_DEADZONE) {
             hangPercent = 0;

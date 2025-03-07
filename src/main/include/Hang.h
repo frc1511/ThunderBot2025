@@ -6,6 +6,7 @@
 #include <frc/DigitalInput.h>
 #include <frc/Relay.h>
 #include <frc/Timer.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 
 #include "Basic/IOMap.h"
 #include "Preferences.h"
@@ -17,6 +18,8 @@ class Hang : public Component {
     void doConfiguration(bool persist);
 
     void process();
+
+    void sendFeedback();
 
     bool isHung();
     bool isSolenoidUp();
@@ -46,6 +49,9 @@ class Hang : public Component {
     void setSolenoidState(SolenoidState state);
     double getMotorPosition();
 
+    std::string currentModeAsString();
+    std::string currentSolenoidActionAsString();
+
     ControlMode currentMode = ControlMode::STOPPED;
 
     SolenoidAction solenoidAction = SolenoidAction::NONE;
@@ -60,6 +66,8 @@ class Hang : public Component {
     frc::DigitalInput hangHungSensor {DIO_HANG_HUNG};
 
     double backtrackingStart = 0.0;
+
+    double speed = 0;
 
     frc::Timer disengageTimer;
 

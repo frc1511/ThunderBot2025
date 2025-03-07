@@ -17,8 +17,8 @@
 
 #define ENABLE_DRIVE
 #define ENABLE_ELEVATOR
-// #define ENABLE_CALGAE
-// #define ENABLE_WRIST
+#define ENABLE_CALGAE
+#define ENABLE_WRIST
 #define ENABLE_BLINKY_BLINKY
 #define ENABLE_HANG
 
