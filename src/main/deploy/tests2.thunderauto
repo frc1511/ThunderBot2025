@@ -12,7 +12,10 @@
   },
   "state": {
     "actions": [
-      "Transit",
+      "Auto_Align_Left_Normal",
+      "Auto_Align_Right_Normal",
+      "Auto_Align_Left_L4",
+      "Auto_Align_Right_L4",
       "L1",
       "L2",
       "L3",
@@ -22,7 +25,8 @@
       "Reef_High",
       "Shoot_Coral",
       "Intake_Coral",
-      "Intake_Algae"
+      "Intake_Algae",
+      "Transit"
     ],
     "paths": [
       [

@@ -14,7 +14,11 @@ Auto::Auto(Drive *drive_, Limelight *limelight_, Gamepiece *gamepiece_)
   toReefHigh(gamepiece_, Gamepiece::Preset::kREEF_HIGH),
   shootCoral(gamepiece_),
   intakeCoral(gamepiece_, Calgae::GamepieceState::kCORAL),
-  intakeAlgae(gamepiece_, Calgae::GamepieceState::kALGAE)
+  intakeAlgae(gamepiece_, Calgae::GamepieceState::kALGAE),
+  autoAlignLeftNormal(drive_, true, false),
+  autoAlignRightNormal(drive_, false, false),
+  autoAlignLeftL4(drive_, true, true),
+  autoAlignRightL4(drive_, false, true)
 {}
 
 void Auto::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
