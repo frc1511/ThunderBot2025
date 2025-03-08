@@ -6,7 +6,9 @@ Controls::Controls(Drive* drive_, Gamepiece* gamepiece_, BlinkyBlinky* blinkyBli
     blinkyBlinky(blinkyBlinky_),
     hang(hang_),
     limelight(limelight_)
-{ }
+{
+    frc::SmartDashboard::PutBoolean("Controls Elevator(False) or Wrist(True) LED Fade", false);
+}
 
 void Controls::process() {
     utilizeSwitchBoard();
@@ -83,8 +85,7 @@ void Controls::process() {
             finalSpeedReduction *= -1;
         }
         
-        static bool isLiningUp = false;
-        isLiningUp = driveController.GetBButtonPressed() ? !isLiningUp : isLiningUp; // Toggle if B pressed, else retain state
+        bool isLiningUp = driveController.GetBButton(); // Line up if B button held
 
         if (flags == 0 && xPercent == 0 && yPercent == 0 && rotPercent == 0 && !robotCentricFromController && isLiningUp) {
             static bool Left = false;
@@ -107,18 +108,15 @@ void Controls::process() {
     bool hasBeenSetByAux = false;
     // MARK: Aux
     if (gamepiece != nullptr && auxController.IsConnected() && !auxDisable) {
-        bool shouldToggleStationPreset = fabs(auxController.GetLeftTriggerAxis()) > PreferencesControls::AXIS_DEADZONE;
-
-        enum class StationState {
-            kNOT_ACTIVE,
-            kLOW,
-            kHIGH
-        };
-        static StationState currentStationState = StationState::kNOT_ACTIVE;
+        lastShouldToggleStationPreset = controllerToggleStationPreset;
+        controllerToggleStationPreset = fabs(auxController.GetLeftTriggerAxis()) > PreferencesControls::AXIS_DEADZONE;
+        bool shouldToggleStationPreset = controllerToggleStationPreset != lastShouldToggleStationPreset && controllerToggleStationPreset; // If we changed to true
+        frc::SmartDashboard::PutBoolean("Controls should Toggle Station", shouldToggleStationPreset);
 
         if (shouldToggleStationPreset) {
             switch (currentStationState) {
                 case StationState::kNOT_ACTIVE:
+                    printf("Going to Station State\n");
                     currentStationState = StationState::kHIGH;
                     break;
                 case StationState::kHIGH:
@@ -126,9 +124,6 @@ void Controls::process() {
                     break;
                 case StationState::kLOW:
                     currentStationState = StationState::kHIGH;
-                    break;
-                default:
-                    currentStationState = StationState::kNOT_ACTIVE;
                     break;
             }
         }
@@ -166,7 +161,7 @@ void Controls::process() {
             hasBeenSetByAux = false;
         }
 
-        if (coralStationActive)
+        if (!coralStationActive)
             currentStationState = StationState::kNOT_ACTIVE;
     }
 
@@ -254,6 +249,11 @@ void Controls::sendFeedback() {
     frc::SmartDashboard::PutBoolean("Controls Manual Mode", manualMode);
     frc::SmartDashboard::PutBoolean("Controls Pit Mode", settings.pitMode);
     frc::SmartDashboard::PutBoolean("Controls Field Centric", fieldCentric);
+
+    frc::SmartDashboard::PutBoolean("Controls last ST Station Preset", lastShouldToggleStationPreset);
+    frc::SmartDashboard::PutBoolean("Controls cont ST Station Preset", controllerToggleStationPreset);
+
+    frc::SmartDashboard::PutNumber("Controls current Station State", (int)currentStationState);
 }
 
 void Controls::utilizeSwitchBoard() {

@@ -120,6 +120,12 @@ units::degree_t Wrist::getEncoderDegrees() {
     return units::degree_t(getRawEncoder() * 360) - PreferencesWrist::UP_ZERO; // 0-1 -> 0-360
 }
 
+double Wrist::getPercentRotation() {
+    double rotation = getEncoderDegrees().value();
+    double percent = rotation/360;
+    return std::clamp(percent, 0.0, 1.0);
+}
+
 double Wrist::feedForwardPower() {
     double radFromUp = getEncoderDegrees().value() * (std::numbers::pi / 180);
     frc::SmartDashboard::PutNumber("Wrist Rad From Up", radFromUp);

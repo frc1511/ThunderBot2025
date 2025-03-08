@@ -194,8 +194,9 @@ private:
         getModulePositions(),
         frc::Pose2d(),
         { 0.01, 0.01, 0.01 }, // Standard deviations of model states.
-        { 0.2, 0.2, 999.99 } // Standard deviations of the vision measurements.
+        { 0.1, 0.1, 999.99 } // Standard deviations of the vision measurements.
     };
+    bool limelightReliable = false;
 
     // PID Controller for angular drivetrain movement.
     frc::ProfiledPIDController<units::radians> manualThetaPIDController {
@@ -255,6 +256,7 @@ private:
 
     frc::Field2d feedbackField {};
     frc::Field2d trajectoryField {};
+    frc::Field2d lineupField {};
 
     /**
      * Executes the instructions for when the robot is running a trajectory.
@@ -292,7 +294,9 @@ private:
 
     frc::Pose2d calculateFinalLineupPose(int posId, bool isLeftSide, bool isL4);
 
-    frc::Pose2d masterLineupPose = {2_m, 2_m, frc::Rotation2d(0_deg)};
+    frc::Pose2d masterLineupPose = {PreferencesDrive::APRIL_TAG_18.x, PreferencesDrive::APRIL_TAG_18.y - PreferencesDrive::ROBOT_WITH_BUMPERS_LENGTH / 2, frc::Rotation2d(0_deg)};
 
     frc::Pose2d lineupPose = {};
+
+    friend class Robot;
 };

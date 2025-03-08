@@ -4,6 +4,8 @@
 #include "Basic/IOMap.h"
 
 #include <frc/Timer.h>
+#include <frc/DriverStation.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 
 class Alert {
   public:
@@ -48,9 +50,13 @@ class Alert {
                                                                                 .displayTime = 2_s,};
 
     // MARK: Other Errors
-    inline static const elastic::Notification wristSensor   =  {.level = elastic::NotificationLevel::ERROR,
+    inline static const elastic::Notification wristSensor =  {.level = elastic::NotificationLevel::ERROR,
                                                                 .title = "Wrist Disconnected",
                                                                 .description = "Wrist Disconnected",
+                                                                .displayTime = 1_s,};
+    inline static const elastic::Notification batteryAlert =  {.level = elastic::NotificationLevel::WARNING,
+                                                                .title = "Battery Voltage Low",
+                                                                .description = "Battery Voltage dipped below 9 volts",
                                                                 .displayTime = 1_s,};
 
     inline static bool driveDisabled = false;
@@ -91,9 +97,21 @@ class Alert {
         double currentTime = alertTimer.Get().value();
         static int numberOfAlertsTried = 0;
 
-        if (currentTime >= 18.0 && numberOfAlertsTried == 9) {
+        static bool lowBattery = false;
+        if (frc::DriverStation::GetBatteryVoltage() < 9.0) {
+                lowBattery = true;
+        }
+
+        frc::SmartDashboard::PutBoolean("Alerts_Low_Battery_Triggered", lowBattery);
+
+        if (currentTime >= 20.0 && numberOfAlertsTried == 10) {
             alertTimer.Restart();
             numberOfAlertsTried = 0;
+        } else if (currentTime >= 18.0 && numberOfAlertsTried == 9) {
+            numberOfAlertsTried++;
+            if (lowBattery) {
+                displayAlert(batteryAlert);
+            }
         } else if (currentTime >= 16.0 && numberOfAlertsTried == 8) {
             numberOfAlertsTried++;
             #ifndef ENABLE_BLINKY_BLINKY

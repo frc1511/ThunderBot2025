@@ -45,6 +45,14 @@ const std::vector<Point> PreferencesDrive::QUADRANT_RIGHT = {
     Point{.x = 4.493839_m, .y = 4.025221_m}
 };
 
+// Point for welded field
+const Point PreferencesDrive::APRIL_TAG_18 {
+    .x = 3.6576_m,
+    .y = 4.0259_m
+};
+
+const units::meter_t PreferencesDrive::ROBOT_WITH_BUMPERS_LENGTH = 0.930275_m;
+
 
 /***********************************************************/
 // Swerve Drive Motor

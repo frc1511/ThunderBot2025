@@ -60,4 +60,6 @@ private:
     ctre::phoenix6::controls::VelocityVoltage driveRequest;
 
     double accelReduction = 0;
+
+    friend class Robot;
 };

@@ -45,6 +45,8 @@ class Wrist : public Component {
 
     bool wristIsUnsafe();
 
+    double getPercentRotation();
+
   private:
 
     bool atPreset0Out();

@@ -217,6 +217,9 @@ void Drive::sendFeedback() {
     feedbackField.SetRobotPose(pose);
     frc::SmartDashboard::PutData("Field", &feedbackField);
     frc::SmartDashboard::PutData("debug_TrajectoryTargetField", &trajectoryField);
+    frc::SmartDashboard::PutData("debug_lineupField", &lineupField);
+
+    frc::SmartDashboard::PutBoolean("Limelight_Reliable", limelightReliable);
 
     // Drive feedback.
     frc::SmartDashboard::PutNumber("Drive_SpeedLimiting",           speedLimiting);
@@ -252,11 +255,11 @@ void Drive::sendFeedback() {
     lastQuadrant = currentQuadrant;
     currentQuadrant = getCurrentQuadrant();
 
-    if (!(lastQuadrant == getCurrentQuadrant()) && !(currentQuadrant == Quadrant::kNONE) && !(lastQuadrant == Quadrant::kNONE)) {
+    if (lastQuadrant != currentQuadrant && currentQuadrant != Quadrant::kNONE && lastQuadrant != Quadrant::kNONE) {
         playNyoom = true;
     }
 
-    frc::SmartDashboard::PutBoolean("Drive Play Nyoom", playNyoom);
+    frc::SmartDashboard::PutBoolean("Drive_Play_Nyoom", playNyoom);
 }
 
 bool Drive::isFinished() const { // Can this const be moved to the beginning of the line? I think it would be easier to read
@@ -321,15 +324,21 @@ void Drive::updateOdometry() {
      */
     poseEstimator.Update(getRotation(), getModulePositions());
 
-    LimelightHelpers::SetRobotOrientation(PreferencesLimelight::LIMELIGHT_FRONT, poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0);
-    LimelightHelpers::SetRobotOrientation(PreferencesLimelight::LIMELIGHT_BACK, poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0);
+    LimelightHelpers::SetRobotOrientation(PreferencesLimelight::LIMELIGHT_FRONT, pigeon.GetYaw().GetValue().value(),
+                                                                                 pigeon.GetAngularVelocityZWorld().GetValue().value(),
+                                                                                 pigeon.GetPitch().GetValue().value(),
+                                                                                 pigeon.GetAngularVelocityYWorld().GetValue().value(),
+                                                                                 pigeon.GetRoll().GetValue().value(),
+                                                                                 pigeon.GetAngularVelocityXWorld().GetValue().value());
+    LimelightHelpers::SetRobotOrientation(PreferencesLimelight::LIMELIGHT_BACK, pigeon.GetYaw().GetValue().value(), 0.0, 0.0, 0.0, 0.0, 0.0);
     auto estimatedBotPose = limelight->getEstimatedBotPose();
     if (estimatedBotPose) {
         for (auto pose : *estimatedBotPose) {
-            bool limelightReliable = pose.first;
+            limelightReliable = pose.first;
             LimelightHelpers::PoseEstimate mt1 = pose.second;
 
-            if (!limelightReliable) break;
+            if (!limelightReliable) continue;
+            poseEstimator.SetVisionMeasurementStdDevs({.1, .1, 999.9});
             poseEstimator.AddVisionMeasurement(
                 mt1.pose,
                 mt1.timestampSeconds
@@ -555,12 +564,15 @@ void SwerveFeedback::InitSendable(wpi::SendableBuilder &builder) {
     }, [this] (double _) {});
 }
 
-frc::Pose2d Drive::calculateFinalLineupPose(int posId, bool isLeftSide, bool isL4) { 
+// MARK: Lineup
+
+frc::Pose2d Drive::calculateFinalLineupPose(int posId, bool isLeftSide, bool isL4) {
     //------------------------- Rotate around reef center
     units::radian_t rotRads = posId * (1/6) * units::radian_t(std::numbers::pi * 2);
     /// Make the reef the origin
     units::meter_t reefRelX = masterLineupPose.X() - PreferencesDrive::REEF_POSE.X();
     units::meter_t reefRelY = masterLineupPose.Y() - PreferencesDrive::REEF_POSE.Y();
+    printf("Delta Y: %lf\n", reefRelY);
     /// Rotate the pose
     units::meter_t reefRelXPrime = (reefRelX * cosf((double)rotRads)) - (reefRelY * sinf((double)rotRads));
     units::meter_t reefRelYPrime = (reefRelY * cosf((double)rotRads)) - (reefRelX * sinf((double)rotRads));
@@ -592,14 +604,17 @@ frc::Pose2d Drive::calculateFinalLineupPose(int posId, bool isLeftSide, bool isL
         finalY += deltaY;
     }
 
+    frc::Rotation2d finalRot = frc::Rotation2d(newRot);
+
     //------------------------- Flip over field for Red
     if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
         
         finalX = PreferencesTrajectory::FIELD_X - finalX;
         finalY = PreferencesTrajectory::FIELD_Y - finalY;
+        finalRot = frc::Rotation2d(finalRot.Degrees() + 180_deg);
     }
 
-    return frc::Pose2d(finalX, finalY, frc::Rotation2d(newRot));
+    return frc::Pose2d(finalX, finalY, finalRot);
 }
 
 double dist(frc::Pose2d p1, frc::Pose2d p2) {
@@ -625,6 +640,8 @@ void Drive::beginLineup(bool isLeft, bool L4) {
             lowestDist = currentLineupDist;
         }
     }
+
+    lineupField.SetRobotPose(lineupPose);
 
     lineupPose = closestPose;
 }

@@ -61,6 +61,10 @@ struct PreferencesDrive {
 
     static const std::vector<Point> QUADRANT_LEFT;
     static const std::vector<Point> QUADRANT_RIGHT;
+
+    static const Point APRIL_TAG_18;
+    
+    static const units::meter_t ROBOT_WITH_BUMPERS_LENGTH;
 };
 
 struct PreferencesDriveMotor

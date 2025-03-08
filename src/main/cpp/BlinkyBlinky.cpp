@@ -25,28 +25,55 @@ void BlinkyBlinky::process() {
     bool overridePatterns = false;
     // If it's enabled and no "other thing" happened outside of blinkyBlinky that set the current mode (like switchboard led disable)
     if (!isDisabled && currentMode == Mode::UNSET) {
-        if (gamepiece->elevator != nullptr) {
-            // Elevator Sides
-            if (!gamepiece->elevator->atPreset() && gamepiece->elevator->getCurrentPreset() != Elevator::Preset::kSTOP) {
-                double elevatorPercentHeight = gamepiece->elevator->getPercentHeight();
-                double litLEDS = elevatorPercentHeight * PreferencesBlinkyBlinky::LED_SIDE_STRIP_TOTAL;
-                int majorLEDS = floor(litLEDS);
-                double finalFade = std::clamp((int(litLEDS * 100) % 100) / 100.0, 0.0, 1.0);
-                int sideBufferSize = (int)sideBuffer.size();
+        bool showWrist = frc::SmartDashboard::GetBoolean("Controls Elevator(False) or Wrist(True) LED Fade", false);
+        if (showWrist) {
+            if (gamepiece->wrist != nullptr) {
+                if (!gamepiece->wrist->atPreset()) {
+                    double wristPercentRotation = gamepiece->wrist->getPercentRotation();
+                    double litLEDS = wristPercentRotation * PreferencesBlinkyBlinky::LED_SIDE_STRIP_TOTAL;
+                    int majorLEDS = floor(litLEDS);
+                    double finalFade = std::clamp((int(litLEDS * 100) % 100) / 100.0, 0.0, 1.0);
+                    int sideBufferSize = (int)sideBuffer.size();
 
-                for (int i = 0; i < sideBufferSize; i++) { 
-                    if (i <= majorLEDS) {
-                        if (i == majorLEDS) {
-                            sideBuffer[i] = LEDData(0, 255 * finalFade, 0); // Green
+                    for (int i = 0; i < sideBufferSize; i++) { 
+                        if (i <= majorLEDS) {
+                            if (i == majorLEDS) {
+                                sideBuffer[i] = LEDData(0, 255 * finalFade, 0); // Green
+                            } else {
+                                sideBuffer[i] = LEDData(0, 255, 0);
+                            }
                         } else {
-                            sideBuffer[i] = LEDData(0, 255, 0);
+                            sideBuffer[i] = LEDData(0, 0, 0);                   // Black
                         }
-                    } else {
-                        sideBuffer[i] = LEDData(0, 0, 0);                   // Black
                     }
+                    currentSideStatus = "Wrist Percentage";
+                    overridePatterns = true;
                 }
-                currentSideStatus = "Elevator Percentage";
-                overridePatterns = true;
+            }
+        } else { // Show Elevator
+            if (gamepiece->elevator != nullptr) {
+                // Elevator Sides
+                if (!gamepiece->elevator->atPreset() && gamepiece->elevator->getCurrentPreset() != Elevator::Preset::kSTOP) {
+                    double elevatorPercentHeight = gamepiece->elevator->getPercentHeight();
+                    double litLEDS = elevatorPercentHeight * PreferencesBlinkyBlinky::LED_SIDE_STRIP_TOTAL;
+                    int majorLEDS = floor(litLEDS);
+                    double finalFade = std::clamp((int(litLEDS * 100) % 100) / 100.0, 0.0, 1.0);
+                    int sideBufferSize = (int)sideBuffer.size();
+
+                    for (int i = 0; i < sideBufferSize; i++) { 
+                        if (i <= majorLEDS) {
+                            if (i == majorLEDS) {
+                                sideBuffer[i] = LEDData(0, 255 * finalFade, 0); // Green
+                            } else {
+                                sideBuffer[i] = LEDData(0, 255, 0);
+                            }
+                        } else {
+                            sideBuffer[i] = LEDData(0, 0, 0);                   // Black
+                        }
+                    }
+                    currentSideStatus = "Elevator Percentage";
+                    overridePatterns = true;
+                }
             }
         }
 
