@@ -120,9 +120,11 @@ private:
     ToGPPreset toL2;
     ToGPPreset toL3;
     ToGPPreset toL4;
+    ToGPPreset toBarge;
     ToGPPreset toCoralStation;
     ToGPPreset toReefLow;
     ToGPPreset toReefHigh;
+    ToGPPreset toProcessor;
 
     class ShootCoral : public Action {
       public:
@@ -157,18 +159,42 @@ private:
     Intake intakeCoral;
     Intake intakeAlgae;
 
+
+    class AutoAlign : public Action {
+      public:
+        AutoAlign(Drive *drive_, bool isLeft_, bool isL4_) : drive(drive_), isLeft(isLeft_), isL4(isL4_) {};
+        Drive *drive;
+        bool isLeft;
+        bool isL4;
+
+        Action::Result process() override {
+            drive->beginLineup(isLeft, isL4);
+            return drive->isFinished() ? Action::Result::DONE : Action::Result::WORKING;
+        };
+    }; 
+    AutoAlign autoAlignLeftNormal;
+    AutoAlign autoAlignRightNormal;
+    AutoAlign autoAlignLeftL4;
+    AutoAlign autoAlignRightL4;
+
     std::map<u_int32_t, Action*> actions {
-        {1 << 0,  &toTransit},      // Transit
-        {1 << 1,  &toL1},           // L1
-        {1 << 2,  &toL2},           // L2
-        {1 << 3,  &toL3},           // L3
-        {1 << 4,  &toL4},           // L4
-        {1 << 5,  &toCoralStation}, // Coral Station
-        {1 << 6,  &toReefLow},      // Reef Low
-        {1 << 7,  &toReefHigh},     // Reef High
-        {1 << 8,  &shootCoral},     // Shoot Coral
-        {1 << 9,  &intakeCoral},    // Intake Coral
-        {1 << 10, &intakeAlgae}     // Intake Algae
+        {1 << 0,  &autoAlignLeftNormal},    // Normal Left Align
+        {1 << 1,  &autoAlignRightNormal},   // Normal Right Align
+        {1 << 2,  &autoAlignLeftL4},        // L4 Left Align
+        {1 << 3,  &autoAlignRightL4},       // L4 Right Align
+        {1 << 4,  &toL1},                   // L1
+        {1 << 5,  &toL2},                   // L2
+        {1 << 6,  &toL3},                   // L3
+        {1 << 7,  &toL4},                   // L4
+        {1 << 8   &toBarge},                // Barge
+        {1 << 9,  &toCoralStation},         // Coral Station
+        {1 << 10, &toReefLow},              // Reef Low
+        {1 << 11, &toReefHigh},             // Reef High
+        {1 << 12, &shootCoral},             // Shoot Coral
+        {1 << 13, &intakeCoral},            // Intake Coral
+        {1 << 14, &intakeAlgae},            // Intake Algae
+        {1 << 15, &toTransit},              // Transit
+        {1 << 16, &toProcessor}             // Processor
     };
 
     std::string autoSelected;

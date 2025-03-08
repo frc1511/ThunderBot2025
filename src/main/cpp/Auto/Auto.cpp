@@ -9,12 +9,18 @@ Auto::Auto(Drive *drive_, Limelight *limelight_, Gamepiece *gamepiece_)
   toL2(gamepiece_, Gamepiece::Preset::kL2),
   toL3(gamepiece_, Gamepiece::Preset::kL3),
   toL4(gamepiece_, Gamepiece::Preset::kL4),
+  toBarge(gamepiece_, Gamepiece::Preset::kNET),
   toCoralStation(gamepiece_, Gamepiece::Preset::kCORAL_STATION),
   toReefLow(gamepiece_, Gamepiece::Preset::kREEF_LOW),
   toReefHigh(gamepiece_, Gamepiece::Preset::kREEF_HIGH),
   shootCoral(gamepiece_),
   intakeCoral(gamepiece_, Calgae::GamepieceState::kCORAL),
-  intakeAlgae(gamepiece_, Calgae::GamepieceState::kALGAE)
+  intakeAlgae(gamepiece_, Calgae::GamepieceState::kALGAE),
+  autoAlignLeftNormal(drive_, true, false),
+  autoAlignRightNormal(drive_, false, false),
+  autoAlignLeftL4(drive_, true, true),
+  autoAlignRightL4(drive_, false, true),
+  toProcessor(gamepiece_, Gamepiece::Preset::kPROCESSOR)
 {}
 
 void Auto::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
