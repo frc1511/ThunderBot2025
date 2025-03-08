@@ -120,9 +120,11 @@ private:
     ToGPPreset toL2;
     ToGPPreset toL3;
     ToGPPreset toL4;
+    ToGPPreset toBarge;
     ToGPPreset toCoralStation;
     ToGPPreset toReefLow;
     ToGPPreset toReefHigh;
+    ToGPPreset toProcessor;
 
     class ShootCoral : public Action {
       public:
@@ -184,13 +186,15 @@ private:
         {1 << 5,  &toL2},                   // L2
         {1 << 6,  &toL3},                   // L3
         {1 << 7,  &toL4},                   // L4
-        {1 << 8,  &toCoralStation},         // Coral Station
-        {1 << 9, &toReefLow},               // Reef Low
-        {1 << 10, &toReefHigh},             // Reef High
-        {1 << 11, &shootCoral},             // Shoot Coral
-        {1 << 12, &intakeCoral},            // Intake Coral
-        {1 << 13, &intakeAlgae}             // Intake Algae
-        {1 << 14,  &toTransit},             // Transit
+        {1 << 8   &toBarge},                // Barge
+        {1 << 9,  &toCoralStation},         // Coral Station
+        {1 << 10, &toReefLow},              // Reef Low
+        {1 << 11, &toReefHigh},             // Reef High
+        {1 << 12, &shootCoral},             // Shoot Coral
+        {1 << 13, &intakeCoral},            // Intake Coral
+        {1 << 14, &intakeAlgae},            // Intake Algae
+        {1 << 15, &toTransit},              // Transit
+        {1 << 16, &toProcessor}             // Processor
     };
 
     std::string autoSelected;

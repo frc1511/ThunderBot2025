@@ -20,13 +20,15 @@
       "L2",
       "L3",
       "L4",
+      "Barge",
       "Coral_Station",
       "Reef_Low",
       "Reef_High",
       "Shoot_Coral",
       "Intake_Coral",
       "Intake_Algae",
-      "Transit"
+      "Transit",
+      "Processor"
     ],
     "paths": [
       [
