@@ -117,9 +117,9 @@ void Drive::driveFromPercents(double xPct, double yPct, double rotPct, unsigned 
      * Calculate chassis velocities using percentages of the configured max
      * manual control velocities.
      */
-    units::meters_per_second_t xVel    = xPct * DrivePreferences::DRIVE_MANUAL_MAX_VEL;
-    units::meters_per_second_t yVel    = yPct * DrivePreferences::DRIVE_MANUAL_MAX_VEL;
-    units::radians_per_second_t rotVel = rotPct * DrivePreferences::DRIVE_MANUAL_MAX_ANG_VEL;
+    units::meters_per_second_t xVel    = xPct * PreferencesDrive::DRIVE_MANUAL_MAX_VEL;
+    units::meters_per_second_t yVel    = yPct * PreferencesDrive::DRIVE_MANUAL_MAX_VEL;
+    units::radians_per_second_t rotVel = rotPct * PreferencesDrive::DRIVE_MANUAL_MAX_ANG_VEL;
 
     // Pass the velocities to the velocity control function.
     driveWithVelocities(xVel, yVel, rotVel, flags);
@@ -183,7 +183,7 @@ void Drive::setModuleStates(frc::ChassisSpeeds speeds) {
     // Generate individual module states using the chassis velocities.
     wpi::array<frc::SwerveModuleState, 4> moduleStates(kinematics.ToSwerveModuleStates(speeds));
 
-    kinematics.DesaturateWheelSpeeds(&moduleStates, DrivePreferences::DRIVE_MANUAL_MAX_VEL);
+    kinematics.DesaturateWheelSpeeds(&moduleStates, PreferencesDrive::DRIVE_MANUAL_MAX_VEL);
 
     // Set the states of the individual modules.
     for(std::size_t i = 0; i < swerveModules.size(); i++) {
@@ -245,6 +245,18 @@ void Drive::sendFeedback() {
     frc::SmartDashboard::PutNumber("thunderdashboard_drive_target_ang",   targetPose.Rotation().Radians().value());
 
     frc::SmartDashboard::PutBoolean("thunderdashboard_gyro", !imuCalibrated);
+
+    // Nyoom
+    bool playNyoom = false;
+
+    lastQuadrant = currentQuadrant;
+    currentQuadrant = getCurrentQuadrant();
+
+    if (!(lastQuadrant == getCurrentQuadrant()) && !(currentQuadrant == Quadrant::kNONE) && !(lastQuadrant == Quadrant::kNONE)) {
+        playNyoom = true;
+    }
+
+    frc::SmartDashboard::PutBoolean("Drive Play Nyoom", playNyoom);
 }
 
 bool Drive::isFinished() const { // Can this const be moved to the beginning of the line? I think it would be easier to read
@@ -547,18 +559,18 @@ frc::Pose2d Drive::calculateFinalLineupPose(int posId, bool isLeftSide, bool isL
     //------------------------- Rotate around reef center
     units::radian_t rotRads = posId * (1/6) * units::radian_t(std::numbers::pi * 2);
     /// Make the reef the origin
-    units::meter_t reefRelX = masterLineupPose.X() - DrivePreferences::REEF_POSE.X();
-    units::meter_t reefRelY = masterLineupPose.Y() - DrivePreferences::REEF_POSE.Y();
+    units::meter_t reefRelX = masterLineupPose.X() - PreferencesDrive::REEF_POSE.X();
+    units::meter_t reefRelY = masterLineupPose.Y() - PreferencesDrive::REEF_POSE.Y();
     /// Rotate the pose
     units::meter_t reefRelXPrime = (reefRelX * cosf((double)rotRads)) - (reefRelY * sinf((double)rotRads));
     units::meter_t reefRelYPrime = (reefRelY * cosf((double)rotRads)) - (reefRelX * sinf((double)rotRads));
     units::radian_t newRot = rotRads; // Assuming that the masterLineupPosition is at 0_rad
     /// Reset to the field origin
-    units::meter_t rotatedX = reefRelXPrime + DrivePreferences::REEF_POSE.X();
-    units::meter_t rotatedY = reefRelYPrime + DrivePreferences::REEF_POSE.Y();
+    units::meter_t rotatedX = reefRelXPrime + PreferencesDrive::REEF_POSE.X();
+    units::meter_t rotatedY = reefRelYPrime + PreferencesDrive::REEF_POSE.Y();
 
     //------------------------- Translate for branch
-    units::meter_t moveMagnitude = DrivePreferences::HORIZONTAL_REEF_MOVE;
+    units::meter_t moveMagnitude = PreferencesDrive::HORIZONTAL_REEF_MOVE;
     moveMagnitude *= isLeftSide ? 1 : -1; // Move + for left, - for right
 
     units::meter_t deltaX = cosf((double)newRot) * moveMagnitude;
@@ -571,7 +583,7 @@ frc::Pose2d Drive::calculateFinalLineupPose(int posId, bool isLeftSide, bool isL
     //------------------------- Translate for L4
     // Move back for L4
     if (isL4) {
-        units::meter_t moveBackMagnitude = DrivePreferences::VERTICAL_REEF_MOVE;
+        units::meter_t moveBackMagnitude = PreferencesDrive::VERTICAL_REEF_MOVE;
         units::meter_t deltaX = cosf(double(newRot + 90_deg)) * moveBackMagnitude;
         units::meter_t deltaY = sinf(double(newRot + 90_deg)) * moveBackMagnitude;
 
@@ -634,4 +646,32 @@ void Drive::execLineup() {
     //// targetState.velocity = (units::meters_per_second_t)std::clamp(finalVelocity, 0.0, maxVel); 
 
     driveToState(targetState);
+}
+
+Drive::Quadrant Drive::getCurrentQuadrant() {
+    static frc::DriverStation::Alliance allianceColor = frc::DriverStation::GetAlliance().value();
+    frc::Pose2d pose(getEstimatedPose());
+    units::meter_t robotX = pose.X();
+    units::meter_t robotY = pose.Y();
+
+    if (allianceColor == frc::DriverStation::Alliance::kRed) {
+        robotX = PreferencesTrajectory::FIELD_X - robotX;
+        robotY = PreferencesTrajectory::FIELD_Y - robotY;
+    }
+
+    if (robotX > PreferencesDrive::QUADRANT_LEFT[0].x &&
+        robotY > PreferencesDrive::QUADRANT_LEFT[0].y &&
+        robotX < PreferencesDrive::QUADRANT_LEFT[1].x &&
+        robotY < PreferencesDrive::QUADRANT_LEFT[1].y
+    ) { // Left side of DS
+        return Quadrant::kLEFT;
+    } else if (robotX > PreferencesDrive::QUADRANT_RIGHT[0].x &&
+               robotY > PreferencesDrive::QUADRANT_RIGHT[0].y &&
+               robotX < PreferencesDrive::QUADRANT_RIGHT[1].x &&
+               robotY < PreferencesDrive::QUADRANT_RIGHT[1].y
+    ) { // Right side of DS
+        return Quadrant::kRIGHT;
+    } else { // Too far away
+        return Quadrant::kNONE;
+    }
 }

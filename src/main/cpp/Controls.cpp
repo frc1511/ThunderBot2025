@@ -79,14 +79,14 @@ void Controls::process() {
 
         frc::SmartDashboard::PutNumber("Controls Final Speed Reduction", finalSpeedReduction);
 
-        if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {
+        if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
             finalSpeedReduction *= -1;
         }
         
         static bool isLiningUp = false;
         isLiningUp = driveController.GetBButtonPressed() ? !isLiningUp : isLiningUp; // Toggle if B pressed, else retain state
 
-        if (flags == 0 && xPercent == 0 && yPercent == 0 && rotPercent == 0 && isLiningUp) {
+        if (flags == 0 && xPercent == 0 && yPercent == 0 && rotPercent == 0 && !robotCentricFromController && isLiningUp) {
             static bool Left = false;
             Left = driveController.GetPOV() == 270 ? true : Left;  // Set to left if left dpad pressed, else use prexisting
             Left = driveController.GetPOV() == 90  ? false : Left; // Set to right if right dpad pressed, else use prexisting

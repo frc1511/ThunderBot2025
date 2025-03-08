@@ -152,10 +152,10 @@ private:
 
 
     wpi::array<frc::Translation2d, 4> locations {
-        frc::Translation2d(+DrivePreferences::ROBOT_LENGTH/2, +DrivePreferences::ROBOT_WIDTH/2), // FRONT LEFT.
-        frc::Translation2d(-DrivePreferences::ROBOT_LENGTH/2, +DrivePreferences::ROBOT_WIDTH/2), // BACK LEFT.
-        frc::Translation2d(-DrivePreferences::ROBOT_LENGTH/2, -DrivePreferences::ROBOT_WIDTH/2), // BACK RIGHT.
-        frc::Translation2d(+DrivePreferences::ROBOT_LENGTH/2, -DrivePreferences::ROBOT_WIDTH/2), // FRONT RIGHT.
+        frc::Translation2d(+PreferencesDrive::ROBOT_LENGTH/2, +PreferencesDrive::ROBOT_WIDTH/2), // FRONT LEFT.
+        frc::Translation2d(-PreferencesDrive::ROBOT_LENGTH/2, +PreferencesDrive::ROBOT_WIDTH/2), // BACK LEFT.
+        frc::Translation2d(-PreferencesDrive::ROBOT_LENGTH/2, -PreferencesDrive::ROBOT_WIDTH/2), // BACK RIGHT.
+        frc::Translation2d(+PreferencesDrive::ROBOT_LENGTH/2, -PreferencesDrive::ROBOT_WIDTH/2), // FRONT RIGHT.
     };
 
     /**
@@ -199,8 +199,8 @@ private:
 
     // PID Controller for angular drivetrain movement.
     frc::ProfiledPIDController<units::radians> manualThetaPIDController {
-        DrivePreferences::PID_THETA.Kp, DrivePreferences::PID_THETA.Ki, DrivePreferences::PID_THETA.Kd,
-        frc::TrapezoidProfile<units::radians>::Constraints(DrivePreferences::DRIVE_MANUAL_MAX_ANG_VEL, DrivePreferences::DRIVE_MANUAL_MAX_ANG_ACCEL)
+        PreferencesDrive::PID_THETA.Kp, PreferencesDrive::PID_THETA.Ki, PreferencesDrive::PID_THETA.Kd,
+        frc::TrapezoidProfile<units::radians>::Constraints(PreferencesDrive::DRIVE_MANUAL_MAX_ANG_VEL, PreferencesDrive::DRIVE_MANUAL_MAX_ANG_ACCEL)
     };
 
     bool imuCalibrated = false;
@@ -227,13 +227,13 @@ private:
     frc::Pose2d targetPose;
 
     // PID Controller for X and Y axis drivetrain movement.
-    frc::PIDController xPIDController { DrivePreferences::PID_XY.Kp, DrivePreferences::PID_XY.Ki, DrivePreferences::PID_XY.Kd },
-                       yPIDController { DrivePreferences::PID_XY.Kp, DrivePreferences::PID_XY.Ki, DrivePreferences::PID_XY.Kd };
+    frc::PIDController xPIDController { PreferencesDrive::PID_XY.Kp, PreferencesDrive::PID_XY.Ki, PreferencesDrive::PID_XY.Kd },
+                       yPIDController { PreferencesDrive::PID_XY.Kp, PreferencesDrive::PID_XY.Ki, PreferencesDrive::PID_XY.Kd };
 
     // PID Controller for angular drivetrain movement.
     frc::ProfiledPIDController<units::radians> trajectoryThetaPIDController {
-        DrivePreferences::PID_THETA.Kp, DrivePreferences::PID_THETA.Ki, DrivePreferences::PID_THETA.Kd,
-        frc::TrapezoidProfile<units::radians>::Constraints(DrivePreferences::DRIVE_AUTO_MAX_ANG_VEL, DrivePreferences::DRIVE_AUTO_MAX_ANG_ACCEL)
+        PreferencesDrive::PID_THETA.Kp, PreferencesDrive::PID_THETA.Ki, PreferencesDrive::PID_THETA.Kd,
+        frc::TrapezoidProfile<units::radians>::Constraints(PreferencesDrive::DRIVE_AUTO_MAX_ANG_VEL, PreferencesDrive::DRIVE_AUTO_MAX_ANG_ACCEL)
     };
 
    // The drive controller that will handle the drivetrain movement.
@@ -276,6 +276,16 @@ private:
 
     SwerveFeedback swerveFeedback {&swerveModules};
 
+    enum Quadrant {
+        kNONE,
+        kLEFT,
+        kRIGHT
+    };
+
+    Quadrant getCurrentQuadrant();
+
+    Quadrant currentQuadrant = Quadrant::kNONE;
+    Quadrant lastQuadrant = Quadrant::kNONE;
 
     // MARK: TELE LINEUP AUTO DRIVING
     void execLineup();

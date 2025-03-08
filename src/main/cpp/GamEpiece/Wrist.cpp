@@ -85,7 +85,8 @@ bool Wrist::atPreset0Out() {
 }
 
 bool Wrist::atPreset() {
-    if (encoderBroken) return true;    units::degree_t targetPosition = Positions[currentPreset];
+    if (encoderBroken) return true;    
+    units::degree_t targetPosition = Positions[currentPreset];
     units::degree_t difference = targetPosition - getEncoderDegrees();
 
     return fabs(difference.value()) < PreferencesWrist::ANGLE_TOLERANCE_AUTO.value();
