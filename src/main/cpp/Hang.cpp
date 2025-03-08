@@ -4,14 +4,18 @@ Hang::Hang() {
     doConfiguration(false);
 }
 
-void Hang::doConfiguration(bool persist) { }
+void Hang::doConfiguration(bool persist) {
+    rev::spark::SparkMaxConfig motorConfig {};
+
+    motorConfig.Inverted(true);
+    motorConfig.SetIdleMode(rev::spark::SparkBaseConfig::IdleMode::kBrake);
+    motor.Configure(motorConfig, rev::spark::SparkBase::ResetMode::kNoResetSafeParameters, persist ? rev::spark::SparkBase::PersistMode::kPersistParameters : rev::spark::SparkBase::PersistMode::kNoPersistParameters);
+}
 
 void Hang::process() {
     updateRealSolenoidState();
 
-    return; //! REMOVE ME TO TEST HANG
-
-    double speed = 0;
+    speed = 0;
 
     switch (currentMode) {
         case ControlMode::STOPPED:
@@ -22,7 +26,8 @@ void Hang::process() {
 
             setSolenoidState(desiredSolenoidState);
 
-            return;
+            return; //* Early Return
+
         case ControlMode::GOING_DOWN:
             if (!isHung()) {
                 speed = PreferencesHang::MAX_HANG_SPEED_DOWN;
@@ -31,7 +36,7 @@ void Hang::process() {
             desiredSolenoidState = SolenoidState::DOWN;
             solenoidAction = SolenoidAction::NONE;
 
-            return;
+            break;
         case ControlMode::GOING_UP:
             desiredSolenoidState = SolenoidState::UP;
 
@@ -57,15 +62,16 @@ void Hang::process() {
           realSolenoidState == SolenoidState::DOWN &&
           solenoidAction != SolenoidAction::CHECKING_UP_STATE && 
           solenoidAction != SolenoidAction::DISENGAGING) {
-          solenoidAction = SolenoidAction::CHECKING_UP_STATE;
+        solenoidAction = SolenoidAction::CHECKING_UP_STATE;
         disengageTimer.Restart();
     }
 
     if (solenoidAction == SolenoidAction::DISENGAGING) {
         solenoidOutput = SolenoidState::DOWN;
         speed = PreferencesHang::BACKTRACKING_SPEED;
-        if (getMotorPosition() - backtrackingStart >= PreferencesHang::BACKTRACKING_DISTANCE) {
+        if (fabs(getMotorPosition() - backtrackingStart) >= PreferencesHang::BACKTRACKING_DISTANCE) {
             solenoidAction = SolenoidAction::CHECKING_UP_STATE;
+            disengageTimer.Restart();
         }
     }
 
@@ -73,10 +79,10 @@ void Hang::process() {
         solenoidOutput = SolenoidState::UP;
         disengageTimer.Start();
 
-        if (realSolenoidState == SolenoidState::UP && disengageTimer.Get() > PreferencesHang::DISENGAGE_DURATION) {
+        if (realSolenoidState == SolenoidState::UP) {
             solenoidAction = SolenoidAction::KEEP_UP;
             disengageTimer.Stop();
-        } else { // We can't go up rn, :(
+        } else if (disengageTimer.Get() > PreferencesHang::DISENGAGE_DURATION) { // We can't go up rn, :(
             solenoidAction = SolenoidAction::DISENGAGING;
             backtrackingStart = getMotorPosition();
             disengageTimer.Stop();
@@ -111,7 +117,7 @@ void Hang::updateRealSolenoidState() {
 }
 
 void Hang::setSolenoidState(SolenoidState state) {
-    relay.Set(state == SolenoidState::DOWN ? frc::Relay::kOn : frc::Relay::kOff);
+    relay.Set(state == SolenoidState::DOWN ? frc::Relay::kOff : frc::Relay::kOn);
 }
 
 double Hang::getMotorPosition() {
@@ -120,4 +126,32 @@ double Hang::getMotorPosition() {
 
 void Hang::setMotorSpeed(double speed) {
     motor.Set(speed);
+}
+
+void Hang::sendFeedback() {
+    frc::SmartDashboard::PutString ("Hang Current Mode",    currentModeAsString());
+    frc::SmartDashboard::PutString ("Hang Solenoid Action", currentSolenoidActionAsString());
+    frc::SmartDashboard::PutNumber ("Hang Current Speed",   speed);
+    frc::SmartDashboard::PutBoolean("Hang Hung",            isHung());
+    frc::SmartDashboard::PutBoolean("Hang Solenoid Up",     isSolenoidUp());
+    frc::SmartDashboard::PutNumber ("Hang Position",        getMotorPosition());
+}
+
+std::string Hang::currentModeAsString() {
+    switch (currentMode) {
+        case ControlMode::STOPPED:    return "Stopped";
+        case ControlMode::GOING_DOWN: return "Going Down";
+        case ControlMode::GOING_UP:   return "Going Up";
+        default:                      return "Invalid Mode";
+    }
+}
+
+std::string Hang::currentSolenoidActionAsString() {
+    switch (solenoidAction) {
+        case SolenoidAction::NONE:              return "None";
+        case SolenoidAction::KEEP_UP:           return "Keep Up";
+        case SolenoidAction::DISENGAGING:       return "Disengaging";
+        case SolenoidAction::CHECKING_UP_STATE: return "Checking Up State";
+        default:                                return "Invalid Mode";
+    }
 }
