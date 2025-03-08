@@ -6,6 +6,7 @@
 #include <units/acceleration.h>
 #include <units/angle.h>
 #include <units/current.h>
+#include <vector>
 #include <frc/geometry/Pose2d.h>
 
 struct PID_t
@@ -28,8 +29,13 @@ struct PID_t
     }
 };
 
+struct Point {
+    units::meter_t x;
+    units::meter_t y;
+};
 
-struct DrivePreferences {
+
+struct PreferencesDrive {
     static const units::inch_t WHEEL_DISTANCE_FROM_FRAME;
 
     static const units::inch_t ROBOT_WIDTH;
@@ -52,6 +58,13 @@ struct DrivePreferences {
 
     static const PID_t PID_XY;
     static const PID_t PID_THETA;
+
+    static const std::vector<Point> QUADRANT_LEFT;
+    static const std::vector<Point> QUADRANT_RIGHT;
+
+    static const Point APRIL_TAG_18;
+    
+    static const units::meter_t ROBOT_WITH_BUMPERS_LENGTH;
 };
 
 struct PreferencesDriveMotor
