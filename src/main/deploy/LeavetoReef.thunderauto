@@ -2410,7 +2410,7 @@
         }
       ],
       [
-        "L4MultiScoreWithNet",
+        "L4RIghtThenStationRightThenScoreL4AlgaeLowThenScoreNet",
         {
           "points": [
             {
@@ -2500,71 +2500,7 @@
         }
       ],
       [
-        "L2MultiScore",
-        {
-          "points": [
-            {
-              "actions": 16,
-              "h0": 0.0,
-              "h1": 3.1415927410125732,
-              "link_index": -1,
-              "locked": false,
-              "rotation": 3.1415927410125732,
-              "stop": false,
-              "w0": 1.0,
-              "w1": 0.6000000238418579,
-              "x": 7.574999809265137,
-              "y": 4.025000095367432
-            },
-            {
-              "actions": 36897,
-              "h0": 6.270083427429199,
-              "h1": 5.232539653778076,
-              "link_index": -1,
-              "locked": false,
-              "rotation": 3.1415927410125732,
-              "stop": true,
-              "w0": 0.8850723505020142,
-              "w1": 2.7536563873291016,
-              "x": 5.693437576293945,
-              "y": 4.069540977478027
-            },
-            {
-              "actions": 41472,
-              "h0": 0.5826440453529358,
-              "h1": 0.94426029920578,
-              "link_index": -1,
-              "locked": false,
-              "rotation": 4.066617012023926,
-              "stop": true,
-              "w0": 0.5,
-              "w1": 0.8519829511642456,
-              "x": 1.1054637432098389,
-              "y": 0.8947675228118896
-            },
-            {
-              "actions": 36897,
-              "h0": 3.712045192718506,
-              "h1": 0.5704522132873535,
-              "link_index": -1,
-              "locked": false,
-              "rotation": 1.0471975803375244,
-              "stop": false,
-              "w0": 0.5637966990470886,
-              "w1": 0.5,
-              "x": 3.7878239154815674,
-              "y": 2.897900342941284
-            }
-          ],
-          "settings": {
-            "max_centripetal_accel": 19.6200008392334,
-            "max_linear_accel": 4.0,
-            "max_linear_vel": 5.0
-          }
-        }
-      ],
-      [
-        "L4TripleScore",
+        "L4RightThenStationRightThenScoreL4ThenStationRightThenScoreL4",
         {
           "points": [
             {
@@ -2654,7 +2590,7 @@
         }
       ],
       [
-        "L3TripleScore",
+        "L3RightThenStationRightThenScoreL3ThenStationRightThenScoreL3",
         {
           "points": [
             {
@@ -2744,7 +2680,7 @@
         }
       ],
       [
-        "L4MultiScoreWithAlgae",
+        "L4CenterThenStationRightThenScoreL4ThenAlgaePickupRightThenScoreBarge",
         {
           "points": [
             {
