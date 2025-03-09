@@ -294,8 +294,6 @@ private:
 
     frc::Pose2d calculateFinalLineupPose(int posId, bool isLeftSide, bool isL4);
 
-    frc::Pose2d masterLineupPose = {PreferencesDrive::APRIL_TAG_18.x, PreferencesDrive::APRIL_TAG_18.y - PreferencesDrive::ROBOT_WITH_BUMPERS_LENGTH / 2, frc::Rotation2d(0_deg)};
-
     frc::Pose2d lineupPose = {};
 
     friend class Robot;

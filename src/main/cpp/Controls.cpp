@@ -120,7 +120,6 @@ void Controls::process() {
         if (shouldToggleStationPreset) {
             switch (currentStationState) {
                 case StationState::kNOT_ACTIVE:
-                    printf("Going to Station State\n");
                     currentStationState = StationState::kHIGH;
                     break;
                 case StationState::kHIGH:

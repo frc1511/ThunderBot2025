@@ -53,6 +53,12 @@ const Point PreferencesDrive::APRIL_TAG_18 {
 
 const units::meter_t PreferencesDrive::ROBOT_WITH_BUMPERS_LENGTH = 0.930275_m;
 
+const frc::Pose2d PreferencesDrive::MASTER_LINEUP_POSE = {
+    PreferencesDrive::APRIL_TAG_18.x - PreferencesDrive::ROBOT_WITH_BUMPERS_LENGTH / 2,
+    PreferencesDrive::APRIL_TAG_18.y,
+    frc::Rotation2d(0_deg)
+};
+
 
 /***********************************************************/
 // Swerve Drive Motor
@@ -180,3 +186,6 @@ const units::second_t PreferencesHang::DISENGAGE_DURATION = 0.3_s;
 
 const std::string PreferencesLimelight::LIMELIGHT_FRONT = "limelight-front";
 const std::string PreferencesLimelight::LIMELIGHT_BACK = "limelight-back";
+
+const int PreferencesLimelight::PIPELINE_APRILTAGS = 0;
+const int PreferencesLimelight::PIPELINE_EMPTY = 1;

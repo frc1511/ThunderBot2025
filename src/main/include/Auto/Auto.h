@@ -35,6 +35,7 @@ private:
         L1Center,
         L1Left,
         L1Right,
+        LEAVE_TO_REEF_L2CENTER
     };
     Drive *drive;
     Limelight *limelight;
@@ -57,6 +58,7 @@ private:
         { AutoMode::L1Center,                "1 Coral L1 Center"},
         { AutoMode::L1Left,                  "1 Coral L1 Left"},
         { AutoMode::L1Right,                 "1 Coral L1 Right"},
+        { AutoMode::LEAVE_TO_REEF_L2CENTER,  "L2Center"},
     };
     int step = 0;
     enum class Path {
@@ -68,6 +70,7 @@ private:
         L1Center,
         L1Left,
         L1Right,
+        LEAVE_TO_REEF_L2CENTER
     };
     const std::map<AutoMode, Path> autoModePaths {
         {AutoMode::_TEST, Path::_TEST},
@@ -78,6 +81,7 @@ private:
         {AutoMode::L1Center, Path::L1Center},
         {AutoMode::L1Left, Path::L1Left},
         {AutoMode::L1Right, Path::L1Right},
+        {AutoMode::LEAVE_TO_REEF_L2CENTER, Path::LEAVE_TO_REEF_L2CENTER}
     };
     const std::map<Path, CSVTrajectory> bluePaths {
         { Path::_TEST,                   CSVTrajectory{ DEPLOY_DIR "match_winning_auto.csv", false } },
@@ -88,6 +92,7 @@ private:
         { Path::L1Center,                CSVTrajectory{ DEPLOY_DIR "L1Center.csv",           false } },
         { Path::L1Left,                  CSVTrajectory{ DEPLOY_DIR "L1Left.csv",             false } },
         { Path::L1Right,                 CSVTrajectory{ DEPLOY_DIR "L1Right.csv",            false } },
+        { Path::LEAVE_TO_REEF_L2CENTER,  CSVTrajectory{ DEPLOY_DIR "L2Center.csv",           false } },
 
     };
     const std::map<Path, CSVTrajectory> redPaths {
@@ -99,6 +104,7 @@ private:
         { Path::L1Center,                CSVTrajectory{ DEPLOY_DIR "L1Center.csv",           true } },
         { Path::L1Left,                  CSVTrajectory{ DEPLOY_DIR "L1Left.csv",             true } },
         { Path::L1Right,                 CSVTrajectory{ DEPLOY_DIR "L1Right.csv",            true } },
+        { Path::LEAVE_TO_REEF_L2CENTER,  CSVTrajectory{ DEPLOY_DIR "L2Center.csv",           true } },
     };
     const std::map<Path, CSVTrajectory>* paths = nullptr;
 
@@ -150,7 +156,7 @@ private:
         Action::Result process() override {
             if (gamepiece->calgae == nullptr) 
                 return Action::Result::DONE;
-                
+
             if (!gamepiece->calgae->isAutoIntaking)
                 gamepiece->calgae->autoIntake(gp);
             return gamepiece->calgae->hasGamepiece() ? Action::Result::DONE : Action::Result::WORKING;
