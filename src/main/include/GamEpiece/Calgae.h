@@ -57,6 +57,7 @@ class Calgae : public Component {
     bool hasCoral();
     bool hasAlgae();
 
+    bool gamepieceSensorsDisabled = false;
     /**
      * Get calculated state (non-raw) of the Coral Retroreflective sensor
      */

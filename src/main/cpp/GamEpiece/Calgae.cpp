@@ -50,7 +50,10 @@ void Calgae::sendFeedback() {
 void Calgae::process() {
     updateGamepieceState();
     motorSpeed = MotorSpeed::kSTOPPED; // In case we make it through the below logic without getting a speed
-
+    if (gamepieceSensorsDisabled) {
+        lastGamepieceState = GamepieceState::kALGAE;
+        currentGamepieceState = GamepieceState::kNONE;
+    }
     if (isAuto) {
         if (isShootDone()) {
             motorSpeed = MotorSpeed::kSTOPPED;
@@ -223,7 +226,9 @@ void Calgae::runMotors(double speed) {
 
 void Calgae::updateGamepieceState() {
     currentGamepieceState = GamepieceState::kNONE;
-    if (algaeRetroreflectiveTripped() && coralRetroreflectiveTripped()) {
+    if (gamepieceSensorsDisabled) {
+        currentGamepieceState = GamepieceState::kNONE;
+    } else if (algaeRetroreflectiveTripped() && coralRetroreflectiveTripped()) {
         printf("SENSOR ERROR: Coral and Algae Triggered Together\n");
         currentGamepieceState = GamepieceState::kALGAE; // Prioritize algae for faster size
     } else if (algaeRetroreflectiveTripped()) {

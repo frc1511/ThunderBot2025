@@ -266,6 +266,9 @@ void Controls::utilizeSwitchBoard() {
         return;
     }
 
+    // TODO: give this a switch on the switch board
+    calgae->gamepieceSensorsDisabled = switchBoard.GetRawButton(0);
+
     gamepiece->elevatorDisable = switchBoard.GetRawButton(1);
     gamepiece->wristDisable = switchBoard.GetRawButton(2);
     manualMode = switchBoard.GetRawButton(3);

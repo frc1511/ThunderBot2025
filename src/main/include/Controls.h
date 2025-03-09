@@ -23,6 +23,7 @@ class Controls : public Component {
     bool shouldPersistentConfig();
 
  private:
+    Calgae* calgae;
     Drive* drive;
     Gamepiece* gamepiece;
     BlinkyBlinky* blinkyBlinky;
