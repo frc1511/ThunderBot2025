@@ -32,12 +32,11 @@ std::pair<bool,LimelightHelpers::PoseEstimate> Limelight::getLimelightPose(std::
         if (mt1.rawFiducials[0].distToCamera > 3) { // distToCamera is in meters
             shouldUpdate = false;
         }
-    } else {
-        // shouldUpdate = false;
-        // for (auto fiducial : mt1.rawFiducials) {
-        //     if (fiducial.distToCamera < 3 && fiducial.ambiguity < .45) {
-        //         shouldUpdate = true;
-        //     }
+    }
+
+    for (auto fiducial : mt1.rawFiducials) {
+        // if (fiducial.ambiguity > .5) {
+        //     shouldUpdate = false;
         // }
     }
 

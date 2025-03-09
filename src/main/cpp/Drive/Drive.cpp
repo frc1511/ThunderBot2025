@@ -572,10 +572,9 @@ frc::Pose2d Drive::calculateFinalLineupPose(int posId, bool isLeftSide, bool isL
     /// Make the reef the origin
     units::meter_t reefRelX = masterLineupPose.X() - PreferencesDrive::REEF_POSE.X();
     units::meter_t reefRelY = masterLineupPose.Y() - PreferencesDrive::REEF_POSE.Y();
-    printf("Delta Y: %lf\n", reefRelY);
     /// Rotate the pose
     units::meter_t reefRelXPrime = (reefRelX * cosf((double)rotRads)) - (reefRelY * sinf((double)rotRads));
-    units::meter_t reefRelYPrime = (reefRelY * cosf((double)rotRads)) - (reefRelX * sinf((double)rotRads));
+    units::meter_t reefRelYPrime = (reefRelY * cosf((double)rotRads)) + (reefRelX * sinf((double)rotRads));
     units::radian_t newRot = rotRads; // Assuming that the masterLineupPosition is at 0_rad
     /// Reset to the field origin
     units::meter_t rotatedX = reefRelXPrime + PreferencesDrive::REEF_POSE.X();
@@ -585,8 +584,8 @@ frc::Pose2d Drive::calculateFinalLineupPose(int posId, bool isLeftSide, bool isL
     units::meter_t moveMagnitude = PreferencesDrive::HORIZONTAL_REEF_MOVE;
     moveMagnitude *= isLeftSide ? 1 : -1; // Move + for left, - for right
 
-    units::meter_t deltaX = cosf((double)newRot) * moveMagnitude;
-    units::meter_t deltaY = sinf((double)newRot) * moveMagnitude;
+    units::meter_t deltaX = 0_m;
+    units::meter_t deltaY = cosf((double)newRot) * moveMagnitude;
 
     // Add to the rotated X&Y the move we need to do
     units::meter_t finalX = rotatedX + deltaX;
@@ -596,8 +595,8 @@ frc::Pose2d Drive::calculateFinalLineupPose(int posId, bool isLeftSide, bool isL
     // Move back for L4
     if (isL4) {
         units::meter_t moveBackMagnitude = PreferencesDrive::VERTICAL_REEF_MOVE;
-        units::meter_t deltaX = cosf(double(newRot + 90_deg)) * moveBackMagnitude;
-        units::meter_t deltaY = sinf(double(newRot + 90_deg)) * moveBackMagnitude;
+        units::meter_t deltaX = sinf(double(newRot + 90_deg)) * moveBackMagnitude;
+        units::meter_t deltaY = 0_m;
 
         // Add to the rotated X&Y the move we need to do
         finalX += deltaX;
