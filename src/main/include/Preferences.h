@@ -65,6 +65,8 @@ struct PreferencesDrive {
     static const Point APRIL_TAG_18;
     
     static const units::meter_t ROBOT_WITH_BUMPERS_LENGTH;
+    
+    static const frc::Pose2d MASTER_LINEUP_POSE;
 };
 
 struct PreferencesDriveMotor
@@ -170,4 +172,7 @@ struct PreferencesLimelight
 {
     static const std::string LIMELIGHT_FRONT;
     static const std::string LIMELIGHT_BACK;
+
+    static const int PIPELINE_APRILTAGS;
+    static const int PIPELINE_EMPTY;
 };

@@ -512,6 +512,10 @@ void Drive::driveToState(CSVTrajectory::State state) {
     // Keep target pose for feedback.
     targetPose = state.pose;
 
+    velocities.vx    *= speedLimiting;
+    velocities.vy    *= speedLimiting;
+    velocities.omega *= speedLimiting;
+
     // Make the robot go vroom :D
     setModuleStates(velocities);
 } 
@@ -568,13 +572,13 @@ void SwerveFeedback::InitSendable(wpi::SendableBuilder &builder) {
 
 frc::Pose2d Drive::calculateFinalLineupPose(int posId, bool isLeftSide, bool isL4) {
     //------------------------- Rotate around reef center
-    units::radian_t rotRads = posId * (1/6) * units::radian_t(std::numbers::pi * 2);
+    units::radian_t rotRads = units::radian_t(posId * (1.0/6.0) * std::numbers::pi * 2);
     /// Make the reef the origin
-    units::meter_t reefRelX = masterLineupPose.X() - PreferencesDrive::REEF_POSE.X();
-    units::meter_t reefRelY = masterLineupPose.Y() - PreferencesDrive::REEF_POSE.Y();
+    units::meter_t reefRelX = PreferencesDrive::MASTER_LINEUP_POSE.X() - PreferencesDrive::REEF_POSE.X();
+    units::meter_t reefRelY = PreferencesDrive::MASTER_LINEUP_POSE.Y() - PreferencesDrive::REEF_POSE.Y();
     /// Rotate the pose
     units::meter_t reefRelXPrime = (reefRelX * cosf((double)rotRads)) - (reefRelY * sinf((double)rotRads));
-    units::meter_t reefRelYPrime = (reefRelY * cosf((double)rotRads)) + (reefRelX * sinf((double)rotRads));
+    units::meter_t reefRelYPrime = (reefRelX * sinf((double)rotRads)) + (reefRelY * sinf((double)rotRads));
     units::radian_t newRot = rotRads; // Assuming that the masterLineupPosition is at 0_rad
     /// Reset to the field origin
     units::meter_t rotatedX = reefRelXPrime + PreferencesDrive::REEF_POSE.X();
@@ -584,8 +588,8 @@ frc::Pose2d Drive::calculateFinalLineupPose(int posId, bool isLeftSide, bool isL
     units::meter_t moveMagnitude = PreferencesDrive::HORIZONTAL_REEF_MOVE;
     moveMagnitude *= isLeftSide ? 1 : -1; // Move + for left, - for right
 
-    units::meter_t deltaX = 0_m;
-    units::meter_t deltaY = cosf((double)newRot) * moveMagnitude;
+    units::meter_t deltaX = cosf((double)(newRot + 90_deg)) * moveMagnitude;
+    units::meter_t deltaY = sinf((double)(newRot + 90_deg)) * moveMagnitude;
 
     // Add to the rotated X&Y the move we need to do
     units::meter_t finalX = rotatedX + deltaX;
@@ -595,8 +599,8 @@ frc::Pose2d Drive::calculateFinalLineupPose(int posId, bool isLeftSide, bool isL
     // Move back for L4
     if (isL4) {
         units::meter_t moveBackMagnitude = PreferencesDrive::VERTICAL_REEF_MOVE;
-        units::meter_t deltaX = sinf(double(newRot + 90_deg)) * moveBackMagnitude;
-        units::meter_t deltaY = 0_m;
+        units::meter_t deltaX = -cosf(double(newRot)) * moveBackMagnitude;
+        units::meter_t deltaY = -sinf(double(newRot)) * moveBackMagnitude;
 
         // Add to the rotated X&Y the move we need to do
         finalX += deltaX;
@@ -639,10 +643,11 @@ void Drive::beginLineup(bool isLeft, bool L4) {
             lowestDist = currentLineupDist;
         }
     }
-
-    lineupField.SetRobotPose(lineupPose);
+    frc::SmartDashboard::PutNumber("Lineup lowest distance", lowestDist);
 
     lineupPose = closestPose;
+
+    lineupField.SetRobotPose(lineupPose);
 }
 
 

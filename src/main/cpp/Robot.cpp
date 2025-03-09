@@ -63,6 +63,9 @@ void Robot::RobotInit() {
 	Alert::startTimer();
 
 	gamepiece->elevator->zeroMotors();
+
+	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_EMPTY);
+	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_EMPTY);
 }
 
 void Robot::RobotPeriodic() {
@@ -75,6 +78,9 @@ void Robot::RobotPeriodic() {
 
 void Robot::AutonomousInit() {
     reset(Component::MatchMode::AUTO);
+
+	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_APRILTAGS);
+	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_APRILTAGS);
 }
 void Robot::AutonomousPeriodic() {
 	for (Component* component : allComponents)
@@ -83,6 +89,9 @@ void Robot::AutonomousPeriodic() {
 
 void Robot::TeleopInit() {
     reset(Component::MatchMode::TELEOP);
+
+	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_APRILTAGS);
+	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_APRILTAGS);
 }
 void Robot::TeleopPeriodic() {
 	controls->process();
@@ -94,6 +103,9 @@ void Robot::TeleopPeriodic() {
 
 void Robot::DisabledInit() {
     reset(Component::MatchMode::DISABLED);
+
+	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_EMPTY);
+	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_EMPTY);
 }
 void Robot::DisabledPeriodic() {
 	#ifdef ENABLE_BLINKY_BLINKY
