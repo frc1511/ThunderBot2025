@@ -77,11 +77,11 @@ void Controls::process() {
         if (speedUpDrive)
             drive->unslowYourRoll();
 
-        double finalSpeedReduction = std::clamp(1 - speedReduction, 0.0, 1.0);
+        double finalSpeedReduction = std::clamp(1 - speedReduction, 0.0, 1.0) * -1;
 
         frc::SmartDashboard::PutNumber("Controls Final Speed Reduction", finalSpeedReduction);
 
-        if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
+        if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {
             finalSpeedReduction *= -1;
         }
         
@@ -96,8 +96,12 @@ void Controls::process() {
             drive->beginLineup(Left, L4);
         } else {
             isLiningUp = false;
-            if (fieldCentric && !robotCentricFromController)
+            if (fieldCentric && !robotCentricFromController) {
+                if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {
+                    finalSpeedReduction *= -1;
+                }
                 flags |= Drive::ControlFlag::FIELD_CENTRIC;
+            }
 
             // SWAP: 90_deg offset for drive
             drive->driveFromPercents(yPercent * finalSpeedReduction, xPercent * finalSpeedReduction, rotPercent * finalSpeedReduction, flags);
