@@ -70,7 +70,8 @@ class Calgae : public Component {
     bool isShootDone();
 
     void autoShoot();
-    void autoIntake(bool isCoral);
+    void autoIntake(bool isCoral, bool shouldTimeout);
+    void stopAutoIntake();
 
     bool isAutoShooting = false;
     bool isAutoIntaking = false;

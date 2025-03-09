@@ -28,7 +28,9 @@
       "Intake_Coral",
       "Intake_Algae",
       "Transit",
-      "Processor"
+      "Processor",
+      "Start Algae Intake",
+      "Stop Algae Intake"
     ],
     "paths": [
       [
