@@ -28,7 +28,9 @@
       "Intake_Coral",
       "Intake_Algae",
       "Transit",
-      "Processor"
+      "Processor",
+      "Start Algae Intake",
+      "Stop Algae Intake"
     ],
     "paths": [
       [
@@ -49,7 +51,7 @@
               "y": 4.025000095367432
             },
             {
-              "actions": 4112,
+              "actions": 4113,
               "h0": 0.0,
               "h1": 3.1415927410125732,
               "link_index": -1,
@@ -87,7 +89,7 @@
               "y": 7.696751117706299
             },
             {
-              "actions": 4112,
+              "actions": 4113,
               "h0": 1.0430067777633667,
               "h1": 4.18459939956665,
               "link_index": -1,
@@ -125,7 +127,7 @@
               "y": 0.3579828441143036
             },
             {
-              "actions": 4112,
+              "actions": 4113,
               "h0": 5.234283447265625,
               "h1": 2.092690944671631,
               "link_index": -1,

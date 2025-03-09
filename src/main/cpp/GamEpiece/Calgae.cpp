@@ -195,10 +195,12 @@ void Calgae::autoShoot() {
 }
 
 // isCoral: True -> intake coral, isCoral: False -> intake algae
-void Calgae::autoIntake(bool isCoral) {
+void Calgae::autoIntake(bool isCoral, bool shouldTimeout) {
     isAuto = true;
     isAutoIntaking = true;
-    intakeTimeout.Restart();
+    if (shouldTimeout) {
+        intakeTimeout.Restart();
+    }
     lastGamepieceState = GamepieceState::kNONE;
     if (isCoral) {
         setMotorMode(MotorModes::kCORAL_INTAKE);
@@ -206,7 +208,10 @@ void Calgae::autoIntake(bool isCoral) {
         setMotorMode(MotorModes::kALGAE_INTAKE);
     }
 }
-
+void Calgae::stopAutoIntake() {
+    isAutoIntaking = false;
+    setMotorMode(MotorModes::kSTOP);
+}
 void Calgae::stopMotors() {
     motor.StopMotor();
 }

@@ -152,7 +152,7 @@ private:
                 return Action::Result::DONE;
                 
             if (!gamepiece->calgae->isAutoIntaking)
-                gamepiece->calgae->autoIntake(gp);
+                gamepiece->calgae->autoIntake(gp,true);
             return gamepiece->calgae->hasGamepiece() ? Action::Result::DONE : Action::Result::WORKING;
         };
     };
@@ -176,7 +176,37 @@ private:
     AutoAlign autoAlignRightNormal;
     AutoAlign autoAlignLeftL4;
     AutoAlign autoAlignRightL4;
+    class StartAlgaeIntake : public Action {
+         public:
+            StartAlgaeIntake(Gamepiece *gamepiece_, Calgae::GamepieceState gp_) : gamepiece(gamepiece_), gp(gp_) {};
+            Gamepiece *gamepiece;
+            Calgae::GamepieceState gp;
+            Action::Result process() override {
+                if (gamepiece->calgae == nullptr) 
+                    return Action::Result::DONE;
+                    
+                if (!gamepiece->calgae->isAutoIntaking)
+                    gamepiece->calgae->autoIntake(gp,false);
+                    return Action::Result::DONE;
+            };            
 
+
+    };
+    StartAlgaeIntake startAlgaeIntake;
+    class StopAlgaeIntake : public Action{
+        public:
+            Gamepiece *gamepiece;
+            Gamepiece *gamepiece;
+            Action::Result process() override {
+                if (gamepiece->calgae == nullptr) 
+                    return Action::Result::DONE;
+                    
+                if (gamepiece->calgae->isAutoIntaking)
+                    gamepiece->calgae->stopAutoIntake();
+                    return Action::Result::DONE;
+            };
+    };
+    StopAlgaeIntake stopAlgaeIntake;
     std::map<u_int32_t, Action*> actions {
         {1 << 0,  &autoAlignLeftNormal},    // Normal Left Align
         {1 << 1,  &autoAlignRightNormal},   // Normal Right Align
@@ -186,7 +216,7 @@ private:
         {1 << 5,  &toL2},                   // L2
         {1 << 6,  &toL3},                   // L3
         {1 << 7,  &toL4},                   // L4
-        {1 << 8   &toBarge},                // Barge
+        {1 << 8,  &toBarge},                // Barge
         {1 << 9,  &toCoralStation},         // Coral Station
         {1 << 10, &toReefLow},              // Reef Low
         {1 << 11, &toReefHigh},             // Reef High
@@ -194,7 +224,9 @@ private:
         {1 << 13, &intakeCoral},            // Intake Coral
         {1 << 14, &intakeAlgae},            // Intake Algae
         {1 << 15, &toTransit},              // Transit
-        {1 << 16, &toProcessor}             // Processor
+        {1 << 16, &toProcessor},             // Processor
+        {1 << 17, &startAlgaeIntake},       // Start Algae Intake
+        {1 << 18, &stopAlgaeIntake}         // Stop Algae Intake
     };
 
     std::string autoSelected;
