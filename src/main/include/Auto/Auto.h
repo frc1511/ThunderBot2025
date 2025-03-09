@@ -186,7 +186,7 @@ private:
         {1 << 5,  &toL2},                   // L2
         {1 << 6,  &toL3},                   // L3
         {1 << 7,  &toL4},                   // L4
-        {1 << 8   &toBarge},                // Barge
+        {1 << 8,  &toBarge},                // Barge
         {1 << 9,  &toCoralStation},         // Coral Station
         {1 << 10, &toReefLow},              // Reef Low
         {1 << 11, &toReefHigh},             // Reef High
