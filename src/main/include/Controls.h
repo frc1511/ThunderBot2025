@@ -33,6 +33,9 @@ class Controls : public Component {
     frc::XboxController auxController {1};
     frc::GenericHID switchBoard {2};
 
+    bool lastShouldToggleStationPreset = false;
+    bool controllerToggleStationPreset = false;
+
     bool manualMode = false;
     bool driveDisable = false;
     bool fieldCentric = false;
@@ -40,4 +43,12 @@ class Controls : public Component {
     bool hangDisable = false;
     bool ledDisable = false;
     bool EPDSLDisable = false; // Elevator Proportional Drive Speed Limiting
+
+    enum class StationState {
+      kNOT_ACTIVE,
+      kLOW,
+      kHIGH
+    };
+    
+    StationState currentStationState = StationState::kNOT_ACTIVE;
 };

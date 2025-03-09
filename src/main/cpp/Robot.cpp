@@ -144,6 +144,8 @@ void Robot::TestPeriodic() {
 	// 	gamepiece->elevator->manualMovement(0.05);
 	// 	gamepiece->elevator->process();
 	// }
+	// drive->swerveModules.at(1)->setDriveMotor(1_mps);
+	// drive->swerveModules.at(1)->turningMotor.Set(0.4);
 }
 
 void Robot::SimulationInit() { }

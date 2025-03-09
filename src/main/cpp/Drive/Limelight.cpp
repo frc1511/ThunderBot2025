@@ -18,26 +18,27 @@ std::optional<std::map<bool, LimelightHelpers::PoseEstimate>> Limelight::getEsti
 
 std::pair<bool,LimelightHelpers::PoseEstimate> Limelight::getLimelightPose(std::string name) {
     LimelightHelpers::PoseEstimate mt1 = LimelightHelpers::getBotPoseEstimate_wpiBlue(name);
-    if (allianceColor == frc::DriverStation::Alliance::kRed) 
-        LimelightHelpers::PoseEstimate mt1 = LimelightHelpers::getBotPoseEstimate_wpiRed(name);
 
     bool shouldUpdate = true;
-    if (mt1.tagCount == 0)
+    if (mt1.tagCount == 0) {
         shouldUpdate = false;
+    }
+
     if (mt1.tagCount == 1 && mt1.rawFiducials.size() == 1) {
-        if (mt1.rawFiducials[0].ambiguity > .4) {
+        if (mt1.rawFiducials[0].ambiguity > .7) {
             shouldUpdate = false;
         }
 
         if (mt1.rawFiducials[0].distToCamera > 3) { // distToCamera is in meters
             shouldUpdate = false;
         }
-    }
-
-    for (auto fiducial : mt1.rawFiducials) {
-        if (fiducial.ambiguity > .5) {
-            shouldUpdate = false;
-        }
+    } else {
+        // shouldUpdate = false;
+        // for (auto fiducial : mt1.rawFiducials) {
+        //     if (fiducial.distToCamera < 3 && fiducial.ambiguity < .45) {
+        //         shouldUpdate = true;
+        //     }
+        // }
     }
 
     return std::make_pair(shouldUpdate, mt1);

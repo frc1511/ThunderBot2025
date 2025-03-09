@@ -85,7 +85,8 @@ bool Wrist::atPreset0Out() {
 }
 
 bool Wrist::atPreset() {
-    if (encoderBroken) return true;    units::degree_t targetPosition = Positions[currentPreset];
+    if (encoderBroken) return true;    
+    units::degree_t targetPosition = Positions[currentPreset];
     units::degree_t difference = targetPosition - getEncoderDegrees();
 
     return fabs(difference.value()) < PreferencesWrist::ANGLE_TOLERANCE_AUTO.value();
@@ -117,6 +118,12 @@ double Wrist::getRawEncoder() {
 
 units::degree_t Wrist::getEncoderDegrees() {
     return units::degree_t(getRawEncoder() * 360) - PreferencesWrist::UP_ZERO; // 0-1 -> 0-360
+}
+
+double Wrist::getPercentRotation() {
+    double rotation = getEncoderDegrees().value();
+    double percent = rotation/360;
+    return std::clamp(percent, 0.0, 1.0);
 }
 
 double Wrist::feedForwardPower() {

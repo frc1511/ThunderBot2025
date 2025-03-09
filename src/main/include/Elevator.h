@@ -63,7 +63,7 @@ class Elevator : public Component {
         0_tr,     // Stopped (Does not move to 0 turns)
         0_tr,     // Ground
         0_tr,     // Processor
-        14.0_tr,  // Coral Station
+        14_tr,    // Coral Station
         8_tr,     // L1
         11.16_tr, // L2
         25.65_tr, // L3

@@ -3,30 +3,55 @@
 /***********************************************************/
 // Drive
 
-const units::inch_t DrivePreferences::WHEEL_DISTANCE_FROM_FRAME = 2.625_in;
-const units::inch_t DrivePreferences::ROBOT_WIDTH = 29_in - WHEEL_DISTANCE_FROM_FRAME * 2;
-const units::inch_t DrivePreferences::ROBOT_LENGTH = 30_in - WHEEL_DISTANCE_FROM_FRAME * 2;
-const units::radians_per_second_t DrivePreferences::DRIVE_AUTO_MAX_ANG_VEL = 9.28_rad_per_s;
-const units::radians_per_second_squared_t DrivePreferences::DRIVE_AUTO_MAX_ANG_ACCEL = 6.14_rad_per_s_sq;
+const units::inch_t PreferencesDrive::WHEEL_DISTANCE_FROM_FRAME = 2.625_in;
+const units::inch_t PreferencesDrive::ROBOT_WIDTH = 29_in - WHEEL_DISTANCE_FROM_FRAME * 2;
+const units::inch_t PreferencesDrive::ROBOT_LENGTH = 30_in - WHEEL_DISTANCE_FROM_FRAME * 2;
+const units::radians_per_second_t PreferencesDrive::DRIVE_AUTO_MAX_ANG_VEL = 9.28_rad_per_s;
+const units::radians_per_second_squared_t PreferencesDrive::DRIVE_AUTO_MAX_ANG_ACCEL = 6.14_rad_per_s_sq;
 
-const units::meters_per_second_t DrivePreferences::DRIVE_MANUAL_MAX_VEL = 5_mps;
-const units::degrees_per_second_t DrivePreferences::DRIVE_MANUAL_MAX_ANG_VEL = 540_deg_per_s; // 540
-const units::radians_per_second_squared_t DrivePreferences::DRIVE_MANUAL_MAX_ANG_ACCEL = 9.42_rad_per_s_sq; // 9.42
-const units::meters_per_second_squared_t DrivePreferences::MAX_ACCEL = 0.01_mps_sq;
-const double DrivePreferences::DRIVE_ROTATION_SPEED_MANUAL_LIMITER_SLOWNESS_FACTOR = .5;
-const double DrivePreferences::DRIVE_VELOCITY_SPEED_MANUAL_LIMITER_SLOWNESS_FACTOR = .5;
+const units::meters_per_second_t PreferencesDrive::DRIVE_MANUAL_MAX_VEL = 5_mps;
+const units::degrees_per_second_t PreferencesDrive::DRIVE_MANUAL_MAX_ANG_VEL = 540_deg_per_s; // 540
+const units::radians_per_second_squared_t PreferencesDrive::DRIVE_MANUAL_MAX_ANG_ACCEL = 9.42_rad_per_s_sq; // 9.42
+const units::meters_per_second_squared_t PreferencesDrive::MAX_ACCEL = 0.01_mps_sq;
+const double PreferencesDrive::DRIVE_ROTATION_SPEED_MANUAL_LIMITER_SLOWNESS_FACTOR = .5;
+const double PreferencesDrive::DRIVE_VELOCITY_SPEED_MANUAL_LIMITER_SLOWNESS_FACTOR = .5;
 
-const frc::Pose2d DrivePreferences::REEF_POSE = {4.493839_m, 4.025221_m, frc::Rotation2d(0_deg)};
-const units::meter_t DrivePreferences::HORIZONTAL_REEF_MOVE = 0.2_m;
-const units::meter_t DrivePreferences::VERTICAL_REEF_MOVE = 0.2_m;
+const frc::Pose2d PreferencesDrive::REEF_POSE = {4.493839_m, 4.025221_m, frc::Rotation2d(0_deg)};
+const units::meter_t PreferencesDrive::HORIZONTAL_REEF_MOVE = 0.2_m;
+const units::meter_t PreferencesDrive::VERTICAL_REEF_MOVE = 0.2_m;
 
-const PID_t DrivePreferences::PID_XY = {
+const PID_t PreferencesDrive::PID_XY = {
     .Kp = 7.5
 };
-const PID_t DrivePreferences::PID_THETA = {
+const PID_t PreferencesDrive::PID_THETA = {
     .Kp = 13,
     .Kd = 0.125
 };
+
+/**
+ * Reef x, 0
+ * Field Width x, Reef y
+ */
+const std::vector<Point> PreferencesDrive::QUADRANT_LEFT = {
+    Point{.x = 4.493839_m, .y = 0_m},
+    Point{.x = 17.55_m, .y = 4.025221_m}
+};
+/**
+ * 0, 0
+ * Reef x, Reef y
+ */
+const std::vector<Point> PreferencesDrive::QUADRANT_RIGHT = {
+    Point{.x = 0_m, .y = 0_m},
+    Point{.x = 4.493839_m, .y = 4.025221_m}
+};
+
+// Point for welded field
+const Point PreferencesDrive::APRIL_TAG_18 {
+    .x = 3.6576_m,
+    .y = 4.0259_m
+};
+
+const units::meter_t PreferencesDrive::ROBOT_WITH_BUMPERS_LENGTH = 0.930275_m;
 
 
 /***********************************************************/
