@@ -57,12 +57,14 @@ Robot::Robot() :
 }
 
 void Robot::RobotInit() {
-	if (auto_ != nullptr)
-		auto_->autoSelectorInit();
-
 	Alert::startTimer();
 
 	gamepiece->elevator->zeroMotors();
+
+	if (auto_ != nullptr) {
+		auto_->autoImportAutoAutos();
+		auto_->autoSelectorInit();
+	}
 
 	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_EMPTY);
 	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_EMPTY);

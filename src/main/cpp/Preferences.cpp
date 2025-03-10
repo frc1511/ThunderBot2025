@@ -24,7 +24,7 @@ const PID_t PreferencesDrive::PID_XY = {
     .Kp = 7.5
 };
 const PID_t PreferencesDrive::PID_THETA = {
-    .Kp = 13,
+    .Kp = 6,
     .Kd = 0.125
 };
 

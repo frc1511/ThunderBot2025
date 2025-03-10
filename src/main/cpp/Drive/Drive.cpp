@@ -460,6 +460,7 @@ void Drive::execTrajectory() {
 
     // Don't be moving if an action is being worked on.
     if (actionExecuting) {
+        state.pose = getEstimatedPose();
         state.velocity = 0_mps;
     }
 

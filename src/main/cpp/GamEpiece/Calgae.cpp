@@ -12,7 +12,7 @@ void Calgae::resetToMatchMode(Component::MatchMode lastMode, Component::MatchMod
     stopMotors();
 
     isAuto = false;
-
+    motorMode = Calgae::MotorModes::kSTOP;
     switch (mode) {
         case Component::MatchMode::DISABLED:
             stopMotors();

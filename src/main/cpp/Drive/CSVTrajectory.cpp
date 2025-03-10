@@ -1,7 +1,12 @@
 #include "Drive/CSVTrajectory.h"
 #include "Drive/Parser.h"
 
-CSVTrajectory::CSVTrajectory(std::filesystem::path path, bool inverted) {
+CSVTrajectory::CSVTrajectory(std::filesystem::path path, bool inverted, StartPosition startPos, ScorePosition firstScorePos, AlgaePosition algaePos, CoralStationPosition coralStationPos, ScorePosition secondScorePos)
+: startPosition(startPos),
+  firstScorePosition(firstScorePos),
+  algaePosition(algaePos),
+  coralStationPosition(coralStationPos),
+  secondScorePosition(secondScorePos) {
     std::string fileStr = Parser::getFile(path);
     if (fileStr.empty()) exit(1);
 
