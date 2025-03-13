@@ -137,6 +137,7 @@ void Drive::driveWithVelocities(units::meters_per_second_t xVel, units::meters_p
 
     newXVel   *= speedLimiting;
     newYVel   *= speedLimiting;
+    //TODO: Change this up a bit (ask Ben D)
     newAngVel *= speedLimiting;
 
     // Stop the robot in brick mode no matter what.
@@ -480,10 +481,12 @@ void Drive::driveToState(CSVTrajectory::State state) {
 
     // The angle at which the robot should be driving at.
     frc::Rotation2d heading;
-    if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
-        heading = frc::Rotation2d(twist.dtheta + 180_deg);
-    } else {
-        heading = frc::Rotation2d(twist.dtheta);
+    if (auto ally = frc::DriverStation::GetAlliance()) {
+        if (ally == frc::DriverStation::Alliance::kRed) {
+            heading = frc::Rotation2d(twist.dtheta + 180_deg);
+        } else {
+            heading = frc::Rotation2d(twist.dtheta);
+        }
     }
 
     //// printf("Speed: %lf, X: %lf, Y: %lf, stateRot: %lf, heading: %lf\n", state.velocity.value(), state.pose.X().value(), state.pose.Y().value(), state.pose.Rotation().Degrees().value(), heading.Degrees().value());
@@ -611,11 +614,13 @@ frc::Pose2d Drive::calculateFinalLineupPose(int posId, bool isLeftSide, bool isL
     frc::Rotation2d finalRot = frc::Rotation2d(newRot);
 
     //------------------------- Flip over field for Red
-    if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
-        
-        finalX = PreferencesTrajectory::FIELD_X - finalX;
-        finalY = PreferencesTrajectory::FIELD_Y - finalY;
-        finalRot = frc::Rotation2d(finalRot.Degrees() + 180_deg);
+    if (auto ally = frc::DriverStation::GetAlliance()) {
+        if (ally == frc::DriverStation::Alliance::kRed) {
+            
+            finalX = PreferencesTrajectory::FIELD_X - finalX;
+            finalY = PreferencesTrajectory::FIELD_Y - finalY;
+            finalRot = frc::Rotation2d(finalRot.Degrees() + 180_deg);
+        }
     }
 
     return frc::Pose2d(finalX, finalY, finalRot);

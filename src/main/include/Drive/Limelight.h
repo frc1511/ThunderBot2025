@@ -20,5 +20,4 @@ class Limelight {
     void setFunctioningState(bool isFunctioning_);
   private:
     LimelightHelpers::PoseEstimate limelightMeasurement;
-    frc::DriverStation::Alliance allianceColor = frc::DriverStation::GetAlliance().value();
 };

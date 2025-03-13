@@ -23,7 +23,7 @@ void Controls::process() {
                                       (gamepiece->elevator->Position[Elevator::Preset::kNET] - gamepiece->elevator->Position[Elevator::Preset::kL3])).value();
 
             if (elevatorPercent > 0) {
-                elevatorPercent = 0.97 - pow(elevatorPercent - 1, 2);
+                elevatorPercent = 0.95 - pow(elevatorPercent - 1, 2);
                 elevatorPercent = std::clamp(elevatorPercent, 0.0, 1.0);
                 speedReduction = elevatorPercent;
             }
@@ -80,25 +80,21 @@ void Controls::process() {
         double finalSpeedReduction = std::clamp(1 - speedReduction, 0.0, 1.0) * -1;
 
         frc::SmartDashboard::PutNumber("Controls Final Speed Reduction", finalSpeedReduction);
-
-        if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {
-            finalSpeedReduction *= -1;
-        }
         
         bool isLiningUp = driveController.GetBButton(); // Line up if B button held
 
         if (flags == 0 && xPercent == 0 && yPercent == 0 && rotPercent == 0 && !robotCentricFromController && isLiningUp) {
-            static bool Left = false;
-            Left = driveController.GetPOV() == 270 ? true : Left;  // Set to left if left dpad pressed, else use prexisting
-            Left = driveController.GetPOV() == 90  ? false : Left; // Set to right if right dpad pressed, else use prexisting
-            static bool L4 = false;
-            L4 = driveController.GetXButtonPressed() ? !L4 : L4;   // Toggle if start pressed, else retain state
-            drive->beginLineup(Left, L4);
+            isLeftAutoAlign = driveController.GetPOV() == 270 ? true : isLeftAutoAlign;  // Set to left if left dpad pressed, else use prexisting
+            isLeftAutoAlign = driveController.GetPOV() == 90  ? false : isLeftAutoAlign; // Set to right if right dpad pressed, else use prexisting
+            isL4AutoAlign = driveController.GetXButtonPressed() ? !isL4AutoAlign : isL4AutoAlign;   // Toggle if start pressed, else retain state
+            drive->beginLineup(isLeftAutoAlign, isL4AutoAlign);
         } else {
             isLiningUp = false;
             if (fieldCentric && !robotCentricFromController) {
-                if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {
-                    finalSpeedReduction *= -1;
+                if (auto ally = frc::DriverStation::GetAlliance()) {
+                    if (ally == frc::DriverStation::Alliance::kRed) {
+                        finalSpeedReduction *= -1;
+                    }
                 }
                 flags |= Drive::ControlFlag::FIELD_CENTRIC;
             }
@@ -257,6 +253,9 @@ void Controls::sendFeedback() {
     frc::SmartDashboard::PutBoolean("Controls cont ST Station Preset", controllerToggleStationPreset);
 
     frc::SmartDashboard::PutNumber("Controls current Station State", (int)currentStationState);
+
+    frc::SmartDashboard::PutBoolean("Controls AutoAlign in Left mode", isLeftAutoAlign);
+    frc::SmartDashboard::PutBoolean("Controls AutoAlign in L4 mode",   isL4AutoAlign);
 }
 
 void Controls::utilizeSwitchBoard() {

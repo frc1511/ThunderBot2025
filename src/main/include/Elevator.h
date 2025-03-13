@@ -72,7 +72,7 @@ class Elevator : public Component {
         1_tr,     // Transit
         11.16_tr, // Reef Low
         25.65_tr, // Reef High
-        13.6_tr,  // Coral Station Low
+        10.53_tr,  // Coral Station Low
     };
 
     Preset targetPreset = Elevator::Preset::kSTOP;
