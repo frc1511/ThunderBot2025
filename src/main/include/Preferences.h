@@ -162,6 +162,7 @@ struct PreferencesHang
     static const double MAX_POSITION;
     static const double MAX_HANG_SPEED_UP;
     static const double MAX_HANG_SPEED_DOWN;
+    static const double HANG_SPEED_DOWN_SLOW;
     static const double BACKTRACKING_SPEED;
     static const double BACKTRACKING_DISTANCE;
     static const units::second_t DISENGAGE_DURATION;

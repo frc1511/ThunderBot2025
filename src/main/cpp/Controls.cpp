@@ -49,8 +49,8 @@ void Controls::process() {
 
         bool slowDrive = driveController.GetLeftBumperButtonPressed();
         bool speedUpDrive = driveController.GetRightBumperButtonPressed();
-        bool lockRot = driveController.GetStartButtonPressed();
-        bool resetIMU = driveController.GetYButtonPressed();
+        bool lockRot = false;//driveController.GetStartButtonPressed();
+        bool resetIMU = driveController.GetStartButtonPressed();
         bool brickMode = driveController.GetAButton();
         bool robotCentricFromController = fabs(driveController.GetRightTriggerAxis()) > PreferencesControls::AXIS_DEADZONE;
         unsigned flags = 0;
@@ -68,8 +68,10 @@ void Controls::process() {
             flags |= Drive::ControlFlag::BRICK;
 
 
-        if (resetIMU)
+        if (resetIMU) {
+            printf("Driver pressed the funny button (reset IMU was pressed)\n");
             drive->resetOdometry();
+        }
 
         if (slowDrive)
             drive->slowYourRoll();
@@ -208,17 +210,25 @@ void Controls::process() {
 
     if (hang != nullptr && auxController.IsConnected() && !auxDisable && !hangDisable && !manualMode) { // No hang in manual mode
         double hangPercent = -auxController.GetLeftY();
+        double hangPercentFasty = -auxController.GetRightY();
 
-        if (fabs(hangPercent) < PreferencesControls::AXIS_DEADZONE) {
+        if (fabs(hangPercent) < PreferencesControls::AXIS_DEADZONE && fabs(hangPercentFasty) < PreferencesControls::AXIS_DEADZONE) {
             hangPercent = 0;
             hang->setControlMode(Hang::ControlMode::STOPPED);
+            hang->fastyFast = false;
+        } else {
+            if (hangPercent > 0) {
+                hang->setControlMode(Hang::ControlMode::GOING_UP);
+            } else if (hangPercent < 0 || hangPercentFasty < 0) {
+                if (hangPercentFasty < 0) {
+                    hang->fastyFast = true;
+                } else {
+                    hang->fastyFast = false;
+                }
+                hang->setControlMode(Hang::ControlMode::GOING_DOWN);
+            }
         }
 
-        if (hangPercent > 0) {
-            hang->setControlMode(Hang::ControlMode::GOING_UP);
-        } else if (hangPercent < 0) {
-            hang->setControlMode(Hang::ControlMode::GOING_DOWN);
-        }
     }
 
     // Elevator Manual Movement Code, re-implement if needed

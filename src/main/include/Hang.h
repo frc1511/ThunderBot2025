@@ -44,6 +44,8 @@ class Hang : public Component {
 
     void setControlMode(ControlMode controlMode);
 
+    bool fastyFast = false;
+
   private:
     void updateRealSolenoidState();
     void setSolenoidState(SolenoidState state);

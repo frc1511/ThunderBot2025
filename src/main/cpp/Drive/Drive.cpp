@@ -237,19 +237,6 @@ void Drive::sendFeedback() {
     frc::SmartDashboard::PutBoolean("Drive_LockRot",                controlData.flags & ControlFlag::LOCK_ROT);
     frc::SmartDashboard::PutNumber("Drive_Mode_Enum_Index",         (int)driveMode);
 
-    // ThunderDashboard things.
-    frc::SmartDashboard::PutNumber("thunderdashboard_drive_x_pos",        pose.X().value());
-    frc::SmartDashboard::PutNumber("thunderdashboard_drive_y_pos",        pose.Y().value());
-    frc::SmartDashboard::PutNumber("thunderdashboard_drive_target_x_pos", targetPose.X().value());
-    frc::SmartDashboard::PutNumber("thunderdashboard_drive_target_y_pos", targetPose.Y().value());
-    frc::SmartDashboard::PutNumber("thunderdashboard_drive_x_vel",        chassisSpeeds.vx.value());
-    frc::SmartDashboard::PutNumber("thunderdashboard_drive_y_vel",        chassisSpeeds.vy.value());
-    frc::SmartDashboard::PutNumber("thunderdashboard_drive_ang_vel",      chassisSpeeds.omega.value());
-    frc::SmartDashboard::PutNumber("thunderdashboard_drive_ang",          pose.Rotation().Radians().value());
-    frc::SmartDashboard::PutNumber("thunderdashboard_drive_target_ang",   targetPose.Rotation().Radians().value());
-
-    frc::SmartDashboard::PutBoolean("thunderdashboard_gyro", !imuCalibrated);
-
     // Nyoom
     bool playNyoom = false;
 

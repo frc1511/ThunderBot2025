@@ -30,7 +30,11 @@ void Hang::process() {
 
         case ControlMode::GOING_DOWN:
             if (!isHung()) {
-                speed = PreferencesHang::MAX_HANG_SPEED_DOWN;
+                if (fastyFast) {
+                    speed = PreferencesHang::MAX_HANG_SPEED_DOWN;
+                } else {
+                    speed = PreferencesHang::HANG_SPEED_DOWN_SLOW;
+                }
             }
 
             desiredSolenoidState = SolenoidState::DOWN;
@@ -135,6 +139,7 @@ void Hang::sendFeedback() {
     frc::SmartDashboard::PutBoolean("Hang Hung",            isHung());
     frc::SmartDashboard::PutBoolean("Hang Solenoid Up",     isSolenoidUp());
     frc::SmartDashboard::PutNumber ("Hang Position",        getMotorPosition());
+    frc::SmartDashboard::PutBoolean("Hang Fasty Fast",      fastyFast);
 }
 
 std::string Hang::currentModeAsString() {
