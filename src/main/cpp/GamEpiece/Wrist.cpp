@@ -166,6 +166,7 @@ std::string Wrist::presetAsString() {
         case Preset::kTRANSIT: return "Transit";
         case Preset::kREEF: return "Reef";
         case Preset::kCORAL_STATION_LOW: return "Coral Station Low";
+        case Preset::kNET: return "Net";
         default: return "ERROR: Unknown/Incorrect";
     }
 }

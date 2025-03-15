@@ -68,7 +68,7 @@ class Elevator : public Component {
         11.16_tr, // L2
         25.35_tr, // L3
         58_tr,    // L4
-        72.27_tr, // Net
+        66.1_tr,  // Net
         1_tr,     // Transit
         11.16_tr, // Reef Low
         25.65_tr, // Reef High

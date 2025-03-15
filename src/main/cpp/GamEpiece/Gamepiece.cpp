@@ -87,7 +87,7 @@ void Gamepiece::moveToTarget() {
             case Gamepiece::kL2:                wrist->toPreset(Wrist::Preset::kBRANCH2_3);          break;
             case Gamepiece::kL3:                wrist->toPreset(Wrist::Preset::kBRANCH2_3);          break;
             case Gamepiece::kL4:                wrist->toPreset(Wrist::Preset::kBRANCH4);            break;
-            case Gamepiece::kNET:               wrist->toPreset(Wrist::Preset::kTROUGH);             break;
+            case Gamepiece::kNET:               wrist->toPreset(Wrist::Preset::kNET);                break;
             case Gamepiece::kPROCESSOR:         wrist->toPreset(Wrist::Preset::kPROCESSOR);          break;
             case Gamepiece::kTRANSIT:           wrist->toPreset(Wrist::Preset::kTRANSIT);            break;
             case Gamepiece::kREEF_HIGH:         wrist->toPreset(Wrist::Preset::kREEF);               break;
@@ -137,13 +137,36 @@ void Gamepiece::moveToTarget() {
 }
 
 bool Gamepiece::isAtPreset() {
-    if (wrist != nullptr)
-        if (!wrist->atPreset())
-            return false;
+    if (wrist != nullptr) {
+        // Silly Stuff for auto (b/c wrist target preset isnt set until elev @ target)
+        //! Mason, if you see this before I come back to it, I think the problem w/ L4 auto is that wrist reads atPreset==true until we give it a new one, and it returns true and gamepiece thinks it's at the preset before the wrist is told it's new position. Just a hypothesis. Didn't have time to debug and couldn't tell if I even did this right, but I didn't see results from what is right here. 
+        switch (targetPreset) {
+            case Preset::kGROUND:            if (!(wrist->currentPreset == Wrist::Preset::kGROUND))            return false; else break;
+            case Preset::kPROCESSOR:         if (!(wrist->currentPreset == Wrist::Preset::kPROCESSOR))         return false; else break;
+            case Preset::kTRANSIT:           if (!(wrist->currentPreset == Wrist::Preset::kTRANSIT))           return false; else break;
+            case Preset::kL1:                if (!(wrist->currentPreset == Wrist::Preset::kTROUGH))            return false; else break;
+            case Preset::kL2:                if (!(wrist->currentPreset == Wrist::Preset::kBRANCH2_3))         return false; else break;
+            case Preset::kREEF_LOW:          if (!(wrist->currentPreset == Wrist::Preset::kREEF))              return false; else break;
+            case Preset::kCORAL_STATION_LOW: if (!(wrist->currentPreset == Wrist::Preset::kCORAL_STATION_LOW)) return false; else break;
+            case Preset::kCORAL_STATION:     if (!(wrist->currentPreset == Wrist::Preset::kSTATION))           return false; else break;
+            case Preset::kL3:                if (!(wrist->currentPreset == Wrist::Preset::kBRANCH2_3))         return false; else break;
+            case Preset::kREEF_HIGH:         if (!(wrist->currentPreset == Wrist::Preset::kREEF))              return false; else break;
+            case Preset::kNET:               if (!(wrist->currentPreset == Wrist::Preset::kNET))               return false; else break;
+            default:
+                // Don't return true
+                break;
+        }
 
-    if (elevator != nullptr)
-        if (!elevator->atPreset())
+        if (!wrist->atPreset()) {
             return false;
+        }
+    }
+
+    if (elevator != nullptr) {
+        if (!elevator->atPreset()) {
+            return false;
+        }
+    }
 
     return true;
 }

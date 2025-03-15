@@ -30,6 +30,7 @@ class Wrist : public Component {
         kTRANSIT,
         kREEF,
         kCORAL_STATION_LOW,
+        kNET,
         _enum_MAX
     };
 
@@ -63,6 +64,7 @@ class Wrist : public Component {
         -37_deg,   // Transit
          0_deg,    // Reef
         -37_deg,   // Coral Station Low
+         0_deg     // Net
     };
 
     double getRawEncoder();
