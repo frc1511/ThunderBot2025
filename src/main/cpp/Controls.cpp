@@ -96,6 +96,7 @@ void Controls::process() {
                 if (auto ally = frc::DriverStation::GetAlliance()) {
                     if (ally == frc::DriverStation::Alliance::kRed) {
                         finalSpeedReduction *= -1;
+                        rotPercent *= -1;
                     }
                 }
                 flags |= Drive::ControlFlag::FIELD_CENTRIC;

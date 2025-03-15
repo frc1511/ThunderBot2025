@@ -30,11 +30,11 @@ void Hang::process() {
 
         case ControlMode::GOING_DOWN:
             if (!isHung()) {
-                if (fastyFast) {
-                    speed = PreferencesHang::MAX_HANG_SPEED_DOWN;
-                } else {
-                    speed = PreferencesHang::HANG_SPEED_DOWN_SLOW;
-                }
+                // if (fastyFast) {
+                speed = PreferencesHang::MAX_HANG_SPEED_DOWN;
+                // } else {
+                //     speed = PreferencesHang::HANG_SPEED_DOWN_SLOW;
+                // }
             }
 
             desiredSolenoidState = SolenoidState::DOWN;
