@@ -150,6 +150,7 @@ bool Gamepiece::isAtPreset() {
             case Preset::kCORAL_STATION_LOW: if (!(wrist->currentPreset == Wrist::Preset::kCORAL_STATION_LOW)) return false; else break;
             case Preset::kCORAL_STATION:     if (!(wrist->currentPreset == Wrist::Preset::kSTATION))           return false; else break;
             case Preset::kL3:                if (!(wrist->currentPreset == Wrist::Preset::kBRANCH2_3))         return false; else break;
+            case Preset::kL4:                if (!(wrist->currentPreset == Wrist::Preset::kBRANCH4))           return false; else break;
             case Preset::kREEF_HIGH:         if (!(wrist->currentPreset == Wrist::Preset::kREEF))              return false; else break;
             case Preset::kNET:               if (!(wrist->currentPreset == Wrist::Preset::kNET))               return false; else break;
             default:
