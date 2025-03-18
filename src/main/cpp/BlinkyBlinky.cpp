@@ -132,7 +132,7 @@ void BlinkyBlinky::process() {
             currentMode = Mode::RAINBOW;
         }
 
-        if (settings.pitMode) { // (fr) Nous sommes en le Pit Mode | We are in pit mode
+        if (settings.pitMode) { // (fr) Nous sommes en le Pit Mode | We are in pit mode 
             static double pitModePosition = 0;
             applyPercentOverLeds([&](double percent) -> LEDData {
                 LEDData color {};

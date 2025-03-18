@@ -16,6 +16,10 @@ Robot::Robot() :
 				hang(nullptr),
 				allComponents()
 {
+	frc::DataLogManager::Start();
+	frc::DataLogManager::LogNetworkTables(true);
+	frc::DataLogManager::LogConsoleOutput(true);
+	frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
 #ifdef ENABLE_DRIVE
 	drive = new Drive(&limelight);
 	allComponents.push_back(drive);

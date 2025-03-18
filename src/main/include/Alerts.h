@@ -36,13 +36,13 @@ class Alert {
                                                                    .displayTime = 2_s,};
 
     // MARK: Controller Alerts
-    inline static const elastic::Notification driveDisabledAlert             = {.level = elastic::NotificationLevel::WARNING,
-                                                                                .title = "Drive Disabled",
-                                                                                .description = "Drive Disabled or Drive Controller Disconnected",
+    inline static const elastic::Notification driveDisconnectedAlert         = {.level = elastic::NotificationLevel::WARNING,
+                                                                                .title = "Drive Disconnected",
+                                                                                .description = "Drive Disconnected",
                                                                                 .displayTime = 2_s,};
-    inline static const elastic::Notification auxDisabledAlert               = {.level = elastic::NotificationLevel::WARNING,
-                                                                                .title = "Aux Disabled",
-                                                                                .description = "Aux Disabled or Aux Controller Disconnected",
+    inline static const elastic::Notification auxDisconnectedAlert           = {.level = elastic::NotificationLevel::WARNING,
+                                                                                .title = "Aux Disconnected",
+                                                                                .description = "Aux Disconnected",
                                                                                 .displayTime = 2_s,};
     inline static const elastic::Notification switchBoardDisconnectedAlert   = {.level = elastic::NotificationLevel::WARNING,
                                                                                 .title = "Switchboard Disconnected",
@@ -59,28 +59,14 @@ class Alert {
                                                                 .description = "Battery Voltage dipped below 9 volts",
                                                                 .displayTime = 1_s,};
 
-    inline static bool driveDisabled = false;
-    inline static bool auxDisabled = false;
+    inline static bool auxDisconnected = false;
+    inline static bool driveDisconnected = false;
     inline static bool switchBoardDisconnected = false;
 
-    static void reAllowControllerAlerts() {
-        driveDisabled = false;
-        auxDisabled = false;
-        switchBoardDisconnected = false;
-    }
-
     static void sendDisconnectAndDisableStates(bool auxConnected, bool driveConnected, bool switchBoardConnected) {
-        if (!auxDisabled && !auxConnected) {
-            auxDisabled = true;
-        }
-
-        if (!driveDisabled && !driveConnected) {
-            driveDisabled = true;
-        }
-
-        if (!switchBoardDisconnected && !switchBoardConnected) {
-            switchBoardDisconnected = true;
-        }
+        auxDisconnected = !auxConnected;
+        driveDisconnected = !driveConnected;
+        switchBoardDisconnected = !driveConnected;
     }
 
     inline static frc::Timer alertTimer {};
@@ -149,13 +135,13 @@ class Alert {
             }
         } else if (currentTime >= 2.0 && numberOfAlertsTried == 1) {
             numberOfAlertsTried++;
-            if (auxDisabled) {
-                elastic::SendNotification(auxDisabledAlert);
+            if (auxDisconnected) {
+                elastic::SendNotification(auxDisconnectedAlert);
             }
         } else if (currentTime >= 0.0 && numberOfAlertsTried == 0) {
             numberOfAlertsTried++;
-            if (driveDisabled) {
-                elastic::SendNotification(driveDisabledAlert);
+            if (driveDisconnected) {
+                elastic::SendNotification(driveDisconnectedAlert);
             }
         }
     }

@@ -5,6 +5,8 @@
 #pragma once
 
 #include <frc/TimedRobot.h>
+#include <frc/DataLogManager.h>
+#include <frc/DriverStation.h>
 
 #include "Basic/Component.h"
 #include "Drive/Drive.h"
@@ -38,7 +40,6 @@ class Robot : public frc::TimedRobot {
 
 	void SimulationInit() override;
 	void SimulationPeriodic() override;
-
   private:
 	void reset(Component::MatchMode mode);
 	Component::MatchMode lastMode = Component::MatchMode::DISABLED;

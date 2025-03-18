@@ -7,8 +7,8 @@
       "img": "2025",
       "img_type": 1
     },
-    "robot_length": 0.930275,
-    "robot_width": 0.879475
+    "robot_length": 0.930275022983551,
+    "robot_width": 0.8794749975204468
   },
   "state": {
     "actions": [
@@ -66,7 +66,7 @@
           ],
           "settings": {
             "max_centripetal_accel": 19.6200008392334,
-            "max_linear_accel": 1.5,
+            "max_linear_accel": 0.5,
             "max_linear_vel": 2.0
           }
         }

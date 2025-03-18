@@ -139,7 +139,7 @@ void Gamepiece::moveToTarget() {
 bool Gamepiece::isAtPreset() {
     if (wrist != nullptr) {
         // Silly Stuff for auto (b/c wrist target preset isnt set until elev @ target)
-        //! Mason, if you see this before I come back to it, I think the problem w/ L4 auto is that wrist reads atPreset==true until we give it a new one, and it returns true and gamepiece thinks it's at the preset before the wrist is told it's new position. Just a hypothesis. Didn't have time to debug and couldn't tell if I even did this right, but I didn't see results from what is right here. 
+        //! If you see this before I come back to it, I think the problem w/ L4 auto is that wrist reads atPreset==true until we give it a new one, and it returns true and gamepiece thinks it's at the preset before the wrist is told it's new position. Just a hypothesis. Didn't have time to debug and couldn't tell if I even did this right, but I didn't see results from what is right here. 
         switch (targetPreset) {
             case Preset::kGROUND:            if (!(wrist->currentPreset == Wrist::Preset::kGROUND))            return false; else break;
             case Preset::kPROCESSOR:         if (!(wrist->currentPreset == Wrist::Preset::kPROCESSOR))         return false; else break;

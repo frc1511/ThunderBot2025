@@ -36,6 +36,9 @@ void Auto::autoImportAutoAutos() {
 
     int currentId = 2;
 
+    int addedAutos = 0;
+    int totalAutos = pathFileLocations.size();
+
     for (auto pathLocation : pathFileLocations) {
         bool isNotTrash = false;
         std::string fileName = pathLocation.filename().string().substr(0, pathLocation.filename().string().size() - 4); // Remove the .csv
@@ -86,7 +89,7 @@ void Auto::autoImportAutoAutos() {
             bluePaths.insert({id, CSVTrajectory(pathLocation, false, startPosition, firstScorePosition)});
             redPaths.insert({id, CSVTrajectory(pathLocation, true, startPosition, firstScorePosition)});
             convertTable.insert({id, currentId++});
-            printf("Auto path `%s` was added\n", pathLocation.c_str());\
+            addedAutos++;
             continue;
         }
         fileName = fileName.substr(matchedTextLength, fileName.size() - matchedTextLength);
@@ -134,7 +137,7 @@ void Auto::autoImportAutoAutos() {
                 bluePaths.insert({id, CSVTrajectory(pathLocation, false, startPosition, firstScorePosition, algaePosition)});
                 redPaths.insert({id, CSVTrajectory(pathLocation, true, startPosition, firstScorePosition, algaePosition)});
                 convertTable.insert({id, currentId++});
-                printf("Auto path `%s` was added\n", pathLocation.c_str());
+                addedAutos++;
                 continue;    
             }
             fileName = fileName.substr(matchedTextLength, fileName.size() - matchedTextLength);
@@ -168,7 +171,6 @@ void Auto::autoImportAutoAutos() {
                 continue;
             }
             fileName = fileName.substr(matchedTextLength, fileName.size() - matchedTextLength);
-            printf("Post parse: %s\n", fileName.c_str());
 
             //! Get the next scoring location
             size_t matchedTextLength = 0;
@@ -190,7 +192,7 @@ void Auto::autoImportAutoAutos() {
                 bluePaths.insert({id, CSVTrajectory(pathLocation, false, startPosition, firstScorePosition, AlgaePosition::kNONE, coralStationPosition, secondScorePosition)});
                 redPaths.insert({id, CSVTrajectory(pathLocation, true, startPosition, firstScorePosition, AlgaePosition::kNONE, coralStationPosition, secondScorePosition)});
                 convertTable.insert({id, currentId++});
-                printf("Auto path `%s` was added\n", pathLocation.c_str());
+                addedAutos++;
                 continue;
             }
             fileName = fileName.substr(matchedTextLength, fileName.size() - matchedTextLength);
@@ -199,6 +201,7 @@ void Auto::autoImportAutoAutos() {
 
         printf("Auto path `%s` was rejected for being to complex and not being able to be parsed at this time. :)\n", pathLocation.c_str());
     }
+    printf("Autos Parsing Info: %d/%d were accepted\n", addedAutos, totalAutos);
 }
 
 void Auto::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
@@ -286,7 +289,7 @@ void Auto::autoSelectorInit() {
             continue;
         }
         if (i.first == "Leave") {
-            autoSelector.AddOption("Moving the waste of space slightly forward to get an RP (Leave)", (int)i.second); // Other Special Things
+            autoSelector.AddOption("LEAVE | Moving the waste of space slightly forward to get an RP", (int)i.second); // Other Special Things
             continue;
         }
         CSVTrajectory trajectory = redPaths.at(i.first);
