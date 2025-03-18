@@ -5,8 +5,6 @@
 #pragma once
 
 #include <frc/TimedRobot.h>
-#include <frc/DataLogManager.h>
-#include <frc/DriverStation.h>
 
 #include "Basic/Component.h"
 #include "Drive/Drive.h"
@@ -19,6 +17,7 @@
 #include "BlinkyBlinky.h"
 #include "Hang.h"
 #include "Alerts.h"
+#include "Basic/ThunderLogger.h"
 
 class Robot : public frc::TimedRobot {
   public:

@@ -16,10 +16,6 @@ Robot::Robot() :
 				hang(nullptr),
 				allComponents()
 {
-	frc::DataLogManager::Start();
-	frc::DataLogManager::LogNetworkTables(true);
-	frc::DataLogManager::LogConsoleOutput(true);
-	frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
 #ifdef ENABLE_DRIVE
 	drive = new Drive(&limelight);
 	allComponents.push_back(drive);
@@ -85,6 +81,8 @@ void Robot::RobotPeriodic() {
 void Robot::AutonomousInit() {
     reset(Component::MatchMode::AUTO);
 
+	ThunderLogger::StartLogging();
+
 	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_APRILTAGS);
 	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_APRILTAGS);
 }
@@ -95,6 +93,8 @@ void Robot::AutonomousPeriodic() {
 
 void Robot::TeleopInit() {
     reset(Component::MatchMode::TELEOP);
+
+	ThunderLogger::StartLogging();
 
 	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_APRILTAGS);
 	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_APRILTAGS);
@@ -109,6 +109,8 @@ void Robot::TeleopPeriodic() {
 
 void Robot::DisabledInit() {
     reset(Component::MatchMode::DISABLED);
+
+	ThunderLogger::StopLogging();
 
 	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_EMPTY);
 	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_EMPTY);
