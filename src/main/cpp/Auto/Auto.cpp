@@ -196,7 +196,6 @@ void Auto::autoImportAutoAutos() {
                 continue;
             }
             fileName = fileName.substr(matchedTextLength, fileName.size() - matchedTextLength);
-
         }
 
         printf("Auto path `%s` was rejected for being to complex and not being able to be parsed at this time. :)\n", pathLocation.c_str());
