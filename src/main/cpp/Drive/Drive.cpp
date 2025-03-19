@@ -326,7 +326,7 @@ void Drive::updateOdometry() {
             LimelightHelpers::PoseEstimate mt1 = pose.second;
 
             if (!limelightReliable) continue;
-            poseEstimator.SetVisionMeasurementStdDevs({.1, .1, 999.9});
+            poseEstimator.SetVisionMeasurementStdDevs({.1, .1, .9});
             poseEstimator.AddVisionMeasurement(
                 mt1.pose,
                 mt1.timestampSeconds

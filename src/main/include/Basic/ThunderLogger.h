@@ -22,8 +22,10 @@ struct ThunderLogger {
 
     static void StopLogging() {
         if (loggerActive) {
-            frc::DataLogManager::Stop();
-            loggerActive = false;
+            // frc::DataLogManager::LogNetworkTables(false);
+            // frc::DataLogManager::LogConsoleOutput(false);
+            // frc::DataLogManager::Stop();
+            // loggerActive = false;
         }
     }
 };
