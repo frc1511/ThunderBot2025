@@ -212,6 +212,14 @@ void Drive::sendFeedback() {
 
     frc::Pose2d pose(getEstimatedPose());
 
+    static auto driveXController = driveController.GetXController();
+    static auto driveYController = driveController.GetYController();
+    static auto driveThetaController = driveController.GetThetaController();
+
+    frc::SmartDashboard::PutData("Drive X PID Controller", &driveXController);
+    frc::SmartDashboard::PutData("Drive Y PID Controller", &driveYController);
+    frc::SmartDashboard::PutData("Drive Theta PID Controller", &driveThetaController);
+
     swerveFeedback.robotRotation = getRotation();
     frc::SmartDashboard::PutData("Swerve_Feedback", &swerveFeedback);
 

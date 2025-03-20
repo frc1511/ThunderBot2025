@@ -21,7 +21,7 @@ const units::meter_t PreferencesDrive::HORIZONTAL_REEF_MOVE = 0.175_m;
 const units::meter_t PreferencesDrive::VERTICAL_REEF_MOVE = 0.18_m;
 
 const PID_t PreferencesDrive::PID_XY = {
-    .Kp = 2.5
+    .Kp = 7.5
 };
 const PID_t PreferencesDrive::PID_THETA = {
     .Kp = 6,

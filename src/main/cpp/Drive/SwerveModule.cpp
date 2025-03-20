@@ -98,6 +98,8 @@ void SwerveModule::setState(frc::SwerveModuleState state) {
      */
     // Rotate the swerve module to the desired angle.
 
+    frc::SmartDashboard::PutNumber("Swerve Module State Optimized Speed", optimizedState.speed.value());
+
     if (units::math::abs(optimizedState.speed) > 0.01_mps) {
         setTurningMotor(optimizedState.angle.Radians());
     }
