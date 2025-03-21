@@ -60,6 +60,9 @@ private:
         ToGPPreset(Gamepiece *gamepiece_, Gamepiece::Preset preset_) : gamepiece(gamepiece_), preset(preset_) {};
         Gamepiece *gamepiece;
         Gamepiece::Preset preset;
+        std::string getToken() override {
+            return "To Preset";
+        }
         Action::Result process() override {
             gamepiece->moveToPreset(preset);
             return gamepiece->isAtPreset() ? Action::Result::DONE : Action::Result::WORKING;
@@ -80,6 +83,9 @@ private:
       public:
         ShootCoral(Gamepiece *gamepiece_) : gamepiece(gamepiece_) {};
         Gamepiece *gamepiece;
+        std::string getToken() override {
+            return "Shoot Coral";
+        }
         Action::Result process() override {
             if (gamepiece->calgae == nullptr) 
                 return Action::Result::DONE;
@@ -98,6 +104,11 @@ private:
         Intake(Gamepiece *gamepiece_, Calgae::GamepieceState gp_) : gamepiece(gamepiece_), gp(gp_) {};
         Gamepiece *gamepiece;
         Calgae::GamepieceState gp;
+
+        std::string getToken() override {
+            return "Intake";
+        }
+
         Action::Result process() override {
             if (gamepiece->calgae == nullptr) {
                 return Action::Result::DONE;
@@ -120,11 +131,15 @@ private:
         bool isLeft;
         bool isL4;
 
+        std::string getToken() override {
+            return "Align";
+        }
+
         Action::Result process() override {
             drive->beginLineup(isLeft, isL4);
             return drive->isFinished() ? Action::Result::DONE : Action::Result::WORKING;
         };
-    }; 
+    };
     AutoAlign autoAlignLeftNormal;
     AutoAlign autoAlignRightNormal;
     AutoAlign autoAlignLeftL4;
@@ -134,11 +149,14 @@ private:
         StartAlgaeIntake(Gamepiece *gamepiece_, Calgae::GamepieceState gp_) : gamepiece(gamepiece_), gp(gp_) {};
         Gamepiece *gamepiece;
         Calgae::GamepieceState gp;
+        std::string getToken() override {
+            return "Start Algae Intake";
+        }
         Action::Result process() override {
             if (gamepiece->calgae == nullptr) {
                 return Action::Result::DONE;
             }
-                
+
             if (!gamepiece->calgae->isAutoIntaking) {
                 gamepiece->calgae->autoIntake(gp,false);
             }
@@ -150,6 +168,9 @@ private:
         public:
             StopAlgaeIntake(Gamepiece *gamepiece_) : gamepiece(gamepiece_) {};
             Gamepiece *gamepiece;
+            std::string getToken() override {
+                return "Stop Algae Intake";
+            }
             Action::Result process() override {
                 if (gamepiece->calgae == nullptr) {
                     return Action::Result::DONE;
@@ -179,7 +200,7 @@ private:
         {1 << 13, &intakeCoral},            // Intake Coral
         {1 << 14, &intakeAlgae},            // Intake Algae
         {1 << 15, &toTransit},              // Transit
-        {1 << 16, &toProcessor},             // Processor
+        {1 << 16, &toProcessor},            // Processor
         {1 << 17, &startAlgaeIntake},       // Start Algae Intake
         {1 << 18, &stopAlgaeIntake}         // Stop Algae Intake
     };

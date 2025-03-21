@@ -28,6 +28,14 @@ const PID_t PreferencesDrive::PID_THETA = {
     .Kd = 0.125
 };
 
+const PID_t PreferencesDrive::PID_LINEUP_XY = {
+    .Kp = 2.5
+};
+const PID_t PreferencesDrive::PID_LINEUP_THETA = {
+    .Kp = 6,
+    .Kd = 0.125
+};
+
 /**
  * Reef x, 0
  * Field Width x, Reef y
@@ -58,6 +66,8 @@ const frc::Pose2d PreferencesDrive::MASTER_LINEUP_POSE = {
     PreferencesDrive::APRIL_TAG_18.y,
     frc::Rotation2d(0_deg)
 };
+
+const double PreferencesDrive::LINEUP_POSE_TOLERANCE = .1;
 
 
 /***********************************************************/
@@ -185,8 +195,8 @@ const units::second_t PreferencesHang::DISENGAGE_DURATION = 0.3_s;
 /***********************************************************/
 // Limelight
 
-const std::string PreferencesLimelight::LIMELIGHT_FRONT = "limelight-front";
-const std::string PreferencesLimelight::LIMELIGHT_BACK = "limelight-back";
+const std::string PreferencesLimelight::LIMELIGHT_FRONT = "limelight-left";
+const std::string PreferencesLimelight::LIMELIGHT_BACK = "limelight-right";
 
 const int PreferencesLimelight::PIPELINE_APRILTAGS = 0;
 const int PreferencesLimelight::PIPELINE_EMPTY = 1;

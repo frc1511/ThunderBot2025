@@ -59,6 +59,9 @@ struct PreferencesDrive {
     static const PID_t PID_XY;
     static const PID_t PID_THETA;
 
+    static const PID_t PID_LINEUP_XY;
+    static const PID_t PID_LINEUP_THETA;
+
     static const std::vector<Point> QUADRANT_LEFT;
     static const std::vector<Point> QUADRANT_RIGHT;
 
@@ -67,6 +70,8 @@ struct PreferencesDrive {
     static const units::meter_t ROBOT_WITH_BUMPERS_LENGTH;
     
     static const frc::Pose2d MASTER_LINEUP_POSE;
+
+    static const double LINEUP_POSE_TOLERANCE;
 };
 
 struct PreferencesDriveMotor
