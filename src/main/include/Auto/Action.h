@@ -4,6 +4,8 @@ class Action {
 public:
     virtual ~Action() = default;
 
+    virtual std::string getToken() = 0;
+
     /**
      * The result of the action.
      */

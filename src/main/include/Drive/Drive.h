@@ -227,6 +227,10 @@ private:
 
     frc::Pose2d targetPose;
 
+    bool actionExecuting = false;
+
+    std::string currentActionToken = "";
+
     // PID Controller for X and Y axis drivetrain movement.
     frc::PIDController xPIDController { PreferencesDrive::PID_XY.Kp, PreferencesDrive::PID_XY.Ki, PreferencesDrive::PID_XY.Kd },
                        yPIDController { PreferencesDrive::PID_XY.Kp, PreferencesDrive::PID_XY.Ki, PreferencesDrive::PID_XY.Kd };
@@ -293,6 +297,21 @@ private:
     void execLineup();
 
     frc::Pose2d calculateFinalLineupPose(int posId, bool isLeftSide, bool isL4);
+
+    void driveToLineupState(CSVTrajectory::State state);
+
+    // PID Controller for X and Y axis lineup.
+    frc::PIDController lineupXPIDController { PreferencesDrive::PID_LINEUP_XY.Kp, PreferencesDrive::PID_LINEUP_XY.Ki, PreferencesDrive::PID_LINEUP_XY.Kd },
+                       lineupYPIDController { PreferencesDrive::PID_LINEUP_XY.Kp, PreferencesDrive::PID_LINEUP_XY.Ki, PreferencesDrive::PID_LINEUP_XY.Kd };
+
+    // PID Controller for angular lineup.
+    frc::ProfiledPIDController<units::radians> lineupThetaPIDController {
+        PreferencesDrive::PID_LINEUP_THETA.Kp, PreferencesDrive::PID_LINEUP_THETA.Ki, PreferencesDrive::PID_LINEUP_THETA.Kd,
+        frc::TrapezoidProfile<units::radians>::Constraints(PreferencesDrive::DRIVE_AUTO_MAX_ANG_VEL, PreferencesDrive::DRIVE_AUTO_MAX_ANG_ACCEL)
+    };
+
+   // The drive controller that will handle the lineup.
+    frc::HolonomicDriveController driveLineupController;
 
     frc::Pose2d lineupPose = {};
 

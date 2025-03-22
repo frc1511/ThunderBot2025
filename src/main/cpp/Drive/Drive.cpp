@@ -8,11 +8,20 @@ driveController(
         // Setup the drive controller with the individual axis PID controllers.
         return frc::HolonomicDriveController(xPIDController, yPIDController, trajectoryThetaPIDController);
     } ()),
-limelight(_limelight) {
+limelight(_limelight),
+driveLineupController(
+    [&]() -> frc::HolonomicDriveController {
+        // Set the angular PID controller range from -180 to 180 degrees.
+        lineupThetaPIDController.EnableContinuousInput(units::radian_t(-180_deg), units::radian_t(180_deg));
+        // Setup the drive controller with the individual axis PID controllers.
+        return frc::HolonomicDriveController(lineupXPIDController, lineupYPIDController, lineupThetaPIDController);
+    } ())
+{
     manualThetaPIDController.EnableContinuousInput(units::radian_t(-180_deg), units::radian_t(180_deg));
 
-    // Enable the trajectory drive controller.
+    // Enable the trajectory/lineup drive controller.
     driveController.SetEnabled(true);
+    driveLineupController.SetEnabled(true);
 
     //Initialize the field widget
     //// frc::SmartDashboard::PutData("Field", &m_field);
@@ -34,6 +43,7 @@ void Drive::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
     controlData = { 0_mps, 0_mps, 0_rad_per_s, ControlFlag::NONE };
 
     trajectoryThetaPIDController.Reset(getRotation().Radians());
+    lineupThetaPIDController.Reset(getRotation().Radians());
 
     // This seems to be necessary. Don't ask me why.
     for (SwerveModule* module : swerveModules) {
@@ -245,6 +255,9 @@ void Drive::sendFeedback() {
     frc::SmartDashboard::PutBoolean("Drive_LockRot",                controlData.flags & ControlFlag::LOCK_ROT);
     frc::SmartDashboard::PutNumber("Drive_Mode_Enum_Index",         (int)driveMode);
 
+    frc::SmartDashboard::PutBoolean("Auto Action is executing", actionExecuting);
+    frc::SmartDashboard::PutString("Auto Current Action Token", currentActionToken);
+
     // Nyoom
     bool playNyoom = false;
 
@@ -306,11 +319,15 @@ void Drive::resetPIDControllers() {
     xPIDController.Reset();
     yPIDController.Reset();
 
+    lineupXPIDController.Reset();
+    lineupYPIDController.Reset();
+
     frc::Pose2d currPose(getEstimatedPose());
     units::degree_t rotation(currPose.Rotation().Degrees());
 
     manualThetaPIDController.Reset(rotation);
     trajectoryThetaPIDController.Reset(rotation);
+    lineupThetaPIDController.Reset(rotation);
 }
 
 void Drive::updateOdometry() {
@@ -397,7 +414,7 @@ void Drive::setAccelerationReduction(double reduction) {
 void Drive::execTrajectory() {
     units::second_t time(trajectoryTimer.Get());
 
-    bool actionExecuting = false;
+    actionExecuting = false;
     bool actionExecuted = false;
 
     // If we've got another action to go.
@@ -413,6 +430,9 @@ void Drive::execTrajectory() {
                 if (std::find(doneTrajectoryActions.cbegin(), doneTrajectoryActions.cend(), id) == doneTrajectoryActions.cend()) {
                     // If the action's bit is set in the bit field.
                     if (actions & id) {
+                        printf("Action: %s\n", action->getToken().c_str());
+                        //! NOTE (Remove me when fixed): It was getting stuck on align(probably?) Running auto Start Center -> Score L4 -> Grab @ Right Coral Station -> Score L2
+                        currentActionToken = action->getToken().c_str();
                         // Execute the action.
                         Action::Result res = action->process();
                         // If the action has completed.
@@ -422,7 +442,7 @@ void Drive::execTrajectory() {
                         }
 
                         actionExecuting = res == Action::Result::WORKING;
-                        
+
                         if (actionExecuting)
                             break;
                     }
@@ -656,6 +676,7 @@ void Drive::execLineup() {
     CSVTrajectory::State targetState = {};
 
     targetState.pose = lineupPose;
+
     targetState.velocity = 0_mps; // Don't be moving if we are at the goal (in theory)
 
     //// double acceleration = 1;
@@ -668,6 +689,62 @@ void Drive::execLineup() {
     //// targetState.velocity = (units::meters_per_second_t)std::clamp(finalVelocity, 0.0, maxVel); 
 
     driveToState(targetState);
+
+    double distToTarget = dist(targetPose, lineupPose);
+    if (std::fabs(distToTarget) < PreferencesDrive::LINEUP_POSE_TOLERANCE) {
+        driveMode = DriveMode::STOPPED;
+        printf("Finished Lineup! Action Executing:%i\n", (int)actionExecuting);
+    }
+}
+
+void Drive::driveToLineupState(CSVTrajectory::State state) {
+    // The current pose of the robot.
+    frc::Pose2d currentPose(getEstimatedPose());
+
+    // The desired change in position.
+    frc::Twist2d twist(currentPose.Log(state.pose));
+
+    // The angle at which the robot should be driving at.
+    frc::Rotation2d heading;
+    if (auto ally = frc::DriverStation::GetAlliance()) {
+        if (ally == frc::DriverStation::Alliance::kRed) {
+            heading = frc::Rotation2d(twist.dtheta + 180_deg);
+        } else {
+            heading = frc::Rotation2d(twist.dtheta);
+        }
+    }
+
+    //// printf("Speed: %lf, X: %lf, Y: %lf, stateRot: %lf, heading: %lf\n", state.velocity.value(), state.pose.X().value(), state.pose.Y().value(), state.pose.Rotation().Degrees().value(), heading.Degrees().value());
+    //// printf("(Pose) X: %lf, Y: %lf, Rot: %lf\n", currentPose.X().value(), currentPose.Y().value(), currentPose.Rotation().Degrees().value());
+
+    /**
+     * Calculate the chassis velocities based on the error between the current
+     * pose and the desired pose.
+     */
+
+    frc::ChassisSpeeds velocities(
+        driveLineupController.Calculate(
+            currentPose,
+            frc::Pose2d(state.pose.X(), state.pose.Y(), heading),
+            state.velocity,
+            state.pose.Rotation()
+        )
+    );
+
+    // frc::SmartDashboard::PutNumber("debug_driveHeading_deg", heading.Degrees().value());
+    // frc::SmartDashboard::PutNumber("debug_driveTwist_thetadeg", units::degree_t(twist.dtheta).value());
+    // frc::SmartDashboard::PutNumber("debug_driveXVel", velocities.vx.value());
+    // frc::SmartDashboard::PutNumber("debug_driveYVel", velocities.vy.value());
+    // frc::SmartDashboard::PutNumber("debug_driveOMEGAVel", velocities.omega.value());
+    // Keep target pose for feedback.
+    // targetPose = state.pose;
+
+    velocities.vx    *= speedLimiting;
+    velocities.vy    *= speedLimiting;
+    velocities.omega *= speedLimiting;
+
+    // Make the robot go vroom :D
+    setModuleStates(velocities);
 }
 
 Drive::Quadrant Drive::getCurrentQuadrant() {
