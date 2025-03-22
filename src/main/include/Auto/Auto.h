@@ -60,9 +60,6 @@ private:
         ToGPPreset(Gamepiece *gamepiece_, Gamepiece::Preset preset_) : gamepiece(gamepiece_), preset(preset_) {};
         Gamepiece *gamepiece;
         Gamepiece::Preset preset;
-        std::string getToken() override {
-            return "To Preset";
-        }
         Action::Result process() override {
             gamepiece->moveToPreset(preset);
             return gamepiece->isAtPreset() ? Action::Result::DONE : Action::Result::WORKING;
@@ -83,9 +80,6 @@ private:
       public:
         ShootCoral(Gamepiece *gamepiece_) : gamepiece(gamepiece_) {};
         Gamepiece *gamepiece;
-        std::string getToken() override {
-            return "Shoot Coral";
-        }
         Action::Result process() override {
             if (gamepiece->calgae == nullptr) 
                 return Action::Result::DONE;
@@ -104,10 +98,6 @@ private:
         Intake(Gamepiece *gamepiece_, Calgae::GamepieceState gp_) : gamepiece(gamepiece_), gp(gp_) {};
         Gamepiece *gamepiece;
         Calgae::GamepieceState gp;
-
-        std::string getToken() override {
-            return "Intake";
-        }
 
         Action::Result process() override {
             if (gamepiece->calgae == nullptr) {
@@ -131,13 +121,11 @@ private:
         bool isLeft;
         bool isL4;
 
-        std::string getToken() override {
-            return "Align";
-        }
-
         Action::Result process() override {
-            drive->beginLineup(isLeft, isL4);
-            return drive->isFinished() ? Action::Result::DONE : Action::Result::WORKING;
+            if (!drive->isLineUpDone()) {
+                drive->beginLineup(isLeft, isL4);
+            }
+            return drive->isLineUpDone() ? Action::Result::DONE : Action::Result::WORKING;
         };
     };
     AutoAlign autoAlignLeftNormal;
@@ -149,9 +137,6 @@ private:
         StartAlgaeIntake(Gamepiece *gamepiece_, Calgae::GamepieceState gp_) : gamepiece(gamepiece_), gp(gp_) {};
         Gamepiece *gamepiece;
         Calgae::GamepieceState gp;
-        std::string getToken() override {
-            return "Start Algae Intake";
-        }
         Action::Result process() override {
             if (gamepiece->calgae == nullptr) {
                 return Action::Result::DONE;
@@ -168,9 +153,6 @@ private:
         public:
             StopAlgaeIntake(Gamepiece *gamepiece_) : gamepiece(gamepiece_) {};
             Gamepiece *gamepiece;
-            std::string getToken() override {
-                return "Stop Algae Intake";
-            }
             Action::Result process() override {
                 if (gamepiece->calgae == nullptr) {
                     return Action::Result::DONE;

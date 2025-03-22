@@ -17,7 +17,7 @@ const double PreferencesDrive::DRIVE_ROTATION_SPEED_MANUAL_LIMITER_SLOWNESS_FACT
 const double PreferencesDrive::DRIVE_VELOCITY_SPEED_MANUAL_LIMITER_SLOWNESS_FACTOR = .5;
 
 const frc::Pose2d PreferencesDrive::REEF_POSE = {4.493839_m, 4.025221_m, frc::Rotation2d(0_deg)};
-const units::meter_t PreferencesDrive::HORIZONTAL_REEF_MOVE = 0.175_m;
+const units::meter_t PreferencesDrive::HORIZONTAL_REEF_MOVE = 0.17145_m;
 const units::meter_t PreferencesDrive::VERTICAL_REEF_MOVE = 0.18_m;
 
 const PID_t PreferencesDrive::PID_XY = {
@@ -67,7 +67,7 @@ const frc::Pose2d PreferencesDrive::MASTER_LINEUP_POSE = {
     frc::Rotation2d(0_deg)
 };
 
-const double PreferencesDrive::LINEUP_POSE_TOLERANCE = .1;
+const double PreferencesDrive::LINEUP_POSE_TOLERANCE = 0.008;
 
 
 /***********************************************************/

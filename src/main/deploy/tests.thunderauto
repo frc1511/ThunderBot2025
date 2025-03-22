@@ -66,8 +66,8 @@
           ],
           "settings": {
             "max_centripetal_accel": 19.6200008392334,
-            "max_linear_accel": 1.5,
-            "max_linear_vel": 2.0
+            "max_linear_accel": 3.5,
+            "max_linear_vel": 4.5
           }
         }
       ],
@@ -104,8 +104,8 @@
           ],
           "settings": {
             "max_centripetal_accel": 19.6200008392334,
-            "max_linear_accel": 1.5,
-            "max_linear_vel": 2.0
+            "max_linear_accel": 3.5,
+            "max_linear_vel": 4.5
           }
         }
       ],
@@ -142,8 +142,8 @@
           ],
           "settings": {
             "max_centripetal_accel": 19.6200008392334,
-            "max_linear_accel": 1.5,
-            "max_linear_vel": 2.0
+            "max_linear_accel": 3.5,
+            "max_linear_vel": 4.5
           }
         }
       ],
@@ -180,8 +180,8 @@
           ],
           "settings": {
             "max_centripetal_accel": 19.6200008392334,
-            "max_linear_accel": 1.5,
-            "max_linear_vel": 2.0
+            "max_linear_accel": 3.5,
+            "max_linear_vel": 4.5
           }
         }
       ],
@@ -218,8 +218,8 @@
           ],
           "settings": {
             "max_centripetal_accel": 19.6200008392334,
-            "max_linear_accel": 1.5,
-            "max_linear_vel": 2.0
+            "max_linear_accel": 3.5,
+            "max_linear_vel": 4.5
           }
         }
       ],
@@ -256,8 +256,8 @@
           ],
           "settings": {
             "max_centripetal_accel": 19.6200008392334,
-            "max_linear_accel": 1.5,
-            "max_linear_vel": 2.0
+            "max_linear_accel": 3.5,
+            "max_linear_vel": 4.5
           }
         }
       ],
@@ -294,8 +294,8 @@
           ],
           "settings": {
             "max_centripetal_accel": 19.6200008392334,
-            "max_linear_accel": 1.5,
-            "max_linear_vel": 2.0
+            "max_linear_accel": 3.5,
+            "max_linear_vel": 4.5
           }
         }
       ],
@@ -332,8 +332,8 @@
           ],
           "settings": {
             "max_centripetal_accel": 19.6200008392334,
-            "max_linear_accel": 1.5,
-            "max_linear_vel": 2.0
+            "max_linear_accel": 3.5,
+            "max_linear_vel": 4.5
           }
         }
       ],
@@ -370,8 +370,8 @@
           ],
           "settings": {
             "max_centripetal_accel": 19.6200008392334,
-            "max_linear_accel": 1.5,
-            "max_linear_vel": 2.0
+            "max_linear_accel": 3.5,
+            "max_linear_vel": 4.5
           }
         }
       ],
@@ -408,8 +408,8 @@
           ],
           "settings": {
             "max_centripetal_accel": 19.6200008392334,
-            "max_linear_accel": 1.5,
-            "max_linear_vel": 2.0
+            "max_linear_accel": 3.5,
+            "max_linear_vel": 4.5
           }
         }
       ],
@@ -446,8 +446,8 @@
           ],
           "settings": {
             "max_centripetal_accel": 19.6200008392334,
-            "max_linear_accel": 1.5,
-            "max_linear_vel": 2.0
+            "max_linear_accel": 3.5,
+            "max_linear_vel": 4.5
           }
         }
       ],
@@ -484,8 +484,8 @@
           ],
           "settings": {
             "max_centripetal_accel": 19.6200008392334,
-            "max_linear_accel": 1.5,
-            "max_linear_vel": 2.0
+            "max_linear_accel": 3.5,
+            "max_linear_vel": 4.5
           }
         }
       ]

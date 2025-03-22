@@ -117,6 +117,8 @@ class Drive : public Component {
 
     void beginLineup(bool isLeft, bool L4);
 
+    bool isLineUpDone();
+
 private:
     void executeVelocityData();
     void setModuleStates(frc::ChassisSpeeds speeds);
@@ -229,8 +231,6 @@ private:
 
     bool actionExecuting = false;
 
-    std::string currentActionToken = "";
-
     // PID Controller for X and Y axis drivetrain movement.
     frc::PIDController xPIDController { PreferencesDrive::PID_XY.Kp, PreferencesDrive::PID_XY.Ki, PreferencesDrive::PID_XY.Kd },
                        yPIDController { PreferencesDrive::PID_XY.Kp, PreferencesDrive::PID_XY.Ki, PreferencesDrive::PID_XY.Kd };
@@ -266,7 +266,7 @@ private:
      * Executes the instructions for when the robot is running a trajectory.
      */
     void execTrajectory();
-    void driveToState(CSVTrajectory::State state);
+    void driveToState(CSVTrajectory::State state, frc::HolonomicDriveController holonomicController);
 
     double speedLimiting = 1.0; // This multiplies
 
@@ -298,8 +298,6 @@ private:
 
     frc::Pose2d calculateFinalLineupPose(int posId, bool isLeftSide, bool isL4);
 
-    void driveToLineupState(CSVTrajectory::State state);
-
     // PID Controller for X and Y axis lineup.
     frc::PIDController lineupXPIDController { PreferencesDrive::PID_LINEUP_XY.Kp, PreferencesDrive::PID_LINEUP_XY.Ki, PreferencesDrive::PID_LINEUP_XY.Kd },
                        lineupYPIDController { PreferencesDrive::PID_LINEUP_XY.Kp, PreferencesDrive::PID_LINEUP_XY.Ki, PreferencesDrive::PID_LINEUP_XY.Kd };
@@ -314,6 +312,9 @@ private:
     frc::HolonomicDriveController driveLineupController;
 
     frc::Pose2d lineupPose = {};
+
+    bool isAuto = false;
+    bool lineUpDone = false;
 
     friend class Robot;
 };

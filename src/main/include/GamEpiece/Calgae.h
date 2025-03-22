@@ -147,6 +147,8 @@ class Calgae : public Component {
         PreferencesCalgae::MOTOR_SPEED_SHOOT_ALGAE, // Algae
     };
 
+    std::string motorModeToString();
+
     enum Calgae::GamepieceState currentGamepieceState = GamepieceState::kNONE;
 
     frc::PWMSparkMax motor {PWM_CALGAE};
