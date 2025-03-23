@@ -64,7 +64,7 @@ private:
             gamepiece->moveToPreset(preset);
             return gamepiece->isAtPreset() ? Action::Result::DONE : Action::Result::WORKING;
         };
-    };
+    }; 
 
     ToGPPreset toTransit;
     ToGPPreset toL1;
