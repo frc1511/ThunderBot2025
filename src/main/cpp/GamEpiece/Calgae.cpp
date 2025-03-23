@@ -191,7 +191,7 @@ bool Calgae::algaeRetroreflectiveTripped() {
 }
 
 bool Calgae::isShootDone() {
-    return shootTimer.Get() >= 0.5_s;
+    return shootTimer.Get() >= 0.5_s || (shootTimer.Get() >= 80_ms && !hasGamepiece());
 }
 
 void Calgae::autoShoot() {

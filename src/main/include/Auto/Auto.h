@@ -96,7 +96,7 @@ private:
         Action::Result process() override {
             if (gamepiece->calgae == nullptr) 
                 return Action::Result::DONE;
-                
+
             if (!gamepiece->calgae->isAutoShooting) {
                 gamepiece->calgae->autoShoot();
             }

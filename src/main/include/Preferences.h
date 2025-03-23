@@ -49,6 +49,9 @@ struct PreferencesDrive {
     static const units::radians_per_second_squared_t DRIVE_MANUAL_MAX_ANG_ACCEL;
     static const units::meters_per_second_squared_t MAX_ACCEL;
 
+    static const units::meters_per_second_t MAX_LINEUP_VEL;
+    static const units::meters_per_second_squared_t MAX_LINEUP_ACCEL;
+
     static const double DRIVE_ROTATION_SPEED_MANUAL_LIMITER_SLOWNESS_FACTOR;
     static const double DRIVE_VELOCITY_SPEED_MANUAL_LIMITER_SLOWNESS_FACTOR;
     

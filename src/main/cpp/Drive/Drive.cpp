@@ -25,6 +25,12 @@ driveLineupController(
 
     //Initialize the field widget
     //// frc::SmartDashboard::PutData("Field", &m_field);
+
+    //Initialize the orchestra
+    for (SwerveModule* module : swerveModules) {
+        swerveOrchestra.AddInstrument(module->driveMotor);
+        swerveOrchestra.AddInstrument(module->turningMotor);
+    }
 }
 
 Drive::~Drive() {
@@ -105,6 +111,8 @@ void Drive::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
     }
 }
 
+// MARK: Process
+
 void Drive::process() {
     updateOdometry();
 
@@ -120,6 +128,9 @@ void Drive::process() {
             break;
         case DriveMode::LINEUP:
             execLineup();
+            break;
+        case DriveMode::ORCHESTRA:
+            orchestrate("homedepot.chrp");
             break;
     }
 }
@@ -217,11 +228,16 @@ void Drive::stop() {
     // Just for feedback.
     targetPose = getEstimatedPose();
 
+    // Stop Orchestrating
+    unOrchestrate();
+
     // Put the drivetrain into brick mode if the flag is set.
     if (controlData.flags & ControlFlag::BRICK) {
         makeBrick();
     }
 }
+
+// MARK: Feedback
 
 void Drive::sendFeedback() {
     for (std::size_t i = 0; i < swerveModules.size(); i++) {
@@ -264,11 +280,12 @@ void Drive::sendFeedback() {
     frc::SmartDashboard::PutNumber("Drive_Mode_Enum_Index",         (int)driveMode);
 
     // Nyoom
-    bool playNyoom = false;
 
     lastQuadrant = currentQuadrant;
     currentQuadrant = getCurrentQuadrant();
+    frc::SmartDashboard::PutString("Drive Current Quadrant", getCurrentQuadrantAsString());
 
+    bool playNyoom = false;
     if (lastQuadrant != currentQuadrant && currentQuadrant != Quadrant::kNONE && lastQuadrant != Quadrant::kNONE) {
         playNyoom = true;
     }
@@ -324,10 +341,11 @@ void Drive::resetPIDControllers() {
     xPIDController.Reset();
     yPIDController.Reset();
 
+    frc::Pose2d currPose(getEstimatedPose());
+
     lineupXPIDController.Reset();
     lineupYPIDController.Reset();
 
-    frc::Pose2d currPose(getEstimatedPose());
     units::degree_t rotation(currPose.Rotation().Degrees());
 
     manualThetaPIDController.Reset(rotation);
@@ -492,7 +510,10 @@ void Drive::execTrajectory() {
         actionExecutingButLineup = false;
     }
 
-    driveToState(state, false);
+    // We should *NEVER* be moving to 0, 0
+    if (state.pose.X() != 0_m && state.pose.Y() != 0_m) {
+        driveToState(state, false);
+    }
 }
 
 void Drive::driveToState(CSVTrajectory::State state, bool isLineup) {
@@ -733,30 +754,63 @@ bool Drive::isLineUpDone() {
     return lineUpDone;
 }
 
+// MARK: Nyooooooooooom
+
 Drive::Quadrant Drive::getCurrentQuadrant() {
-    static frc::DriverStation::Alliance allianceColor = frc::DriverStation::GetAlliance().value();
+    static auto ally = frc::DriverStation::GetAlliance().value();
     frc::Pose2d pose(getEstimatedPose());
     units::meter_t robotX = pose.X();
     units::meter_t robotY = pose.Y();
 
-    if (allianceColor == frc::DriverStation::Alliance::kRed) {
-        robotX = PreferencesTrajectory::FIELD_X - robotX;
-        robotY = PreferencesTrajectory::FIELD_Y - robotY;
+    if (ally) {
+        if (ally == frc::DriverStation::Alliance::kRed) {
+            robotX = PreferencesTrajectory::FIELD_X - robotX;
+            robotY = PreferencesTrajectory::FIELD_Y - robotY;
+        }
+
+        if (robotX > PreferencesDrive::QUADRANT_LEFT[0].x &&
+            robotY > PreferencesDrive::QUADRANT_LEFT[0].y &&
+            robotX < PreferencesDrive::QUADRANT_LEFT[1].x &&
+            robotY < PreferencesDrive::QUADRANT_LEFT[1].y
+        ) { // Left side of DS
+            return Quadrant::kLEFT;
+        } else if (robotX > PreferencesDrive::QUADRANT_RIGHT[0].x &&
+                robotY > PreferencesDrive::QUADRANT_RIGHT[0].y &&
+                robotX < PreferencesDrive::QUADRANT_RIGHT[1].x &&
+                robotY < PreferencesDrive::QUADRANT_RIGHT[1].y
+        ) { // Right side of DS
+            return Quadrant::kRIGHT;
+        } else { // Too far away
+            return Quadrant::kNONE;
+        }
+    } else {
+        return Quadrant::kNONE;
+    }
+}
+
+std::string Drive::getCurrentQuadrantAsString() {
+    switch (currentQuadrant) {
+        case Quadrant::kNONE:  return "None";
+        case Quadrant::kLEFT:  return "Left";
+        case Quadrant::kRIGHT: return "Right";
+        default: return "Invalid Quadrant";
+    }
+}
+
+// MARK: Orchestra
+
+void Drive::orchestrate(std::string fp) {
+    auto status = swerveOrchestra.LoadMusic(((std::string)"/home/lvuser/deploy/"+fp).c_str());
+    if (status.IsOK() && !isPlaying) {
+        isPlaying = true;
+        swerveOrchestra.Play();
     }
 
-    if (robotX > PreferencesDrive::QUADRANT_LEFT[0].x &&
-        robotY > PreferencesDrive::QUADRANT_LEFT[0].y &&
-        robotX < PreferencesDrive::QUADRANT_LEFT[1].x &&
-        robotY < PreferencesDrive::QUADRANT_LEFT[1].y
-    ) { // Left side of DS
-        return Quadrant::kLEFT;
-    } else if (robotX > PreferencesDrive::QUADRANT_RIGHT[0].x &&
-               robotY > PreferencesDrive::QUADRANT_RIGHT[0].y &&
-               robotX < PreferencesDrive::QUADRANT_RIGHT[1].x &&
-               robotY < PreferencesDrive::QUADRANT_RIGHT[1].y
-    ) { // Right side of DS
-        return Quadrant::kRIGHT;
-    } else { // Too far away
-        return Quadrant::kNONE;
+}
+
+void Drive::unOrchestrate() {
+    if (isPlaying) {
+        isPlaying = false;
+        swerveOrchestra.Stop();
     }
 }
