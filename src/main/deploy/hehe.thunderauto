@@ -30,7 +30,8 @@
       "Transit",
       "Processor",
       "Start Algae Intake",
-      "Stop Algae Intake"
+      "Stop Algae Intake",
+      "Start To Coral Station"
     ],
     "paths": [
       [
@@ -105,7 +106,7 @@
           ],
           "settings": {
             "max_centripetal_accel": 19.6200008392334,
-            "max_linear_accel": 1.5,
+            "max_linear_accel": 3.5,
             "max_linear_vel": 3.5
           }
         }
@@ -156,7 +157,7 @@
           ],
           "settings": {
             "max_centripetal_accel": 19.6200008392334,
-            "max_linear_accel": 3.0,
+            "max_linear_accel": 3.5,
             "max_linear_vel": 3.0
           }
         }

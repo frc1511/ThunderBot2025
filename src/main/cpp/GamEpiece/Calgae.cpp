@@ -45,6 +45,10 @@ void Calgae::sendFeedback() {
     frc::SmartDashboard::PutString ("Calgae Motor Target Speed"                  , motorSpeedToString()                    );
     frc::SmartDashboard::PutNumber ("Calgae Motor Out Voltage"                   , motor.GetVoltage().value()              );
     frc::SmartDashboard::PutBoolean("Calgae Is Shoot Done"                       , isShootDone()                           );
+    frc::SmartDashboard::PutBoolean("Calgae Is Auto"                             , isAuto);
+    frc::SmartDashboard::PutBoolean("Calgae Is Auto Intaking"                    , isAutoIntaking);
+    frc::SmartDashboard::PutBoolean("Calgae Is Auto Shooting"                    , isAutoShooting);
+    frc::SmartDashboard::PutString ("Calgae Motor Mode"                          , motorModeToString());
 }
 
 void Calgae::process() {
@@ -54,7 +58,10 @@ void Calgae::process() {
     if (isAuto) {
         if (isShootDone()) {
             motorSpeed = MotorSpeed::kSTOPPED;
+            motorMode = MotorModes::kSTOP;
             isAutoShooting = false;
+            shootTimer.Stop();
+            shootTimer.Reset();
             resetHadGamepiece();
             stopMotors();
             return;
@@ -268,5 +275,17 @@ std::string Calgae::motorSpeedToString() {
     case MotorSpeed::kALGAE_SPEED: return "Algae";
     case MotorSpeed::kREGRAB_SPEED: return "Regrab";
     default: return "Error reading motorSpeed";
+    }
+}
+
+std::string Calgae::motorModeToString() {
+    switch (motorMode) {
+    case MotorModes::kSTOP:           return "Stop";
+    case MotorModes::kALGAE_INTAKE:   return "Algae Intake";
+    case MotorModes::kCORAL_INTAKE:   return "Coral Intake";
+    case MotorModes::kDONE_SHOOTING:  return "Done SHooting";
+    case MotorModes::kSHOOT_OVERRIDE: return "Shoot Override";
+    case MotorModes::kSHOOT:          return "Shoot";
+    default: return "Error reading motorMode";
     }
 }

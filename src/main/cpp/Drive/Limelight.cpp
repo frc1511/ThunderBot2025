@@ -25,7 +25,7 @@ std::pair<bool,LimelightHelpers::PoseEstimate> Limelight::getLimelightPose(std::
     }
 
     if (mt1.tagCount == 1 && mt1.rawFiducials.size() == 1) {
-        if (mt1.rawFiducials[0].ambiguity > .7) {
+        if (mt1.rawFiducials[0].ambiguity > .4) {
             shouldUpdate = false;
         }
 
