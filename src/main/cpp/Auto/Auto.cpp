@@ -14,6 +14,7 @@ Auto::Auto(Drive *drive_, Limelight *limelight_, Gamepiece *gamepiece_)
   toReefLow(gamepiece_, Gamepiece::Preset::kREEF_LOW),
   toReefHigh(gamepiece_, Gamepiece::Preset::kREEF_HIGH),
   toProcessor(gamepiece_, Gamepiece::Preset::kPROCESSOR),
+  startToCoralStation(gamepiece_, Gamepiece::Preset::kCORAL_STATION),
   shootCoral(gamepiece_),
   intakeCoral(gamepiece_, Calgae::GamepieceState::kCORAL),
   intakeAlgae(gamepiece_, Calgae::GamepieceState::kALGAE),

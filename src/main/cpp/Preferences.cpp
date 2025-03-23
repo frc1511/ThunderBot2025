@@ -29,7 +29,8 @@ const PID_t PreferencesDrive::PID_THETA = {
 };
 
 const PID_t PreferencesDrive::PID_LINEUP_XY = {
-    .Kp = 2.5
+    .Kp = 5.5,
+    .Kd = 0.5
 };
 const PID_t PreferencesDrive::PID_LINEUP_THETA = {
     .Kp = 6,
@@ -68,6 +69,7 @@ const frc::Pose2d PreferencesDrive::MASTER_LINEUP_POSE = {
 };
 
 const double PreferencesDrive::LINEUP_POSE_TOLERANCE = 0.008;
+const double PreferencesDrive::LINEUP_LIMELIGHT_DEADZONE= 0.02;
 
 
 /***********************************************************/
@@ -79,7 +81,7 @@ const PID_t PreferencesDriveMotor::PID = {
     .Kff = 0
 };
 const units::current::ampere_t PreferencesDriveMotor::MAX_AMPERAGE = 40_A;
-const double PreferencesDriveMotor::METERS_TO_TURNS = 16.6474609375;
+const double PreferencesDriveMotor::METERS_TO_TURNS = 16.48828125;
 const double PreferencesDriveMotor::TURNS_TO_METERS = (1 / (METERS_TO_TURNS));
 
 

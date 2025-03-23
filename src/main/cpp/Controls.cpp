@@ -248,7 +248,7 @@ void Controls::process() {
 
         if (fabs(movementPercent) < PreferencesControls::AXIS_DEADZONE)
             movementPercent = 0;
-        gamepiece->wrist->manualMovement(units::degree_t(movementPercent / 3));
+        gamepiece->wrist->manualMovement(units::degree_t(movementPercent));
     }
 }
 

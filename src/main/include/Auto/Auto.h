@@ -65,6 +65,7 @@ private:
             return gamepiece->isAtPreset() ? Action::Result::DONE : Action::Result::WORKING;
         };
     };
+
     ToGPPreset toTransit;
     ToGPPreset toL1;
     ToGPPreset toL2;
@@ -75,6 +76,18 @@ private:
     ToGPPreset toReefLow;
     ToGPPreset toReefHigh;
     ToGPPreset toProcessor;
+
+    class StartToGPPreset: public Action {
+      public:
+        StartToGPPreset(Gamepiece *gamepiece_, Gamepiece::Preset preset_) : gamepiece(gamepiece_), preset(preset_) {};
+        Gamepiece *gamepiece;
+        Gamepiece::Preset preset;
+        Action::Result process() override {
+            gamepiece->moveToPreset(preset);
+            return Action::Result::DONE;
+        };
+    };
+    StartToGPPreset startToCoralStation;
 
     class ShootCoral : public Action {
       public:
@@ -125,7 +138,7 @@ private:
             if (!drive->isLineUpDone()) {
                 drive->beginLineup(isLeft, isL4);
             }
-            return drive->isLineUpDone() ? Action::Result::DONE : Action::Result::WORKING;
+            return drive->isLineUpDone() ? Action::Result::DONE_BUT_LINEUP_STILL_NEEDS_TO_HAPPEN : Action::Result::WORKING;
         };
     };
     AutoAlign autoAlignLeftNormal;
@@ -184,7 +197,8 @@ private:
         {1 << 15, &toTransit},              // Transit
         {1 << 16, &toProcessor},            // Processor
         {1 << 17, &startAlgaeIntake},       // Start Algae Intake
-        {1 << 18, &stopAlgaeIntake}         // Stop Algae Intake
+        {1 << 18, &stopAlgaeIntake},        // Stop Algae Intake
+        {1 << 19, &startToCoralStation}     // Start to Coral Station
     };
 
     std::string autoSelected;

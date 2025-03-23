@@ -266,10 +266,11 @@ private:
      * Executes the instructions for when the robot is running a trajectory.
      */
     void execTrajectory();
-    void driveToState(CSVTrajectory::State state, frc::HolonomicDriveController holonomicController);
+    void driveToState(CSVTrajectory::State state, bool isLineup);
 
     double speedLimiting = 1.0; // This multiplies
 
+    bool actionExecutingButLineup = false;
 
     /// MARK: Limelight
 
@@ -315,6 +316,8 @@ private:
 
     bool isAuto = false;
     bool lineUpDone = false;
+
+    double distToLineupPose();
 
     friend class Robot;
 };

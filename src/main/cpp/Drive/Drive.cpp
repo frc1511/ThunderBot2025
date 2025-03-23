@@ -80,8 +80,10 @@ void Drive::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
     }
 
     if (mode == MatchMode::AUTO) {
+        poseEstimator.SetVisionMeasurementStdDevs({.3, .3, .9});
         isAuto = true;
     } else {
+        poseEstimator.SetVisionMeasurementStdDevs({.4, .4, .9});
         isAuto = false;
     }
 
@@ -354,7 +356,9 @@ void Drive::updateOdometry() {
             LimelightHelpers::PoseEstimate mt1 = pose.second;
 
             if (!limelightReliable) continue;
-            poseEstimator.SetVisionMeasurementStdDevs({.1, .1, .9});
+            if (distToLineupPose() < PreferencesDrive::LINEUP_LIMELIGHT_DEADZONE && !isLineUpDone()) {
+                continue;
+            }
             poseEstimator.AddVisionMeasurement(
                 mt1.pose,
                 mt1.timestampSeconds
@@ -436,7 +440,10 @@ void Drive::execTrajectory() {
                         // Execute the action.
                         Action::Result res = action->process();
                         // If the action has completed.
-                        if (res == Action::Result::DONE) {
+                        if (res == Action::Result::DONE || res == Action::Result::DONE_BUT_LINEUP_STILL_NEEDS_TO_HAPPEN) {
+                            if (res == Action::Result::DONE_BUT_LINEUP_STILL_NEEDS_TO_HAPPEN) {
+                                actionExecutingButLineup = true;
+                            }
                             // Remember that it's done.
                             doneTrajectoryActions.push_back(id);
                         }
@@ -477,14 +484,18 @@ void Drive::execTrajectory() {
 
     // Don't be moving if an action is being worked on.
     if (actionExecuting) {
-        state.pose = getEstimatedPose();
+        if (actionExecutingButLineup) {
+            state.pose = lineupPose;
+        }
         state.velocity = 0_mps;
+    } else {
+        actionExecutingButLineup = false;
     }
 
-    driveToState(state, driveController);
+    driveToState(state, false);
 }
 
-void Drive::driveToState(CSVTrajectory::State state, frc::HolonomicDriveController holonomicController) {
+void Drive::driveToState(CSVTrajectory::State state, bool isLineup) {
 
     // Adjust the rotation because everything about this robot is 90 degrees off D:
     //// state.pose = frc::Pose2d(state.pose.Translation(), frc::Rotation2d(state.pose.Rotation() - 90_deg));
@@ -513,7 +524,7 @@ void Drive::driveToState(CSVTrajectory::State state, frc::HolonomicDriveControll
      * pose and the desired pose.
      */
 
-    frc::ChassisSpeeds velocities(
+    frc::ChassisSpeeds trajectoryVelocities(
         driveController.Calculate(
             currentPose,
             frc::Pose2d(state.pose.X(), state.pose.Y(), heading),
@@ -521,6 +532,18 @@ void Drive::driveToState(CSVTrajectory::State state, frc::HolonomicDriveControll
             state.pose.Rotation()
         )
     );
+    frc::ChassisSpeeds lineupVelocities(
+        driveLineupController.Calculate(
+            currentPose,
+            frc::Pose2d(state.pose.X(), state.pose.Y(), heading),
+            state.velocity,
+            state.pose.Rotation()
+        )
+    );
+
+    frc::ChassisSpeeds velocities = trajectoryVelocities; 
+    if (isLineup)
+        velocities = lineupVelocities;
 
     trajectoryField.SetRobotPose(state.pose);
 
@@ -690,18 +713,20 @@ void Drive::execLineup() {
     //// double finalVelocity = std::clamp(startRamp, 0.0, maxVel) - std::clamp(endRamp, 0.0, maxVel);
     //// targetState.velocity = (units::meters_per_second_t)std::clamp(finalVelocity, 0.0, maxVel); 
 
-    driveToState(targetState, driveLineupController);
+    driveToState(targetState, true);
 
-    double distToTarget = dist(getEstimatedPose(), lineupPose);
-    if (std::fabs(distToTarget) < PreferencesDrive::LINEUP_POSE_TOLERANCE) {
+    if (distToLineupPose() < PreferencesDrive::LINEUP_POSE_TOLERANCE) {
         lineUpDone = true;
         if (isAuto) {
             driveMode = DriveMode::TRAJECTORY;
         } else {
             driveMode = DriveMode::STOPPED;
         }
-        printf("Finished Lineup! Action Executing:%i\n", (int)actionExecuting);
     }
+}
+
+double Drive::distToLineupPose() {
+    return std::fabs(dist(getEstimatedPose(), lineupPose));
 }
 
 bool Drive::isLineUpDone() {

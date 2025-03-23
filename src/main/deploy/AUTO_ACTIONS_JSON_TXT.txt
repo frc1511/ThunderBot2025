@@ -17,7 +17,8 @@
       "Transit",
       "Processor",
       "Start Algae Intake",
-      "Stop Algae Intake"
+      "Stop Algae Intake",
+      "Start To Coral Station"
     ],
 
 /////////////////////////////////////////////////

@@ -72,6 +72,8 @@ struct PreferencesDrive {
     static const frc::Pose2d MASTER_LINEUP_POSE;
 
     static const double LINEUP_POSE_TOLERANCE;
+
+    static const double LINEUP_LIMELIGHT_DEADZONE;
 };
 
 struct PreferencesDriveMotor
