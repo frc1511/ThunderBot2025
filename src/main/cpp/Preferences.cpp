@@ -16,9 +16,6 @@ const units::meters_per_second_squared_t PreferencesDrive::MAX_ACCEL = 0.01_mps_
 const double PreferencesDrive::DRIVE_ROTATION_SPEED_MANUAL_LIMITER_SLOWNESS_FACTOR = .5;
 const double PreferencesDrive::DRIVE_VELOCITY_SPEED_MANUAL_LIMITER_SLOWNESS_FACTOR = .5;
 
-const units::meters_per_second_t PreferencesDrive::MAX_LINEUP_VEL = 3.5_mps;
-const units::meters_per_second_squared_t PreferencesDrive::MAX_LINEUP_ACCEL = 2_mps_sq;
-
 const frc::Pose2d PreferencesDrive::REEF_POSE = {4.493839_m, 4.025221_m, frc::Rotation2d(0_deg)};
 const units::meter_t PreferencesDrive::HORIZONTAL_REEF_MOVE = 0.17145_m;
 const units::meter_t PreferencesDrive::VERTICAL_REEF_MOVE = 0.18_m;
@@ -72,7 +69,7 @@ const frc::Pose2d PreferencesDrive::MASTER_LINEUP_POSE = {
 };
 
 const double PreferencesDrive::LINEUP_POSE_TOLERANCE = 0.008;
-const double PreferencesDrive::LINEUP_LIMELIGHT_DEADZONE= 0.01;
+const double PreferencesDrive::LINEUP_LIMELIGHT_DEADZONE= 0.02;
 
 
 /***********************************************************/

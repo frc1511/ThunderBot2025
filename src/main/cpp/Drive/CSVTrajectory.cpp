@@ -52,15 +52,12 @@ CSVTrajectory::State CSVTrajectory::sample(units::second_t time) const {
          noLower = (lowerBound == states.cbegin());
 
     if (noUpper && noLower) { // No defined states D:
-        printf("Nothing\n");
         return State{ frc::Pose2d(), 0_mps };
     } else if (noUpper) { // Return the highest defined state if there is no upper bound.
-        printf("No Upper\n");
         State s(lowerBound->second);
         s.velocity = 0_mps;
         return s;
     } else if (noLower) { // Return the lowest defined state if there is no lower bound.
-        printf("No Lower\n");
         State s(upperBound->second);
         s.velocity = 0_mps;
         return s;

@@ -62,5 +62,4 @@ private:
     double accelReduction = 0;
 
     friend class Robot;
-    friend class Drive;
 };

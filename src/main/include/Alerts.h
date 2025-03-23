@@ -84,8 +84,7 @@ class Alert {
         static int numberOfAlertsTried = 0;
 
         static bool lowBattery = false;
-        auto voltage = frc::DriverStation::GetBatteryVoltage();
-        if (voltage && voltage < 9.0) {
+        if (frc::DriverStation::GetBatteryVoltage() < 9.0) {
                 lowBattery = true;
         }
 
