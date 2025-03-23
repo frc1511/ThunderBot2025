@@ -64,7 +64,7 @@ private:
             gamepiece->moveToPreset(preset);
             return gamepiece->isAtPreset() ? Action::Result::DONE : Action::Result::WORKING;
         };
-    };
+    }; 
 
     ToGPPreset toTransit;
     ToGPPreset toL1;
@@ -96,7 +96,7 @@ private:
         Action::Result process() override {
             if (gamepiece->calgae == nullptr) 
                 return Action::Result::DONE;
-                
+
             if (!gamepiece->calgae->isAutoShooting) {
                 gamepiece->calgae->autoShoot();
             }

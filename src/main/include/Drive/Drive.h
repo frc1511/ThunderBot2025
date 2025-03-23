@@ -23,6 +23,8 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/smartdashboard/Field2d.h>
 
+#include <ctre/phoenix6/Orchestra.hpp>
+
 #include "Basic/Component.h"
 #include "Basic/IOMap.h"
 #include "preferences.h"
@@ -145,6 +147,7 @@ private:
         VELOCITY,
         TRAJECTORY,
         LINEUP,
+        ORCHESTRA,
     };
 
     DriveMode driveMode = DriveMode::STOPPED;
@@ -291,17 +294,26 @@ private:
 
     Quadrant getCurrentQuadrant();
 
+    std::string getCurrentQuadrantAsString();
+
     Quadrant currentQuadrant = Quadrant::kNONE;
     Quadrant lastQuadrant = Quadrant::kNONE;
 
-    // MARK: TELE LINEUP AUTO DRIVING
+    // MARK: Lineup
     void execLineup();
 
     frc::Pose2d calculateFinalLineupPose(int posId, bool isLeftSide, bool isL4);
 
     // PID Controller for X and Y axis lineup.
-    frc::PIDController lineupXPIDController { PreferencesDrive::PID_LINEUP_XY.Kp, PreferencesDrive::PID_LINEUP_XY.Ki, PreferencesDrive::PID_LINEUP_XY.Kd },
-                       lineupYPIDController { PreferencesDrive::PID_LINEUP_XY.Kp, PreferencesDrive::PID_LINEUP_XY.Ki, PreferencesDrive::PID_LINEUP_XY.Kd };
+    frc::PIDController lineupXPIDController { PreferencesDrive::PID_LINEUP_XY.Kp, PreferencesDrive::PID_LINEUP_XY.Ki, PreferencesDrive::PID_LINEUP_XY.Kd};
+    frc::PIDController lineupYPIDController { PreferencesDrive::PID_LINEUP_XY.Kp, PreferencesDrive::PID_LINEUP_XY.Ki, PreferencesDrive::PID_LINEUP_XY.Kd};
+    // frc::ProfiledPIDController<units::meters> lineupXPIDController {
+    //     PreferencesDrive::PID_LINEUP_XY.Kp, PreferencesDrive::PID_LINEUP_XY.Ki, PreferencesDrive::PID_LINEUP_XY.Kd,
+    //     frc::TrapezoidProfile<units::meters>::Constraints(PreferencesDrive::MAX_LINEUP_VEL, PreferencesDrive::MAX_LINEUP_ACCEL)
+    // };
+    // frc::ProfiledPIDController<units::meters> lineupYPIDController { PreferencesDrive::PID_LINEUP_XY.Kp, PreferencesDrive::PID_LINEUP_XY.Ki, PreferencesDrive::PID_LINEUP_XY.Kd,
+    //     frc::TrapezoidProfile<units::meters>::Constraints(PreferencesDrive::MAX_LINEUP_VEL, PreferencesDrive::MAX_LINEUP_ACCEL)
+    // };
 
     // PID Controller for angular lineup.
     frc::ProfiledPIDController<units::radians> lineupThetaPIDController {
@@ -318,6 +330,14 @@ private:
     bool lineUpDone = false;
 
     double distToLineupPose();
+
+    // MARK: Orchestra
+
+    ctre::phoenix6::Orchestra swerveOrchestra;
+
+    bool isPlaying = false;
+    void orchestrate(std::string fp);
+    void unOrchestrate();
 
     friend class Robot;
 };
