@@ -4,6 +4,8 @@
 #include <rev/config/SparkMaxConfig.h>
 #include <frc/DigitalInput.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/controller/ProfiledPIDController.h>
+#include <frc/controller/ElevatorFeedforward.h>
 
 #include "Basic/Component.h"
 #include "Basic/IOMap.h"
@@ -21,7 +23,7 @@ class Elevator : public Component {
     bool getLowerLimit();
     bool getUpperLimit();
 
-    enum Preset { //need measurements for the height of these sections, RN we have guesstimates with no units. ~G
+    enum Preset {
         kSTOP,
         kGROUND, 
         kPROCESSOR,
@@ -40,7 +42,7 @@ class Elevator : public Component {
 
     void goToPreset(Preset preset);
 
-    // if manual this returns true
+    // If manual this returns true
     bool atPreset();
 
     void manualMovement(double speed);
@@ -83,7 +85,7 @@ class Elevator : public Component {
     bool sensorBroken = false;
 
     units::turn_t getPosition();
-    double computeSpeedForPreset();
+    units::volt_t computeSpeedForPreset();
 
     rev::spark::SparkMax leftSparkMax {CAN_LEFT_ELEVATOR, rev::spark::SparkLowLevel::MotorType::kBrushless};
     rev::spark::SparkMax rightSparkMax {CAN_RIGHT_ELEVATOR, rev::spark::SparkLowLevel::MotorType::kBrushless};
@@ -98,6 +100,16 @@ class Elevator : public Component {
 
     bool wristExists = false;
     bool wristIsUnsafe = true;
+
+    frc::ElevatorFeedforward ffController {
+      (units::volt_t)PreferencesElevator::PID.Ks, (units::volt_t)PreferencesElevator::PID.Kg,
+      (units::unit_t<frc::ElevatorFeedforward::kv_unit>)PreferencesElevator::PID.Kv_EVFF, (units::unit_t<frc::ElevatorFeedforward::ka_unit>)PreferencesElevator::PID.Ka_EVFF
+    };
+
+    frc::ProfiledPIDController<units::turns> pidController {
+      PreferencesElevator::PID.Kp, PreferencesElevator::PID.Ki, PreferencesElevator::PID.Kd,
+      frc::TrapezoidProfile<units::turns>::Constraints(PreferencesElevator::MAX_VEL, PreferencesElevator::MAX_ACCEL)
+    };
 
     friend class Gamepiece;
     friend class Controls;

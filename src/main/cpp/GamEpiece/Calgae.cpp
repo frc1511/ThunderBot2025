@@ -163,7 +163,7 @@ void Calgae::process() {
                 break;
         }
 
-        runMotors(presetShooterSpeeds[motorSpeed]);  // Run motors out at the speed ^
+        runMotors(presetShooterSpeeds[motorSpeed]); // Run motors out at the speed ^
         return;
     }
 
