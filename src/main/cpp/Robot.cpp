@@ -168,6 +168,9 @@ void Robot::TestPeriodic() {
 	//	// drive->swerveModules.at(1)->setDriveMotor(1_mps);
 	//	// drive->swerveModules.at(1)->turningMotor.Set(0.4);
 	//// }
+	// if (hang != nullptr) {
+	// 	hang->setSolenoidState(Hang::SolenoidState::UP);
+	// }
 }
 
 void Robot::SimulationInit() { }

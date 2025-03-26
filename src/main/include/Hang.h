@@ -76,4 +76,6 @@ class Hang : public Component {
     frc::Timer disengageTimer;
 
     void setMotorSpeed(double speed);
+
+    friend class Robot;
 };
