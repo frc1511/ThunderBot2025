@@ -46,6 +46,8 @@ class Hang : public Component {
 
     bool fastyFast = false;
 
+    bool deepHang = true;
+
   private:
     void updateRealSolenoidState();
     void setSolenoidState(SolenoidState state);
@@ -74,4 +76,6 @@ class Hang : public Component {
     frc::Timer disengageTimer;
 
     void setMotorSpeed(double speed);
+
+    friend class Robot;
 };

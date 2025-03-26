@@ -29,12 +29,18 @@ void Hang::process() {
             return; //* Early Return
 
         case ControlMode::GOING_DOWN:
-            if (!isHung()) {
-                // if (fastyFast) {
-                speed = PreferencesHang::MAX_HANG_SPEED_DOWN;
-                // } else {
-                //     speed = PreferencesHang::HANG_SPEED_DOWN_SLOW;
-                // }
+            if (deepHang) {
+                if (encoder.GetPosition() > 0) {
+                    speed = PreferencesHang::MAX_HANG_SPEED_DOWN;
+                }
+            } else {
+                if (!isHung()) {
+                    // if (fastyFast) {
+                    speed = PreferencesHang::MAX_HANG_SPEED_DOWN;
+                    // } else {
+                    //     speed = PreferencesHang::HANG_SPEED_DOWN_SLOW;
+                    // }
+                }
             }
 
             desiredSolenoidState = SolenoidState::DOWN;
@@ -44,9 +50,16 @@ void Hang::process() {
         case ControlMode::GOING_UP:
             desiredSolenoidState = SolenoidState::UP;
 
-            if (encoder.GetPosition() < PreferencesHang::MAX_POSITION && realSolenoidState == SolenoidState::UP) {
-                speed = PreferencesHang::MAX_HANG_SPEED_UP;
+            if (deepHang) { //* Deep Hang
+                if (encoder.GetPosition() < PreferencesHang::MAX_DEPLOY_POSITION && realSolenoidState == SolenoidState::UP) {
+                    speed = PreferencesHang::MAX_HANG_SPEED_UP;
+                }
+            } else { //* Shallow Hang
+                if (encoder.GetPosition() < PreferencesHang::MAX_POSITION && realSolenoidState == SolenoidState::UP) {
+                    speed = PreferencesHang::MAX_HANG_SPEED_UP;
+                }
             }
+
 
             break;
 
@@ -140,6 +153,7 @@ void Hang::sendFeedback() {
     frc::SmartDashboard::PutBoolean("Hang Solenoid Up",     isSolenoidUp());
     frc::SmartDashboard::PutNumber ("Hang Position",        getMotorPosition());
     frc::SmartDashboard::PutBoolean("Hang Fasty Fast",      fastyFast);
+    frc::SmartDashboard::PutBoolean("Hang Deep",            deepHang);
 }
 
 std::string Hang::currentModeAsString() {
