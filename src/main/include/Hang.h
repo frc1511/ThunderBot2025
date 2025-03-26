@@ -46,6 +46,8 @@ class Hang : public Component {
 
     bool fastyFast = false;
 
+    bool deepHang = true;
+
   private:
     void updateRealSolenoidState();
     void setSolenoidState(SolenoidState state);

@@ -280,6 +280,7 @@ void Auto::doNothing() {
     // I agree with jeff downs since he likes java - charlie(2024)
 
     // Well technically it's doing something - chris(2023)
+    // It's a paradox! I learned this in english class! - mysteriousPerson(2025)
 }
 
 void Auto::autoSelectorInit() {
