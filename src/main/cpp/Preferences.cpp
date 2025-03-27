@@ -158,17 +158,20 @@ const units::degree_t PreferencesWrist::UNSAFE_MIN = 80_deg;
 /***********************************************************/
 // Elevator
 
-const units::volt_t PreferencesElevator::MAX_DOWN_VOLTS = 7_V;
-const units::volt_t  PreferencesElevator::MAX_UP_VOLTS = 7_V;
+const units::volt_t PreferencesElevator::MAX_DOWN_VOLTS = -12_V;
+const units::volt_t  PreferencesElevator::MAX_UP_VOLTS = 12_V;
 const double PreferencesElevator::MAX_DOWN_PIT_SPEED = 0.5;
 const double PreferencesElevator::MAX_UP_PIT_SPEED = 0.5;
 const double PreferencesElevator::TARGET_TOLERANCE = 0.2; // In turn_t
 
 const PID_t PreferencesElevator::PID = {
-
+    .Kp = 2.0,
+    .Kg = 0.36,
+    .Kv_EVFF = 0.15,
+    .Ka_EVFF = 0.3
 };
-const units::turns_per_second_t PreferencesElevator::MAX_VEL = 1_tps;
-const units::turns_per_second_squared_t PreferencesElevator::MAX_ACCEL = .4_tr_per_s_sq;
+const units::turns_per_second_t PreferencesElevator::MAX_VEL = 180_tps;
+const units::turns_per_second_squared_t PreferencesElevator::MAX_ACCEL = 80_tr_per_s_sq;
 
 
 /***********************************************************/

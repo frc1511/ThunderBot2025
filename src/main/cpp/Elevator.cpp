@@ -23,7 +23,7 @@ void Elevator::process() {
     if (!encoderZeroed && !sensorBroken) { // if elevator not at the lower limit switch
         motorOutput = -0.003_V; // move down slowly until at the lower limit switch
     } else if (manualControl) {
-        motorOutput = (units::volt_t)manualMovementSpeed;
+        motorOutput = manualMovementSpeed * 9_V;
     } else {
         motorOutput = computeSpeedForPreset();
     }
@@ -97,12 +97,22 @@ void Elevator::sendFeedback() {
     frc::SmartDashboard::PutBoolean("Elevator Zeroed",                           encoderZeroed);
 
     frc::SmartDashboard::PutData("Elevator PID", &pidController); 
-
+    
+    //! REMOVE ME IN THE FUTURE, THIS BETTER NOT BE HERE AT BUCKEYE
     // These should be temporary
-    double kS = frc::SmartDashboard::GetNumber("Elevator kS", 0.0);
-    double kG = frc::SmartDashboard::GetNumber("Elevator kG", 0.0);
-    double kV = frc::SmartDashboard::GetNumber("Elevator kV", 0.0);
-    double kA = frc::SmartDashboard::GetNumber("Elevator kA", 0.0);
+    double kS = frc::SmartDashboard::GetNumber("Elevator kS", PreferencesElevator::PID.Ks);
+    double kG = frc::SmartDashboard::GetNumber("Elevator kG", PreferencesElevator::PID.Kg);
+    double kV = frc::SmartDashboard::GetNumber("Elevator kV", PreferencesElevator::PID.Kv_EVFF);
+    double kA = frc::SmartDashboard::GetNumber("Elevator kA", PreferencesElevator::PID.Ka_EVFF);
+    frc::SmartDashboard::PutNumber("Elevator kS", kS);
+    frc::SmartDashboard::PutNumber("Elevator kG", kG);
+    frc::SmartDashboard::PutNumber("Elevator kV", kV);
+    frc::SmartDashboard::PutNumber("Elevator kA", kA);
+    if (ffController.GetKv() != (units::unit_t<frc::ElevatorFeedforward::kv_unit>)kV || 
+        ffController.GetKa() != (units::unit_t<frc::ElevatorFeedforward::ka_unit>)kA) { // If Updated
+        pidController.Reset(getPosition());
+        pidController.SetGoal(10_tr);
+    }
     ffController.SetKs((units::volt_t)kS);
     ffController.SetKg((units::volt_t)kG);
     ffController.SetKv((units::unit_t<frc::ElevatorFeedforward::kv_unit>)kV);
@@ -156,8 +166,9 @@ units::turn_t Elevator::getPosition() {
 }
 
 void Elevator::goToPreset(Preset target) {
-    // pidController.SetGoal(Position[target]);
     if (targetPreset != target) { // If we have a new preset
+        pidController.Reset(getPosition());
+        pidController.SetGoal(Position[target]);
         startDownPosition = getPosition().value();
     }
 
@@ -199,7 +210,12 @@ units::volt_t Elevator::computeSpeedForPreset() {
     units::volt_t pidVolts = (units::volt_t)pidController.Calculate(getPosition());
     units::meters_per_second_t vel = (units::meters_per_second_t)(double)pidController.GetSetpoint().velocity;
     units::volt_t ffVolts = ffController.Calculate(vel);
+    frc::SmartDashboard::PutNumber("Elevator FF", ffVolts.value());
+    frc::SmartDashboard::PutNumber("Elevator PID", pidVolts.value());
+    frc::SmartDashboard::PutNumber("Elevator Profiled Setpoint Pos", pidController.GetSetpoint().position.value());
+    frc::SmartDashboard::PutNumber("Elevator Profiled Setpoint Vel", pidController.GetSetpoint().velocity.value());
     units::volt_t output = pidVolts + ffVolts;
+    frc::SmartDashboard::PutNumber("Elevator FF+PID Volts Out", output.value());
     output = std::clamp(output, PreferencesElevator::MAX_DOWN_VOLTS, PreferencesElevator::MAX_UP_VOLTS);
 
     // units::turn_t difference = targetPosition - getPosition();
