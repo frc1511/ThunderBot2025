@@ -6,6 +6,7 @@
 #include <units/acceleration.h>
 #include <units/angle.h>
 #include <units/current.h>
+#include <units/voltage.h>
 #include <vector>
 #include <frc/geometry/Pose2d.h>
 
@@ -19,6 +20,11 @@ struct PID_t
     double Kg = 0;
     double Kff = 0;
     double Kizone = 0;
+    
+    // Elevator ff has weird ones
+    double Kv_EVFF = 0;
+    double Ka_EVFF = 0;
+
     units::angular_velocity::degrees_per_second_t MaxVel = 0_deg_per_s;
     units::angular_acceleration::degrees_per_second_squared_t MaxAccel = 0_deg_per_s_sq;
     void clear() 
@@ -142,11 +148,15 @@ struct PreferencesWrist {
 };
 
 struct PreferencesElevator {
-    static const double MAX_DOWN_SPEED;
-    static const double MAX_UP_SPEED;
+    static const units::volt_t MAX_DOWN_VOLTS;
+    static const units::volt_t MAX_UP_VOLTS;
     static const double MAX_DOWN_PIT_SPEED;
     static const double MAX_UP_PIT_SPEED;
-    static const double TARGET_TOLERANCE; // in turn_t
+    static const double TARGET_TOLERANCE; // In turn_t
+
+    static const PID_t PID;
+    static const units::turns_per_second_t MAX_VEL;
+    static const units::turns_per_second_squared_t MAX_ACCEL;
 };
 
 struct PreferencesTrajectory

@@ -2,10 +2,12 @@
 
 Elevator::Elevator() {
     doConfiguration(false);
+
+    pidController.DisableContinuousInput();
 }
 
 void Elevator::process() {
-    double motorSpeed = 0;
+    units::volt_t motorOutput = 0_V;
 
     if (!sensorBroken) {
         if (atMinHeight()) { // if elevator at the lower limit switch
@@ -17,39 +19,46 @@ void Elevator::process() {
         encoderZeroed = true;
     }
 
+
     if (!encoderZeroed && !sensorBroken) { // if elevator not at the lower limit switch
-        motorSpeed = -0.06; // move down slowly until at the lower limit switch
+        motorOutput = -0.003_V; // move down slowly until at the lower limit switch
     } else if (manualControl) {
-        motorSpeed = manualMovementSpeed;
+        motorOutput = manualMovementSpeed * 9_V;
     } else {
-        motorSpeed = computeSpeedForPreset();
+        motorOutput = computeSpeedForPreset();
     }
 
-    if (atMinHeight() && motorSpeed < 0) // stop moving when at either limit switch
-        motorSpeed = 0;
+    if (atMinHeight() && motorOutput < 0_V) // stop moving when at either limit switch
+        motorOutput = 0_V;
 
-    if (atMaxHeight() && motorSpeed > 0)
-        motorSpeed = 0;
+    if (atMaxHeight() && motorOutput > 0_V)
+        motorOutput = 0_V;
 
     if (wristExists)
         if (wristIsUnsafe)
-            motorSpeed = 0;
+            motorOutput = 0_V;
 
     if (settings.pitMode && isDisabled) {
-        motorSpeed = 0;
+        motorOutput = 0_V;
     }
 
-    motorSpeed += 0.05; // Temp Feedfoward
-    // motorSpeed += 0.02; // No calgae feedfoward
+    units::volt_t voltage = motorOutput;
 
-    frc::SmartDashboard::PutNumber ("Elevator Motor Output", motorSpeed);
+    leftSparkMax.SetVoltage(voltage);
+    rightSparkMax.SetVoltage(voltage);
 
-    motorSpeed = std::clamp(motorSpeed, -PreferencesElevator::MAX_DOWN_SPEED, PreferencesElevator::MAX_UP_SPEED);
-    if (settings.pitMode)
-        motorSpeed = std::clamp(motorSpeed, -PreferencesElevator::MAX_DOWN_PIT_SPEED, PreferencesElevator::MAX_UP_PIT_SPEED);
+    // motorOutput += 0.05; // Temp Feedfoward
+    // // motorOutput += 0.02; // No calgae feedfoward
 
-    rightSparkMax.Set(motorSpeed);
-    leftSparkMax.Set(motorSpeed);
+    // frc::SmartDashboard::PutNumber ("Elevator Motor Output", motorOutput);
+
+    // motorOutput = std::clamp(motorOutput, -PreferencesElevator::MAX_DOWN_VOLTS, PreferencesElevator::MAX_UP_VOLTS);
+    // if (settings.pitMode)
+    //     motorOutput = std::clamp(motorOutput, -PreferencesElevator::MAX_DOWN_PIT_SPEED, PreferencesElevator::MAX_UP_PIT_SPEED);
+
+
+    // rightSparkMax.Set(motorOutput);
+    // leftSparkMax.Set(motorOutput);
 }
 
 void Elevator::resetToMatchMode(MatchMode priorMode, MatchMode mode) { //resets motor config
@@ -58,6 +67,7 @@ void Elevator::resetToMatchMode(MatchMode priorMode, MatchMode mode) { //resets 
     manualMovementSpeed = 0;
     leftSparkMax.Set(0);
     rightSparkMax.Set(0);
+    pidController.Reset(getPosition());
 }
 
 void Elevator::doConfiguration(bool persist) {
@@ -85,6 +95,28 @@ void Elevator::sendFeedback() {
     frc::SmartDashboard::PutBoolean("Elevator Upper Limit tripping",             getUpperLimit());
     frc::SmartDashboard::PutNumber ("Elevator Manual Movement Speed",            manualMovementSpeed);
     frc::SmartDashboard::PutBoolean("Elevator Zeroed",                           encoderZeroed);
+
+    frc::SmartDashboard::PutData("Elevator PID", &pidController); 
+    
+    //! REMOVE ME IN THE FUTURE, THIS BETTER NOT BE HERE AT BUCKEYE
+    // These should be temporary
+    double kS = frc::SmartDashboard::GetNumber("Elevator kS", PreferencesElevator::PID.Ks);
+    double kG = frc::SmartDashboard::GetNumber("Elevator kG", PreferencesElevator::PID.Kg);
+    double kV = frc::SmartDashboard::GetNumber("Elevator kV", PreferencesElevator::PID.Kv_EVFF);
+    double kA = frc::SmartDashboard::GetNumber("Elevator kA", PreferencesElevator::PID.Ka_EVFF);
+    frc::SmartDashboard::PutNumber("Elevator kS", kS);
+    frc::SmartDashboard::PutNumber("Elevator kG", kG);
+    frc::SmartDashboard::PutNumber("Elevator kV", kV);
+    frc::SmartDashboard::PutNumber("Elevator kA", kA);
+    if (ffController.GetKv() != (units::unit_t<frc::ElevatorFeedforward::kv_unit>)kV || 
+        ffController.GetKa() != (units::unit_t<frc::ElevatorFeedforward::ka_unit>)kA) { // If Updated
+        pidController.Reset(getPosition());
+        pidController.SetGoal(10_tr);
+    }
+    ffController.SetKs((units::volt_t)kS);
+    ffController.SetKg((units::volt_t)kG);
+    ffController.SetKv((units::unit_t<frc::ElevatorFeedforward::kv_unit>)kV);
+    ffController.SetKa((units::unit_t<frc::ElevatorFeedforward::ka_unit>)kA);
 }
 
 bool Elevator::atMaxHeight() {
@@ -135,6 +167,8 @@ units::turn_t Elevator::getPosition() {
 
 void Elevator::goToPreset(Preset target) {
     if (targetPreset != target) { // If we have a new preset
+        pidController.Reset(getPosition());
+        pidController.SetGoal(Position[target]);
         startDownPosition = getPosition().value();
     }
 
@@ -166,33 +200,45 @@ void Elevator::setSensorBroken(bool isBroken) {
     sensorBroken = isBroken;
 }
 
-double Elevator::computeSpeedForPreset() { 
+units::volt_t Elevator::computeSpeedForPreset() {
     if (targetPreset == Preset::kSTOP) {
-        return 0;
+        return 0_V;
     }
 
     units::turn_t targetPosition = Position[targetPreset];
-    units::turn_t difference = targetPosition - getPosition();
 
-    if (fabs(difference.value()) < PreferencesElevator::TARGET_TOLERANCE) {
-        return 0;
-    }
+    units::volt_t pidVolts = (units::volt_t)pidController.Calculate(getPosition());
+    units::meters_per_second_t vel = (units::meters_per_second_t)(double)pidController.GetSetpoint().velocity;
+    units::volt_t ffVolts = ffController.Calculate(vel);
+    frc::SmartDashboard::PutNumber("Elevator FF", ffVolts.value());
+    frc::SmartDashboard::PutNumber("Elevator PID", pidVolts.value());
+    frc::SmartDashboard::PutNumber("Elevator Profiled Setpoint Pos", pidController.GetSetpoint().position.value());
+    frc::SmartDashboard::PutNumber("Elevator Profiled Setpoint Vel", pidController.GetSetpoint().velocity.value());
+    units::volt_t output = pidVolts + ffVolts;
+    frc::SmartDashboard::PutNumber("Elevator FF+PID Volts Out", output.value());
+    output = std::clamp(output, PreferencesElevator::MAX_DOWN_VOLTS, PreferencesElevator::MAX_UP_VOLTS);
 
-    bool isDirectionUp = difference > 0_tr;
+    // units::turn_t difference = targetPosition - getPosition();
 
-    double speedFactorUp = std::clamp(fabs(difference.value()) * 0.1, 0.1, 1.0);
+    // if (fabs(difference) < PreferencesElevator::TARGET_TOLERANCE) {
+    //     return 0;
+    // }
 
-    if (isDirectionUp) {
-        return PreferencesElevator::MAX_UP_SPEED * speedFactorUp;
-    }
+    // bool isDirectionUp = difference > 0_tr;
 
-    double diffFromStart = startDownPosition - getPosition().value();
+    // double speedFactorUp = std::clamp(fabs(difference.value()) * 0.1, 0.1, 1.0);
 
-    double speedFactorDown = std::clamp(fabs(diffFromStart) * 0.2, 0.2, 1.0);
+    // if (isDirectionUp) {
+    //     return PreferencesElevator::MAX_UP_VOLTS * speedFactorUp;
+    // }
 
-    speedFactorDown *= std::clamp(fabs(difference.value()) * 0.1, 0.2, 1.0);
+    // double diffFromStart = startDownPosition - getPosition().value();
 
-    return -PreferencesElevator::MAX_DOWN_SPEED * speedFactorDown;
+    // double speedFactorDown = std::clamp(fabs(diffFromStart) * 0.2, 0.2, 1.0);
+
+    // speedFactorDown *= std::clamp(fabs(difference.value()) * 0.1, 0.2, 1.0);
+
+    return output;
 }
 
 void Elevator::zeroMotors() {

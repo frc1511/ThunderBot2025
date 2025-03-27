@@ -396,10 +396,10 @@ wpi::array<frc::SwerveModulePosition, 4> Drive::getModulePositions() {
 }
 
 void Drive::makeBrick() {
-    swerveModules.at(0)->setTurningMotor(-45_deg);
-    swerveModules.at(1)->setTurningMotor(45_deg);
-    swerveModules.at(2)->setTurningMotor(-45_deg);
-    swerveModules.at(3)->setTurningMotor(45_deg);
+    swerveModules.at(0)->setTurningMotor(45_deg);
+    swerveModules.at(1)->setTurningMotor(-45_deg);
+    swerveModules.at(2)->setTurningMotor(45_deg);
+    swerveModules.at(3)->setTurningMotor(-45_deg);
 }
 
 
