@@ -281,6 +281,7 @@ void Auto::doNothing() {
 
     // Well technically it's doing something - chris(2023)
     // It's a paradox! I learned this in english class! - mysteriousPerson(2025)
+    // If nothing is doing something, then there is no nothing because its always something (its a paradox) - eleanor(2025)
 }
 
 void Auto::autoSelectorInit() {
