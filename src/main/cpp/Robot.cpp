@@ -45,6 +45,7 @@ Robot::Robot() :
 
 #ifdef ENABLE_HANG
 	hang = new Hang();
+	hang->encoder.SetPosition(0);
 	allComponents.push_back(hang);
 #endif
 

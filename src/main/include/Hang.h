@@ -77,5 +77,7 @@ class Hang : public Component {
 
     void setMotorSpeed(double speed);
 
+    bool hasDeployed = false;
+
     friend class Robot;
 };

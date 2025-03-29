@@ -30,7 +30,7 @@ void Hang::process() {
 
         case ControlMode::GOING_DOWN:
             if (deepHang) {
-                if (encoder.GetPosition() > 0) {
+                if (encoder.GetPosition() > 0 && (!hasDeployed || encoder.GetPosition() > PreferencesHang::RETRACT_POSITION)) {
                     speed = PreferencesHang::MAX_HANG_SPEED_DOWN;
                 }
             } else {
@@ -65,6 +65,12 @@ void Hang::process() {
 
         default:
             break;
+    }
+
+    if (deepHang) {
+        if (fabs(fabs(encoder.GetPosition()) - PreferencesHang::MAX_DEPLOY_POSITION) < PreferencesHang::POSITION_TOL) {
+            hasDeployed = true;
+        }
     }
 
     // At this point we know we want to move up
@@ -114,7 +120,13 @@ void Hang::process() {
 }
 
 bool Hang::isHung() {
-    return hangHungSensor.Get();
+    if (!deepHang) {
+        return hangHungSensor.Get();
+    }
+    if (hasDeployed && fabs(encoder.GetPosition() - PreferencesHang::RETRACT_POSITION) < PreferencesHang::POSITION_TOL) {
+        return true;
+    }
+    return false;
 }
 
 bool Hang::isSolenoidUp() {
