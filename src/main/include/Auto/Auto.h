@@ -129,14 +129,14 @@ private:
 
     class AutoAlign : public Action {
       public:
-        AutoAlign(Drive *drive_, bool isLeft_, bool isL4_) : drive(drive_), isLeft(isLeft_), isL4(isL4_) {};
+        AutoAlign(Drive *drive_, Drive::LineupHorizontal horizontalPos_, bool isL4_) : drive(drive_), horizontalPos(horizontalPos_), isL4(isL4_) {};
         Drive *drive;
-        bool isLeft;
+        Drive::LineupHorizontal horizontalPos;
         bool isL4;
 
         Action::Result process() override {
             if (!drive->isLineUpDone()) {
-                drive->beginLineup(isLeft, isL4);
+                drive->beginLineup(horizontalPos, isL4);
             }
             return drive->isLineUpDone() ? Action::Result::DONE_BUT_LINEUP_STILL_NEEDS_TO_HAPPEN : Action::Result::WORKING;
         };

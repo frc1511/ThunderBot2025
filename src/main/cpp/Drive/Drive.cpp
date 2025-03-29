@@ -86,7 +86,7 @@ void Drive::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
     }
 
     if (mode == MatchMode::AUTO) {
-        poseEstimator.SetVisionMeasurementStdDevs({.3, .3, .9});
+        poseEstimator.SetVisionMeasurementStdDevs({.1, .1, .7});
         isAuto = true;
     } else {
         poseEstimator.SetVisionMeasurementStdDevs({.4, .4, .9});
@@ -634,7 +634,7 @@ void SwerveFeedback::InitSendable(wpi::SendableBuilder &builder) {
 
 // MARK: Lineup
 
-frc::Pose2d Drive::calculateFinalLineupPose(int posId, bool isLeftSide, bool isL4) {
+frc::Pose2d Drive::calculateFinalLineupPose(int posId, LineupHorizontal lineupHorizontal, bool isL4) {
     //------------------------- Rotate around reef center
     units::radian_t rotRads = units::radian_t(posId * (1.0/6.0) * std::numbers::pi * 2);
     /// Make the reef the origin
@@ -649,11 +649,18 @@ frc::Pose2d Drive::calculateFinalLineupPose(int posId, bool isLeftSide, bool isL
     units::meter_t rotatedY = reefRelYPrime + PreferencesDrive::REEF_POSE.Y();
 
     //------------------------- Translate for branch
-    units::meter_t moveMagnitude = PreferencesDrive::HORIZONTAL_REEF_MOVE;
-    moveMagnitude *= isLeftSide ? 1 : -1; // Move + for left, - for right
+    units::meter_t deltaX = 0_m;
+    units::meter_t deltaY = 0_m;
+    if (lineupHorizontal != LineupHorizontal::kCENTER) {
+        units::meter_t moveMagnitude = PreferencesDrive::HORIZONTAL_REEF_MOVE;
+        if (lineupHorizontal == LineupHorizontal::kRIGHT) {
+            moveMagnitude *= -1; // Move + for left, - for right
+        }
 
-    units::meter_t deltaX = cosf((double)(newRot + 90_deg)) * moveMagnitude;
-    units::meter_t deltaY = sinf((double)(newRot + 90_deg)) * moveMagnitude;
+        deltaX = cosf((double)(newRot + 90_deg)) * moveMagnitude;
+        deltaY = sinf((double)(newRot + 90_deg)) * moveMagnitude;
+    }
+
 
     // Add to the rotated X&Y the move we need to do
     units::meter_t finalX = rotatedX + deltaX;
@@ -691,17 +698,17 @@ double dist(frc::Pose2d p1, frc::Pose2d p2) {
     return std::sqrt(powf(double(p2.X() - p1.X()), 2) + powf(double(p2.Y() - p1.Y()), 2));
 }
 
-void Drive::beginLineup(bool isLeft, bool L4) {
+void Drive::beginLineup(LineupHorizontal lineupHorizontal, bool L4) {
     driveMode = DriveMode::LINEUP;
     lineUpDone = false;
 
     frc::Pose2d currentPose(getEstimatedPose());
 
-    frc::Pose2d closestPose = calculateFinalLineupPose(0, isLeft, L4);
+    frc::Pose2d closestPose = calculateFinalLineupPose(0, lineupHorizontal, L4);
     double lowestDist = fabs(dist(currentPose, closestPose));
 
     for (int i = 1; i < 6; i++) {
-        frc::Pose2d currentLineupPose = calculateFinalLineupPose(i, isLeft, L4);
+        frc::Pose2d currentLineupPose = calculateFinalLineupPose(i, lineupHorizontal, L4);
 
         double currentLineupDist = fabs(dist(currentPose, currentLineupPose));
 
@@ -757,7 +764,7 @@ bool Drive::isLineUpDone() {
 // MARK: Nyooooooooooom
 
 Drive::Quadrant Drive::getCurrentQuadrant() {
-    static auto ally = frc::DriverStation::GetAlliance().value();
+    auto ally = frc::DriverStation::GetAlliance().value();
     frc::Pose2d pose(getEstimatedPose());
     units::meter_t robotX = pose.X();
     units::meter_t robotY = pose.Y();

@@ -61,9 +61,9 @@ class Wrist : public Component {
         -0_deg,    // Branch 2 & 3
          53.1_deg, // Branch 4
          28_deg,   // Processor
-        -37_deg,   // Transit
+        -36.5_deg, // Transit
          0_deg,    // Reef
-        -37_deg,   // Coral Station Low
+        -36.5_deg, // Coral Station Low
          0_deg     // Net
     };
 

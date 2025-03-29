@@ -117,7 +117,13 @@ class Drive : public Component {
     void slowYourRoll();
     void unslowYourRoll();
 
-    void beginLineup(bool isLeft, bool L4);
+    enum class LineupHorizontal {
+        kLEFT,
+        kCENTER,
+        kRIGHT
+    };
+
+    void beginLineup(LineupHorizontal lineupHorizontal, bool L4);
 
     bool isLineUpDone();
 
@@ -302,7 +308,8 @@ private:
     // MARK: Lineup
     void execLineup();
 
-    frc::Pose2d calculateFinalLineupPose(int posId, bool isLeftSide, bool isL4);
+
+    frc::Pose2d calculateFinalLineupPose(int posId, LineupHorizontal lineupHorizontal, bool isL4);
 
     // PID Controller for X and Y axis lineup.
     frc::PIDController lineupXPIDController { PreferencesDrive::PID_LINEUP_XY.Kp, PreferencesDrive::PID_LINEUP_XY.Ki, PreferencesDrive::PID_LINEUP_XY.Kd};

@@ -71,7 +71,7 @@ const frc::Pose2d PreferencesDrive::MASTER_LINEUP_POSE = {
     frc::Rotation2d(0_deg)
 };
 
-const double PreferencesDrive::LINEUP_POSE_TOLERANCE = 0.008;
+const double PreferencesDrive::LINEUP_POSE_TOLERANCE = 0.04677;
 const double PreferencesDrive::LINEUP_LIMELIGHT_DEADZONE= 0.01;
 
 
@@ -170,8 +170,8 @@ const PID_t PreferencesElevator::PID = {
     .Kv_EVFF = 0.15,
     .Ka_EVFF = 0.3
 };
-const units::turns_per_second_t PreferencesElevator::MAX_VEL = 180_tps;
-const units::turns_per_second_squared_t PreferencesElevator::MAX_ACCEL = 80_tr_per_s_sq;
+const units::turns_per_second_t PreferencesElevator::MAX_VEL = 240_tps;
+const units::turns_per_second_squared_t PreferencesElevator::MAX_ACCEL = 120_tr_per_s_sq;
 
 
 /***********************************************************/
@@ -195,14 +195,16 @@ const int PreferencesBlinkyBlinky::ALGAE_STATUS_ID = 3;
 /***********************************************************/
 // Hang
 
+#define HANG_OVERSHOOT_COMPENSATION 2
+
 const double PreferencesHang::MAX_POSITION = -1;
-const double PreferencesHang::RETRACT_POSITION = 17.286;
+const double PreferencesHang::RETRACT_POSITION = 17.286 + HANG_OVERSHOOT_COMPENSATION;
 const double PreferencesHang::MAX_HANG_SPEED_UP = 0.85;
 const double PreferencesHang::MAX_HANG_SPEED_DOWN = -0.85;
 const double PreferencesHang::HANG_SPEED_DOWN_SLOW = -0.5;
 const double PreferencesHang::BACKTRACKING_SPEED = -0.1;
 const double PreferencesHang::BACKTRACKING_DISTANCE = 1;
-const double PreferencesHang::MAX_DEPLOY_POSITION = 67.5;
+const double PreferencesHang::MAX_DEPLOY_POSITION = 67.002 - HANG_OVERSHOOT_COMPENSATION;
 const units::second_t PreferencesHang::DISENGAGE_DURATION = 0.3_s;
 const double PreferencesHang::POSITION_TOL = 5;
 

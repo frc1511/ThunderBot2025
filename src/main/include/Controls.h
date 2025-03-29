@@ -33,9 +33,9 @@ class Controls : public Component {
     frc::XboxController auxController {1};
     frc::GenericHID switchBoard {2};
 
-    bool isLeftAutoAlign = false;
     bool isL4AutoAlign = false;
-
+    Drive::LineupHorizontal feedbackHorizontalAutoAlign = Drive::LineupHorizontal::kCENTER;
+    
     bool lastShouldToggleStationPreset = false;
     bool controllerToggleStationPreset = false;
 

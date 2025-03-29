@@ -23,7 +23,7 @@ void Controls::process() {
                                       (gamepiece->elevator->Position[Elevator::Preset::kNET] - gamepiece->elevator->Position[Elevator::Preset::kL3])).value();
 
             if (elevatorPercent > 0) {
-                elevatorPercent = 0.95 - pow(elevatorPercent - 1, 2);
+                elevatorPercent = 0.92 - pow(elevatorPercent - 1, 2);
                 elevatorPercent = std::clamp(elevatorPercent, 0.0, 1.0);
                 speedReduction = elevatorPercent;
             }
@@ -86,10 +86,19 @@ void Controls::process() {
         bool isLiningUp = driveController.GetBButton(); // Line up if B button held
 
         if (flags == 0 && xPercent == 0 && yPercent == 0 && rotPercent == 0 && !robotCentricFromController && isLiningUp) {
-            isLeftAutoAlign = driveController.GetPOV() == 270 ? true : isLeftAutoAlign;  // Set to left if left dpad pressed, else use prexisting
-            isLeftAutoAlign = driveController.GetPOV() == 90  ? false : isLeftAutoAlign; // Set to right if right dpad pressed, else use prexisting
             isL4AutoAlign = driveController.GetXButtonPressed() ? !isL4AutoAlign : isL4AutoAlign;   // Toggle if start pressed, else retain state
-            drive->beginLineup(isLeftAutoAlign, isL4AutoAlign);
+
+            Drive::LineupHorizontal lineUpHoriz = Drive::LineupHorizontal::kCENTER;
+            if (driveController.GetPOV() == 270) { // Left
+                lineUpHoriz = Drive::LineupHorizontal::kLEFT;
+            } else if (driveController.GetPOV() == 90) { // Right
+                lineUpHoriz = Drive::LineupHorizontal::kRIGHT;
+            }
+            feedbackHorizontalAutoAlign = lineUpHoriz;
+
+            bool finalL4Align = lineUpHoriz == Drive::LineupHorizontal::kCENTER ? false : isL4AutoAlign; // Don't obay L4 auto align if we are doing the center (algae) only for the branches
+
+            drive->beginLineup(lineUpHoriz, finalL4Align);
         } else {
             isLiningUp = false;
             if (fieldCentric && !robotCentricFromController) {
@@ -265,7 +274,11 @@ void Controls::sendFeedback() {
 
     frc::SmartDashboard::PutNumber("Controls current Station State", (int)currentStationState);
 
-    frc::SmartDashboard::PutBoolean("Controls AutoAlign in Left mode", isLeftAutoAlign);
+    frc::SmartDashboard::PutString ("Controls AutoAlign Horizontal", [&]() -> std::string {
+        if (feedbackHorizontalAutoAlign == Drive::LineupHorizontal::kCENTER) return "Center";
+        if (feedbackHorizontalAutoAlign == Drive::LineupHorizontal::kLEFT)   return "Left";
+        if (feedbackHorizontalAutoAlign == Drive::LineupHorizontal::kRIGHT)  return "Right";
+    }());
     frc::SmartDashboard::PutBoolean("Controls AutoAlign in L4 mode",   isL4AutoAlign);
 }
 

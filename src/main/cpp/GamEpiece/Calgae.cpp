@@ -66,7 +66,7 @@ void Calgae::process() {
             stopMotors();
             return;
         }
-        if (intakeTimeout.Get() > 2_s && isAutoIntaking) {
+        if (intakeTimeout.Get() > 4_s && isAutoIntaking) {
             lastGamepieceState = GamepieceState::kALGAE;
             motorMode = MotorModes::kSTOP;
             intakeTimeout.Stop();

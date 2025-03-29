@@ -18,10 +18,10 @@ Auto::Auto(Drive *drive_, Limelight *limelight_, Gamepiece *gamepiece_)
   shootCoral(gamepiece_),
   intakeCoral(gamepiece_, Calgae::GamepieceState::kCORAL),
   intakeAlgae(gamepiece_, Calgae::GamepieceState::kALGAE),
-  autoAlignLeftNormal(drive_, true, false),
-  autoAlignRightNormal(drive_, false, false),
-  autoAlignLeftL4(drive_, true, true),
-  autoAlignRightL4(drive_, false, true),
+  autoAlignLeftNormal(drive_, Drive::LineupHorizontal::kLEFT, false),
+  autoAlignRightNormal(drive_, Drive::LineupHorizontal::kRIGHT, false),
+  autoAlignLeftL4(drive_, Drive::LineupHorizontal::kLEFT, true),
+  autoAlignRightL4(drive_, Drive::LineupHorizontal::kRIGHT, true),
   startAlgaeIntake(gamepiece_, Calgae::GamepieceState::kALGAE),
   stopAlgaeIntake(gamepiece_)
 {}
