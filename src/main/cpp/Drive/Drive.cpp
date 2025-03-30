@@ -430,6 +430,9 @@ void Drive::runTrajectory(const CSVTrajectory* _trajectory, const std::map<u_int
 void Drive::setupInitialTrajectoryPosition(const CSVTrajectory *trajectory) {
     frc::Pose2d initPose(trajectory->getInitialPose());
     resetOdometry(frc::Pose2d(initPose.X(), initPose.Y(), initPose.Rotation().Degrees()));
+    resetPIDControllers();
+    trajectoryThetaPIDController.Reset(initPose.Rotation().Degrees());
+    lineupThetaPIDController.Reset(initPose.Rotation().Degrees());
 }
 
 void Drive::setAccelerationReduction(double reduction) {

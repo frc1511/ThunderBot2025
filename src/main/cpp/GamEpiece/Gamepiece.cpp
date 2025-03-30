@@ -100,7 +100,7 @@ void Gamepiece::moveToTarget() {
                 break;
         }
 
-        wristMoveDone = wrist->atPreset();
+        wristMoveDone = wrist->atPresetForOOO();
     } else {
         wristMoveDone = true;
     }

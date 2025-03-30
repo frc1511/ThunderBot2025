@@ -5,8 +5,13 @@
 std::optional<std::map<bool, LimelightHelpers::PoseEstimate>> Limelight::getEstimatedBotPose() {
     if (!isFunctioning) {
         // If it's not functioning, don't use it's values!
+        LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_EMPTY);
+        LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_EMPTY);
         return std::nullopt;
     }
+
+	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_APRILTAGS);
+	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_APRILTAGS);
 
     std::map<bool, LimelightHelpers::PoseEstimate> poses = {
         getLimelightPose(PreferencesLimelight::LIMELIGHT_BACK),

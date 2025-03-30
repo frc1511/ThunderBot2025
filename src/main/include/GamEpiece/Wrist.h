@@ -41,6 +41,9 @@ class Wrist : public Component {
 
     bool atPreset();
 
+    // Order of operations
+    bool atPresetForOOO();
+
     void setEncoderBroken(bool isBroken);
 
     void manualMovement(units::degree_t speed);

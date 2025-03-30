@@ -59,6 +59,7 @@ void Wrist::sendFeedback() {
     frc::SmartDashboard::PutNumber ("Wrist Target Position", Positions[currentPreset].value());
     frc::SmartDashboard::PutNumber ("Wrist Motor Speed",     motor.GetSpeed());
     frc::SmartDashboard::PutBoolean("Wrist At Goal",         atPreset());
+    frc::SmartDashboard::PutBoolean("Wrist OOO Continue",    atPresetForOOO());
     frc::SmartDashboard::PutBoolean("Wrist Is Unsafe",       wristIsUnsafe());
 }
 
@@ -95,6 +96,14 @@ bool Wrist::atPreset() {
     units::degree_t difference = targetPosition - getEncoderDegrees();
 
     return fabs(difference.value()) < PreferencesWrist::ANGLE_TOLERANCE_AUTO.value();
+}
+
+bool Wrist::atPresetForOOO() {
+    if (encoderBroken) return true;    
+    units::degree_t targetPosition = Positions[currentPreset];
+    units::degree_t difference = targetPosition - getEncoderDegrees();
+
+    return fabs(difference.value()) < PreferencesWrist::ANGLE_TOLERANCE_OOO_CONTINUE.value();
 }
 
 void Wrist::setEncoderBroken(bool isBroken) {
