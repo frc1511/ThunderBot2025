@@ -180,9 +180,12 @@ void Controls::process() {
 
     if (gamepiece != nullptr && driveController.IsConnected() && !hasBeenSetByAux && !driveDisable) {
         bool toNet = driveController.GetPOV() == 0;
+        bool toFloor = driveController.GetLeftTriggerAxis() > PreferencesControls::AXIS_DEADZONE;
 
         if (toNet) 
             gamepiece->moveToPreset(Gamepiece::Preset::kNET);
+        else if (toFloor)
+            gamepiece->moveToPreset(Gamepiece::Preset::kFLOOR);
     }
 
     if (gamepiece->calgae != nullptr && auxController.IsConnected() && !auxDisable) {

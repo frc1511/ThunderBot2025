@@ -21,7 +21,7 @@ void Elevator::process() {
 
 
     if (!encoderZeroed && !sensorBroken) { // if elevator not at the lower limit switch
-        motorOutput = -0.003_V; // move down slowly until at the lower limit switch
+        motorOutput = -1_V; // move down slowly until at the lower limit switch
     } else if (manualControl) {
         motorOutput = manualMovementSpeed * 9_V;
     } else {

@@ -5,6 +5,7 @@
 #pragma once
 
 #include <frc/TimedRobot.h>
+#include <cameraserver/CameraServer.h>
 
 #include "Basic/Component.h"
 #include "Drive/Drive.h"

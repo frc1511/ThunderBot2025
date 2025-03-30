@@ -21,6 +21,7 @@ class Wrist : public Component {
     void sendFeedback();
 
     enum Preset {
+        kFLOOR,
         kGROUND,
         kSTATION,
         kTROUGH,
@@ -55,6 +56,7 @@ class Wrist : public Component {
     Preset currentPreset = Preset::kTRANSIT;
 
     units::degree_t Positions[Preset::_enum_MAX] = {
+         95_deg,   // Floor
          63_deg,   // Ground
         -35_deg,   // Coral Station
         -19_deg,   // Trough

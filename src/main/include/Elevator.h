@@ -67,7 +67,7 @@ class Elevator : public Component {
         0_tr,     // Processor
         14_tr,    // Coral Station
         8_tr,     // L1
-        11.16_tr, // L2
+        10_tr,    // L2
         25.35_tr, // L3
         58_tr,    // L4
         66.1_tr,  // Net

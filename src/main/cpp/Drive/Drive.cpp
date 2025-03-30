@@ -374,7 +374,7 @@ void Drive::updateOdometry() {
             LimelightHelpers::PoseEstimate mt1 = pose.second;
 
             if (!limelightReliable) continue;
-            if (distToLineupPose() < PreferencesDrive::LINEUP_LIMELIGHT_DEADZONE && !isLineUpDone()) {
+            if (distToLineupPose() < PreferencesDrive::LINEUP_LIMELIGHT_DEADZONE) {
                 continue;
             }
             poseEstimator.AddVisionMeasurement(

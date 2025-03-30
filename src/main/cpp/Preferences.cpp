@@ -140,18 +140,18 @@ const double PreferencesCalgae::MOTOR_SPEED_INTAKE_REGRAB = 0.5;
 /***********************************************************/
 // Wrist
 
-const double PreferencesWrist::MAX_SPEED = 0.4;
+const double PreferencesWrist::MAX_SPEED = 0.7;
 const double PreferencesWrist::MAX_PIT_SPEED = 0.2;
 const units::degree_t PreferencesWrist::UP_ZERO = 100_deg;
 const double PreferencesWrist::MAX_FEED_FORWARD_POWER_HIGH_ANGLE = 0.07;
 const double PreferencesWrist::MAX_FEED_FORWARD_POWER_LOW_ANGLE = 0.1;
-const units::degree_t PreferencesWrist::ANGLE_TOLERANCE = 1_deg;
+const units::degree_t PreferencesWrist::ANGLE_TOLERANCE = 0.5_deg;
 const units::degree_t PreferencesWrist::ANGLE_TOLERANCE_AUTO = 3_deg;
 const units::degree_t PreferencesWrist::LOWEST_ANGLE = -35_deg;
 
 const units::degree_t PreferencesWrist::HIGHEST_ANGLE = 100_deg;
 const units::degree_t PreferencesWrist::ENCODER_FAILURE_OUTBOUND = 10_deg;
-const units::degree_t PreferencesWrist::UNSAFE_MIN = 80_deg;
+const units::degree_t PreferencesWrist::UNSAFE_MIN = 102_deg;
 
 
 
@@ -195,16 +195,17 @@ const int PreferencesBlinkyBlinky::ALGAE_STATUS_ID = 3;
 /***********************************************************/
 // Hang
 
-#define HANG_OVERSHOOT_COMPENSATION 2
+#define HANG_OVERSHOOT_COMPENSATION 4
 
 const double PreferencesHang::MAX_POSITION = -1;
-const double PreferencesHang::RETRACT_POSITION = 17.286 + HANG_OVERSHOOT_COMPENSATION;
-const double PreferencesHang::MAX_HANG_SPEED_UP = 0.85;
-const double PreferencesHang::MAX_HANG_SPEED_DOWN = -0.85;
+const double PreferencesHang::RETRACT_POSITION = 26.9;
+const double PreferencesHang::MAX_HANG_SPEED_UP = 1;
+const double PreferencesHang::MAX_HANG_SPEED_DOWN = -0.65;
+const double PreferencesHang::PIT_HANG_SPEED_DOWN = -0.30;
 const double PreferencesHang::HANG_SPEED_DOWN_SLOW = -0.5;
 const double PreferencesHang::BACKTRACKING_SPEED = -0.1;
 const double PreferencesHang::BACKTRACKING_DISTANCE = 1;
-const double PreferencesHang::MAX_DEPLOY_POSITION = 67.002 - HANG_OVERSHOOT_COMPENSATION;
+const double PreferencesHang::MAX_DEPLOY_POSITION = 103 - HANG_OVERSHOOT_COMPENSATION;
 const units::second_t PreferencesHang::DISENGAGE_DURATION = 0.3_s;
 const double PreferencesHang::POSITION_TOL = 5;
 

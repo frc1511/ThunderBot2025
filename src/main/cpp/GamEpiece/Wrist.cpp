@@ -34,8 +34,12 @@ void Wrist::process() {
 
         units::degree_t difference = targetPosition - getEncoderDegrees();
 
-        double speedFactor = std::clamp(difference.value() * 0.1, -1.0, 1.0);
-        speedFactor *= std::clamp(fabs(difference.value()) * 0.1, 0.2, 1.0);
+        double speedFactor = std::clamp(difference.value() * 0.03, -1.0, 1.0);
+        if (speedFactor < 0.1 && speedFactor > 0) {
+            speedFactor = 0.1;
+        } else if (speedFactor > -0.1 && speedFactor < 0) {
+            speedFactor = -0.1;
+        }
 
         setSpeed(PreferencesWrist::MAX_SPEED * speedFactor);
     } else {
@@ -54,6 +58,7 @@ void Wrist::sendFeedback() {
     frc::SmartDashboard::PutNumber ("Wrist Target Position", Positions[currentPreset].value());
     frc::SmartDashboard::PutNumber ("Wrist Motor Speed",     motor.GetSpeed());
     frc::SmartDashboard::PutBoolean("Wrist At Goal",         atPreset());
+    frc::SmartDashboard::PutBoolean("Wrist Is Unsafe",       wristIsUnsafe());
 }
 
 bool Wrist::withinEncoderSafeZone() {
@@ -106,8 +111,10 @@ void Wrist::manualMovement(units::degree_t angle) {
 }
 
 bool Wrist::wristIsUnsafe() {
-    if (getEncoderDegrees() > PreferencesWrist::UNSAFE_MIN && !encoderBroken)
+    if (getEncoderDegrees() > PreferencesWrist::UNSAFE_MIN && !encoderBroken) {
+        printf("MANUAL BYPASS REQUIRED: WRIST IS AT UNSAFE ANGLE | ELEVATOR DISSABLED\n");
         return true;
+    }
 
     return false;
 }
@@ -157,16 +164,17 @@ void Wrist::setSpeed(double speed) {
 
 std::string Wrist::presetAsString() {
     switch (currentPreset) {
-        case Preset::kGROUND: return "Ground";
-        case Preset::kSTATION: return "Coral Station";
-        case Preset::kTROUGH: return "L1 (Trough)";
-        case Preset::kBRANCH2_3: return "L2 & L3";
-        case Preset::kBRANCH4: return "L4";
-        case Preset::kPROCESSOR: return "Processor";
-        case Preset::kTRANSIT: return "Transit";
-        case Preset::kREEF: return "Reef";
+        case Preset::kFLOOR:             return "Floor";
+        case Preset::kGROUND:            return "Ground";
+        case Preset::kSTATION:           return "Coral Station";
+        case Preset::kTROUGH:            return "L1 (Trough)";
+        case Preset::kBRANCH2_3:         return "L2 & L3";
+        case Preset::kBRANCH4:           return "L4";
+        case Preset::kPROCESSOR:         return "Processor";
+        case Preset::kTRANSIT:           return "Transit";
+        case Preset::kREEF:              return "Reef";
         case Preset::kCORAL_STATION_LOW: return "Coral Station Low";
-        case Preset::kNET: return "Net";
-        default: return "ERROR: Unknown/Incorrect";
+        case Preset::kNET:               return "Net";
+        default:                         return "ERROR: Unknown/Incorrect";
     }
 }

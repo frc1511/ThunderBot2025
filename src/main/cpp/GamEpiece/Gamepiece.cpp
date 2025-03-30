@@ -83,6 +83,7 @@ void Gamepiece::moveToTarget() {
             case Gamepiece::kCORAL_STATION_LOW: wrist->toPreset(Wrist::Preset::kCORAL_STATION_LOW);  break;
             case Gamepiece::kCORAL_STATION:     wrist->toPreset(Wrist::Preset::kSTATION);            break;
             case Gamepiece::kGROUND:            wrist->toPreset(Wrist::Preset::kGROUND);             break;
+            case Gamepiece::kFLOOR:             wrist->toPreset(Wrist::Preset::kFLOOR);             break;
             case Gamepiece::kL1:                wrist->toPreset(Wrist::Preset::kTROUGH);             break;
             case Gamepiece::kL2:                wrist->toPreset(Wrist::Preset::kBRANCH2_3);          break;
             case Gamepiece::kL3:                wrist->toPreset(Wrist::Preset::kBRANCH2_3);          break;
@@ -115,6 +116,7 @@ void Gamepiece::moveToTarget() {
             case Gamepiece::kCORAL_STATION_LOW: elevator->goToPreset(Elevator::Preset::kCORAL_STATION_LOW); break;
             case Gamepiece::kCORAL_STATION:     elevator->goToPreset(Elevator::Preset::kCORAL_STATION);     break;
             case Gamepiece::kGROUND:            elevator->goToPreset(Elevator::Preset::kGROUND);            break;
+            case Gamepiece::kFLOOR:             elevator->goToPreset(Elevator::Preset::kGROUND);            break;
             case Gamepiece::kL1:                elevator->goToPreset(Elevator::Preset::kL1);                break;
             case Gamepiece::kL2:                elevator->goToPreset(Elevator::Preset::kL2);                break;
             case Gamepiece::kL3:                elevator->goToPreset(Elevator::Preset::kL3);                break;
@@ -141,6 +143,7 @@ bool Gamepiece::isAtPreset() {
         // Silly Stuff for auto (b/c wrist target preset isnt set until elev @ target)
         //! If you see this before I come back to it, I think the problem w/ L4 auto is that wrist reads atPreset==true until we give it a new one, and it returns true and gamepiece thinks it's at the preset before the wrist is told it's new position. Just a hypothesis. Didn't have time to debug and couldn't tell if I even did this right, but I didn't see results from what is right here. 
         switch (targetPreset) {
+            case Preset::kFLOOR:             if (!(wrist->currentPreset == Wrist::Preset::kFLOOR))             return false; else break;
             case Preset::kGROUND:            if (!(wrist->currentPreset == Wrist::Preset::kGROUND))            return false; else break;
             case Preset::kPROCESSOR:         if (!(wrist->currentPreset == Wrist::Preset::kPROCESSOR))         return false; else break;
             case Preset::kTRANSIT:           if (!(wrist->currentPreset == Wrist::Preset::kTRANSIT))           return false; else break;
@@ -182,19 +185,20 @@ bool Gamepiece::hasGamepiece() {
 
 std::string Gamepiece::targetPresetAsString() {
     switch (targetPreset) {
-        case Preset::kSTOP: return "Stop";
-        case Preset::kGROUND: return "Ground";
-        case Preset::kPROCESSOR: return "Processor";
-        case Preset::kCORAL_STATION: return "Coral Station";
+        case Preset::kSTOP:              return "Stop";
+        case Preset::kFLOOR:             return "Floor";
+        case Preset::kGROUND:            return "Ground";
+        case Preset::kPROCESSOR:         return "Processor";
+        case Preset::kCORAL_STATION:     return "Coral Station";
         case Preset::kCORAL_STATION_LOW: return "Coral Station Low";
-        case Preset::kL1: return "L1 (Trough)";
-        case Preset::kL2: return "L2";
-        case Preset::kL3: return "L3";
-        case Preset::kL4: return "L4";
-        case Preset::kNET: return "Net";
-        case Preset::kTRANSIT: return "Transit";
-        case Preset::kREEF_LOW: return "Reef Low";
-        case Preset::kREEF_HIGH: return "Reef High";
-        default: return "Error reading";
+        case Preset::kL1:                return "L1 (Trough)";
+        case Preset::kL2:                return "L2";
+        case Preset::kL3:                return "L3";
+        case Preset::kL4:                return "L4";
+        case Preset::kNET:               return "Net";
+        case Preset::kTRANSIT:           return "Transit";
+        case Preset::kREEF_LOW:          return "Reef Low";
+        case Preset::kREEF_HIGH:         return "Reef High";
+        default:                         return "Error reading";
     }
 }

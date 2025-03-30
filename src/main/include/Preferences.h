@@ -183,6 +183,7 @@ struct PreferencesHang
     static const double RETRACT_POSITION;
     static const double MAX_HANG_SPEED_UP;
     static const double MAX_HANG_SPEED_DOWN;
+    static const double PIT_HANG_SPEED_DOWN;
     static const double HANG_SPEED_DOWN_SLOW;
     static const double BACKTRACKING_SPEED;
     static const double BACKTRACKING_DISTANCE;

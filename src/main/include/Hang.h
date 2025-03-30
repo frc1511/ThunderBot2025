@@ -8,6 +8,8 @@
 #include <frc/Timer.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
+#include "Libraries/elasticlib.h"
+
 #include "Basic/IOMap.h"
 #include "Preferences.h"
 #include "Basic/Component.h"

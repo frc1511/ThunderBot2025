@@ -32,6 +32,8 @@ void Hang::process() {
             if (deepHang) {
                 if (encoder.GetPosition() > 0 && (!hasDeployed || encoder.GetPosition() > PreferencesHang::RETRACT_POSITION)) {
                     speed = PreferencesHang::MAX_HANG_SPEED_DOWN;
+                } else if (settings.pitMode) {
+                    speed = PreferencesHang::PIT_HANG_SPEED_DOWN;
                 }
             } else {
                 if (!isHung()) {
@@ -70,6 +72,7 @@ void Hang::process() {
     if (deepHang) {
         if (fabs(fabs(encoder.GetPosition()) - PreferencesHang::MAX_DEPLOY_POSITION) < PreferencesHang::POSITION_TOL) {
             hasDeployed = true;
+            elastic::SelectTab("HangHanging");
         }
     }
 

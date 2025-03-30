@@ -18,6 +18,7 @@ class Gamepiece : public Component {
 
     enum Preset {
         kSTOP,
+        kFLOOR,
         kGROUND,
         kPROCESSOR,
         kTRANSIT,
