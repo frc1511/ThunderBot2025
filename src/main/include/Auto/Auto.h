@@ -88,6 +88,7 @@ private:
         };
     };
     StartToGPPreset startToCoralStation;
+    StartToGPPreset startToL4;
 
     class ShootCoral : public Action {
       public:
@@ -198,7 +199,8 @@ private:
         {1 << 16, &toProcessor},            // Processor
         {1 << 17, &startAlgaeIntake},       // Start Algae Intake
         {1 << 18, &stopAlgaeIntake},        // Stop Algae Intake
-        {1 << 19, &startToCoralStation}     // Start to Coral Station
+        {1 << 19, &startToCoralStation},    // Start to Coral Station
+        {1 << 20, &startToL4}               // Start to L4
     };
 
     std::string autoSelected;

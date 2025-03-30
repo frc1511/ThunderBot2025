@@ -24,7 +24,7 @@ const units::meter_t PreferencesDrive::HORIZONTAL_REEF_MOVE = 0.17145_m;
 const units::meter_t PreferencesDrive::VERTICAL_REEF_MOVE = 0.18_m;
 
 const PID_t PreferencesDrive::PID_XY = {
-    .Kp = 7.5
+    .Kp = 9.5
 };
 const PID_t PreferencesDrive::PID_THETA = {
     .Kp = 6,
@@ -45,8 +45,8 @@ const PID_t PreferencesDrive::PID_LINEUP_THETA = {
  * Field Width x, Reef y
  */
 const std::vector<Point> PreferencesDrive::QUADRANT_LEFT = {
-    Point{.x = 4.493839_m, .y = 0_m},
-    Point{.x = 17.55_m, .y = 4.025221_m}
+    Point{.x = 0_m, .y = 4.025221_m},
+    Point{.x = 4.493839_m, .y = 8.05_m}
 };
 /**
  * 0, 0

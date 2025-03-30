@@ -69,10 +69,11 @@ void Robot::RobotInit() {
 
 	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_EMPTY);
 	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_EMPTY);
-
+	
 	auto cam = frc::CameraServer::StartAutomaticCapture();
 	if (!cam.IsConnected()) {
 		frc::CameraServer::RemoveCamera(cam.GetName());
+		cam.SetConnectVerbose(0);
 	}
 }
 

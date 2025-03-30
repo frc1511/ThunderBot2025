@@ -764,13 +764,13 @@ bool Drive::isLineUpDone() {
 // MARK: Nyooooooooooom
 
 Drive::Quadrant Drive::getCurrentQuadrant() {
-    auto ally = frc::DriverStation::GetAlliance().value();
+    auto ally = frc::DriverStation::GetAlliance();
     frc::Pose2d pose(getEstimatedPose());
     units::meter_t robotX = pose.X();
     units::meter_t robotY = pose.Y();
 
     if (ally) {
-        if (ally == frc::DriverStation::Alliance::kRed) {
+        if (ally.value() == frc::DriverStation::Alliance::kRed) {
             robotX = PreferencesTrajectory::FIELD_X - robotX;
             robotY = PreferencesTrajectory::FIELD_Y - robotY;
         }

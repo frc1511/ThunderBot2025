@@ -13,7 +13,7 @@ struct ThunderLogger {
     static void StartLogging() {
         if (!loggerActive) {
             loggerActive = true;
-            frc::DataLogManager::Start();
+            frc::DataLogManager::Start("");
             frc::DataLogManager::LogNetworkTables(true);
             frc::DataLogManager::LogConsoleOutput(true);
             frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());

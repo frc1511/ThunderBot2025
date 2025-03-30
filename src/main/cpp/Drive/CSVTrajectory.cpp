@@ -56,7 +56,7 @@ CSVTrajectory::State CSVTrajectory::sample(units::second_t time) const {
         return State{ frc::Pose2d(), 0_mps };
     } else if (noUpper) { // Return the highest defined state if there is no upper bound.
         State s {
-            .pose=lowerBound->second.pose,
+            .pose=states.rbegin()->second.pose,
             .velocity=0_mps
         };
         printf("No Upper: X: %lf, Y: %lf \n", s.pose.X().value(), s.pose.Y().value());
