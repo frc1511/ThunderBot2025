@@ -286,11 +286,13 @@ void Drive::sendFeedback() {
     frc::SmartDashboard::PutString("Drive Current Quadrant", getCurrentQuadrantAsString());
 
     bool playNyoom = false;
-    if (lastQuadrant != currentQuadrant && currentQuadrant != Quadrant::kNONE && lastQuadrant != Quadrant::kNONE) {
+    units::meters_per_second_t totalSpeed = controlData.xVel + controlData.yVel;
+    if (lastQuadrant != currentQuadrant && currentQuadrant != Quadrant::kNONE && lastQuadrant != Quadrant::kNONE && fabs(totalSpeed.value()) >= 4.0) {
         playNyoom = true;
     }
 
-    frc::SmartDashboard::PutBoolean("Drive_Play_Nyoom", playNyoom);
+    frc::SmartDashboard::PutBoolean("Drive_Play_Nyoom",  playNyoom);
+    frc::SmartDashboard::PutNumber ("Drive_Total_Speed", totalSpeed.value());
 }
 
 bool Drive::isFinished() const { // Can this const be moved to the beginning of the line? I think it would be easier to read
@@ -512,11 +514,11 @@ void Drive::execTrajectory() {
 
     // We should *NEVER* be moving to 0, 0
     if (state.pose.X() != 0_m && state.pose.Y() != 0_m) {
-        driveToState(state, false);
+        driveToState(state, false, 1);
     }
 }
 
-void Drive::driveToState(CSVTrajectory::State state, bool isLineup) {
+void Drive::driveToState(CSVTrajectory::State state, bool isLineup, double limiting) {
 
     // Adjust the rotation because everything about this robot is 90 degrees off D:
     //// state.pose = frc::Pose2d(state.pose.Translation(), frc::Rotation2d(state.pose.Rotation() - 90_deg));
@@ -576,20 +578,20 @@ void Drive::driveToState(CSVTrajectory::State state, bool isLineup) {
     // Keep target pose for feedback.
     targetPose = state.pose;
 
-    velocities.vx    *= speedLimiting;
-    velocities.vy    *= speedLimiting;
-    velocities.omega *= speedLimiting;
+    velocities.vx    *= limiting;
+    velocities.vy    *= limiting;
+    velocities.omega *= limiting;
 
     // Make the robot go vroom :D
     setModuleStates(velocities);
 } 
 
 void Drive::slowYourRoll() {
-    speedLimiting = std::clamp(speedLimiting - .1, 0.0, 1.0);
+    speedLimiting = std::clamp(speedLimiting - .05, 0.0, 1.0);
 }
 
 void Drive::unslowYourRoll() {
-    speedLimiting = std::clamp(speedLimiting + .1, 0.0, 1.0);
+    speedLimiting = std::clamp(speedLimiting + .05, 0.0, 1.0);
 }
 
 SwerveFeedback::SwerveFeedback(wpi::array<SwerveModule*, 4>* _swerveModules):
@@ -741,7 +743,7 @@ void Drive::execLineup() {
     //// double finalVelocity = std::clamp(startRamp, 0.0, maxVel) - std::clamp(endRamp, 0.0, maxVel);
     //// targetState.velocity = (units::meters_per_second_t)std::clamp(finalVelocity, 0.0, maxVel); 
 
-    driveToState(targetState, true);
+    driveToState(targetState, true, std::clamp(distToLineupPose() * 1, 0.4, 1.0));
 
     if (distToLineupPose() < PreferencesDrive::LINEUP_POSE_TOLERANCE) {
         lineUpDone = true;

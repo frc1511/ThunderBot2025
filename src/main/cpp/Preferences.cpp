@@ -71,7 +71,7 @@ const frc::Pose2d PreferencesDrive::MASTER_LINEUP_POSE = {
     frc::Rotation2d(0_deg)
 };
 
-const double PreferencesDrive::LINEUP_POSE_TOLERANCE = 0.04677;
+const double PreferencesDrive::LINEUP_POSE_TOLERANCE = 0.05;
 const double PreferencesDrive::LINEUP_LIMELIGHT_DEADZONE= 0.01;
 
 

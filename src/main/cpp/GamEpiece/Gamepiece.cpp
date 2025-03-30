@@ -83,7 +83,7 @@ void Gamepiece::moveToTarget() {
             case Gamepiece::kCORAL_STATION_LOW: wrist->toPreset(Wrist::Preset::kCORAL_STATION_LOW);  break;
             case Gamepiece::kCORAL_STATION:     wrist->toPreset(Wrist::Preset::kSTATION);            break;
             case Gamepiece::kGROUND:            wrist->toPreset(Wrist::Preset::kGROUND);             break;
-            case Gamepiece::kFLOOR:             wrist->toPreset(Wrist::Preset::kFLOOR);             break;
+            case Gamepiece::kFLOOR:             wrist->toPreset(Wrist::Preset::kFLOOR);              break;
             case Gamepiece::kL1:                wrist->toPreset(Wrist::Preset::kTROUGH);             break;
             case Gamepiece::kL2:                wrist->toPreset(Wrist::Preset::kBRANCH2_3);          break;
             case Gamepiece::kL3:                wrist->toPreset(Wrist::Preset::kBRANCH2_3);          break;

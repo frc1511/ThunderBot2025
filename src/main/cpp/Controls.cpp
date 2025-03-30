@@ -281,8 +281,11 @@ void Controls::sendFeedback() {
         if (feedbackHorizontalAutoAlign == Drive::LineupHorizontal::kCENTER) return "Center";
         if (feedbackHorizontalAutoAlign == Drive::LineupHorizontal::kLEFT)   return "Left";
         if (feedbackHorizontalAutoAlign == Drive::LineupHorizontal::kRIGHT)  return "Right";
+        return "Unknown";
     }());
     frc::SmartDashboard::PutBoolean("Controls AutoAlign in L4 mode",   isL4AutoAlign);
+
+    frc::SmartDashboard::PutNumber("Match Time", frc::DriverStation::GetMatchTime().value());
 }
 
 void Controls::utilizeSwitchBoard() {

@@ -45,6 +45,7 @@ void Wrist::process() {
     } else {
         motor.SetSpeed(0);
     }
+    manual = false;
 }
 
 void Wrist::doConfiguration(bool persist) { }
@@ -79,7 +80,6 @@ void Wrist::toPreset(Wrist::Preset preset) {
     currentPreset = preset;
     startPosition = getEncoderDegrees();
     manualAngle = 0_deg;
-    manual = false;
 }
 
 bool Wrist::atPreset0Out() {

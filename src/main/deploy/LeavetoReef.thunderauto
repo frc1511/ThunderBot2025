@@ -39,7 +39,7 @@
     ],
     "paths": [
       [
-        "L1Center",
+        "L1Center_",
         {
           "points": [
             {
@@ -79,7 +79,7 @@
         }
       ],
       [
-        "L1Left",
+        "L1Left_",
         {
           "points": [
             {
@@ -119,7 +119,7 @@
         }
       ],
       [
-        "L1Right",
+        "L1Right_",
         {
           "points": [
             {
@@ -159,7 +159,7 @@
         }
       ],
       [
-        "L2Left",
+        "L2Left_",
         {
           "points": [
             {
@@ -199,7 +199,7 @@
         }
       ],
       [
-        "L2Right",
+        "L2Right_",
         {
           "points": [
             {
@@ -239,7 +239,7 @@
         }
       ],
       [
-        "L3Center",
+        "L3Center_",
         {
           "points": [
             {
@@ -279,7 +279,7 @@
         }
       ],
       [
-        "L4Center",
+        "L4Center_",
         {
           "points": [
             {
@@ -319,7 +319,7 @@
         }
       ],
       [
-        "L4Left",
+        "L4Left_",
         {
           "points": [
             {
@@ -359,7 +359,7 @@
         }
       ],
       [
-        "L4Right",
+        "L4Right_",
         {
           "points": [
             {
@@ -399,7 +399,7 @@
         }
       ],
       [
-        "L4CenterThenStationRightThenScoreL4",
+        "L4CenterThenStationRightThenScoreL4_",
         {
           "points": [
             {
@@ -485,20 +485,6 @@
               "y": 0.4934996962547302
             },
             {
-              "actions": 1048576,
-              "h0": 5.545281410217285,
-              "h1": 2.403688907623291,
-              "link_index": -1,
-              "locked": false,
-              "rotation": 2.094395160675049,
-              "segment_rotation_time_percent": 1.0,
-              "stop": false,
-              "w0": 0.5,
-              "w1": 0.42383134365081787,
-              "x": 5.962718486785889,
-              "y": 1.6990660429000854
-            },
-            {
               "actions": 528516,
               "h0": 5.414554595947266,
               "h1": 3.668562889099121,
@@ -527,43 +513,43 @@
               "y": 0.7710333466529846
             },
             {
-              "actions": 1048576,
-              "h0": 3.9174344539642334,
-              "h1": 0.7758417129516602,
-              "link_index": -1,
-              "locked": false,
-              "rotation": 1.0471975803375244,
-              "segment_rotation_time_percent": 1.0,
-              "stop": false,
-              "w0": 0.5,
-              "w1": 0.5,
-              "x": 2.633119821548462,
-              "y": 1.8564153909683228
-            },
-            {
               "actions": 528516,
               "h0": 3.894131898880005,
-              "h1": 3.754168748855591,
+              "h1": 3.4585390090942383,
               "link_index": -1,
               "locked": false,
               "rotation": 1.0471975803375244,
               "segment_rotation_time_percent": 0.699999988079071,
               "stop": true,
               "w0": 0.5831360816955566,
-              "w1": 0.5774829983711243,
+              "w1": 0.6154748797416687,
               "x": 3.572314977645874,
               "y": 2.7915077209472656
             },
             {
+              "actions": 0,
+              "h0": 0.6305232048034668,
+              "h1": 3.77211594581604,
+              "link_index": -1,
+              "locked": false,
+              "rotation": 1.3526571989059448,
+              "segment_rotation_time_percent": 1.0,
+              "stop": false,
+              "w0": 0.5,
+              "w1": 0.5,
+              "x": 2.0865695476531982,
+              "y": 2.100048780441284
+            },
+            {
               "actions": 8192,
-              "h0": 0.6558958292007446,
-              "h1": 3.7974886894226074,
+              "h0": 0.9543994665145874,
+              "h1": 4.095992088317871,
               "link_index": -1,
               "locked": false,
               "rotation": 4.077078819274902,
               "segment_rotation_time_percent": 1.0,
               "stop": false,
-              "w0": 0.24978460371494293,
+              "w0": 0.2962939143180847,
               "w1": 0.5,
               "x": 1.1485366821289063,
               "y": 1.022352695465088
@@ -572,7 +558,7 @@
           "settings": {
             "max_centripetal_accel": 19.6200008392334,
             "max_linear_accel": 2.0,
-            "max_linear_vel": 4.5
+            "max_linear_vel": 2.5
           }
         }
       ],
@@ -593,20 +579,6 @@
               "w1": 0.5856199264526367,
               "x": 7.584009170532227,
               "y": 7.5789337158203125
-            },
-            {
-              "actions": 1048576,
-              "h0": 0.813138484954834,
-              "h1": 3.9547312259674072,
-              "link_index": -1,
-              "locked": false,
-              "rotation": 4.188790321350098,
-              "segment_rotation_time_percent": 1.0,
-              "stop": false,
-              "w0": 0.5,
-              "w1": 0.5,
-              "x": 6.495918273925781,
-              "y": 6.428764820098877
             },
             {
               "actions": 528516,
@@ -635,20 +607,6 @@
               "w1": 0.5657370090484619,
               "x": 1.5268219709396362,
               "y": 7.3242621421813965
-            },
-            {
-              "actions": 1048576,
-              "h0": 2.4476027488708496,
-              "h1": 5.589195251464844,
-              "link_index": -1,
-              "locked": false,
-              "rotation": 5.235988140106201,
-              "segment_rotation_time_percent": 1.0,
-              "stop": false,
-              "w0": 0.5,
-              "w1": 0.5,
-              "x": 2.7027297019958496,
-              "y": 6.334962844848633
             },
             {
               "actions": 528516,
@@ -701,7 +659,7 @@
         }
       ],
       [
-        "L3CenterThenStationRightThenScoreL4",
+        "L3CenterThenStationRightThenScoreL4_",
         {
           "points": [
             {
@@ -769,7 +727,7 @@
         }
       ],
       [
-        "L2RightThenStationRightThenScoreL4",
+        "L2RightThenStationRightThenScoreL4_",
         {
           "points": [
             {
@@ -837,7 +795,7 @@
         }
       ],
       [
-        "L2LeftThenStationLeftThenScoreL4",
+        "L2LeftThenStationLeftThenScoreL4_",
         {
           "points": [
             {
@@ -905,7 +863,7 @@
         }
       ],
       [
-        "L1CenterThenStationRightThenScoreL4",
+        "L1CenterThenStationRightThenScoreL4_",
         {
           "points": [
             {
@@ -973,7 +931,7 @@
         }
       ],
       [
-        "L1RightThenStationRightThenScoreL4",
+        "L1RightThenStationRightThenScoreL4_",
         {
           "points": [
             {
@@ -1041,7 +999,7 @@
         }
       ],
       [
-        "L1LeftThenStationLeftThenScoreL4",
+        "L1LeftThenStationLeftThenScoreL4_",
         {
           "points": [
             {
@@ -1109,7 +1067,7 @@
         }
       ],
       [
-        "L4CenterThenStationRightThenScoreL3",
+        "L4CenterThenStationRightThenScoreL3_",
         {
           "points": [
             {
@@ -1177,7 +1135,7 @@
         }
       ],
       [
-        "L4RightThenStationRightThenScoreL3",
+        "L4RightThenStationRightThenScoreL3_",
         {
           "points": [
             {
@@ -1245,7 +1203,7 @@
         }
       ],
       [
-        "L4LeftThenStationLeftThenScoreL3",
+        "L4LeftThenStationLeftThenScoreL3_",
         {
           "points": [
             {
@@ -1313,7 +1271,7 @@
         }
       ],
       [
-        "L3CenterThenStationRightThenScoreL3",
+        "L3CenterThenStationRightThenScoreL3_",
         {
           "points": [
             {
@@ -1381,7 +1339,7 @@
         }
       ],
       [
-        "L2RightThenStationRightThenScoreL3",
+        "L2RightThenStationRightThenScoreL3_",
         {
           "points": [
             {
@@ -1449,7 +1407,7 @@
         }
       ],
       [
-        "L2LeftThenStationLeftThenScoreL3",
+        "L2LeftThenStationLeftThenScoreL3_",
         {
           "points": [
             {
@@ -1517,7 +1475,7 @@
         }
       ],
       [
-        "L1CenterThenStationRightThenScoreL3",
+        "L1CenterThenStationRightThenScoreL3_",
         {
           "points": [
             {
@@ -1585,7 +1543,7 @@
         }
       ],
       [
-        "L1RightThenStationRightThenScoreL3",
+        "L1RightThenStationRightThenScoreL3_",
         {
           "points": [
             {
@@ -1653,7 +1611,7 @@
         }
       ],
       [
-        "L1LeftThenStationLeftThenScoreL3",
+        "L1LeftThenStationLeftThenScoreL3_",
         {
           "points": [
             {
@@ -1721,7 +1679,7 @@
         }
       ],
       [
-        "L1CenterAlgaeLow",
+        "L1CenterAlgaeLow_",
         {
           "points": [
             {
@@ -1789,7 +1747,7 @@
         }
       ],
       [
-        "L1LeftAlgaeLow",
+        "L1LeftAlgaeLow_",
         {
           "points": [
             {
@@ -1857,7 +1815,7 @@
         }
       ],
       [
-        "L1RightAlgaeLow",
+        "L1RightAlgaeLow_",
         {
           "points": [
             {
@@ -1925,7 +1883,7 @@
         }
       ],
       [
-        "L1CenterAlgaeHigh",
+        "L1CenterAlgaeHigh_",
         {
           "points": [
             {
@@ -1993,7 +1951,7 @@
         }
       ],
       [
-        "L1LeftAlgaeHigh",
+        "L1LeftAlgaeHigh_",
         {
           "points": [
             {
@@ -2061,7 +2019,7 @@
         }
       ],
       [
-        "L1RightAlgaeHigh",
+        "L1RightAlgaeHigh_",
         {
           "points": [
             {
@@ -2129,7 +2087,7 @@
         }
       ],
       [
-        "L4RIghtThenStationRightThenScoreL4AlgaeLowThenScoreNet",
+        "L4RIghtThenStationRightThenScoreL4AlgaeLowThenScoreNet_",
         {
           "points": [
             {
@@ -2225,7 +2183,7 @@
         }
       ],
       [
-        "L4RightThenStationRightThenScoreL4ThenStationRightThenScoreL4",
+        "L4RightThenStationRightThenScoreL4ThenStationRightThenScoreL4_",
         {
           "points": [
             {
@@ -2321,7 +2279,7 @@
         }
       ],
       [
-        "L3RightThenStationRightThenScoreL3ThenStationRightThenScoreL3",
+        "L3RightThenStationRightThenScoreL3ThenStationRightThenScoreL3_",
         {
           "points": [
             {
@@ -2417,7 +2375,7 @@
         }
       ],
       [
-        "L4CenterThenStationRightThenScoreL4ThenAlgaePickupRightThenScoreBarge",
+        "L4CenterThenStationRightThenScoreL4ThenAlgaePickupRightThenScoreBarge_",
         {
           "points": [
             {
@@ -2527,7 +2485,7 @@
         }
       ],
       [
-        "L1CenterThenStationRightThenScoreL1",
+        "L1CenterThenStationRightThenScoreL1_",
         {
           "points": [
             {

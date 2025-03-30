@@ -139,9 +139,9 @@ public:
 
     StartPosition startPosition = StartPosition::kCENTER;
     ScorePosition firstScorePosition = ScorePosition::kL1;    
-    ScorePosition secondScorePosition = ScorePosition::kL1;
     AlgaePosition algaePosition = AlgaePosition::kNONE;
     CoralStationPosition coralStationPosition = CoralStationPosition::kNONE;
+    ScorePosition secondScorePosition = ScorePosition::kL1;
 
 private:
     std::map<units::second_t, State> states;

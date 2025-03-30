@@ -39,6 +39,7 @@ void Auto::autoImportAutoAutos() {
     int currentId = 2;
 
     int addedAutos = 0;
+    int archived = 0;
     int totalAutos = pathFileLocations.size();
 
     for (auto pathLocation : pathFileLocations) {
@@ -47,6 +48,10 @@ void Auto::autoImportAutoAutos() {
         if (fileName == LEAVE_ID) {
             bluePaths.insert({LEAVE_ID, CSVTrajectory(pathLocation, false, StartPosition::kSPECIAL, ScorePosition::kSPECIAL)});
             redPaths.insert({LEAVE_ID, CSVTrajectory(pathLocation, true, StartPosition::kSPECIAL, ScorePosition::kSPECIAL)});
+            continue;
+        }
+        if (fileName.find("_") != std::string::npos) {
+            archived++;
             continue;
         }
         
@@ -202,7 +207,7 @@ void Auto::autoImportAutoAutos() {
 
         printf("Auto path `%s` was rejected for being to complex and not being able to be parsed at this time. :)\n", pathLocation.c_str());
     }
-    printf("Autos Parsing Info: %d/%d were accepted\n", addedAutos, totalAutos);
+    printf("Autos Parsing Info: %d/%d were accepted, %d are archived\n", addedAutos, totalAutos, archived);
 }
 
 void Auto::resetToMatchMode(MatchMode priorMode, MatchMode mode) {
