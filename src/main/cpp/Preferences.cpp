@@ -20,7 +20,7 @@ const units::meters_per_second_t PreferencesDrive::MAX_LINEUP_VEL = 3.5_mps;
 const units::meters_per_second_squared_t PreferencesDrive::MAX_LINEUP_ACCEL = 2_mps_sq;
 
 const frc::Pose2d PreferencesDrive::REEF_POSE = {4.493839_m, 4.025221_m, frc::Rotation2d(0_deg)};
-const units::meter_t PreferencesDrive::HORIZONTAL_REEF_MOVE = 0.17145_m;
+const units::meter_t PreferencesDrive::HORIZONTAL_REEF_MOVE = 0.1685_m;
 const units::meter_t PreferencesDrive::VERTICAL_REEF_MOVE = 0.18_m;
 
 const PID_t PreferencesDrive::PID_XY = {
@@ -84,7 +84,7 @@ const PID_t PreferencesDriveMotor::PID = {
     .Kff = 0
 };
 const units::current::ampere_t PreferencesDriveMotor::MAX_AMPERAGE = 40_A;
-const double PreferencesDriveMotor::METERS_TO_TURNS = 16.48828125;
+const double PreferencesDriveMotor::METERS_TO_TURNS = 16.8921; // 16.9, 16.48828125
 const double PreferencesDriveMotor::TURNS_TO_METERS = (1 / (METERS_TO_TURNS));
 
 
@@ -146,7 +146,7 @@ const units::degree_t PreferencesWrist::UP_ZERO = 100_deg;
 const double PreferencesWrist::MAX_FEED_FORWARD_POWER_HIGH_ANGLE = 0.07;
 const double PreferencesWrist::MAX_FEED_FORWARD_POWER_LOW_ANGLE = 0.1;
 const units::degree_t PreferencesWrist::ANGLE_TOLERANCE = 0.5_deg;
-const units::degree_t PreferencesWrist::ANGLE_TOLERANCE_AUTO = 3_deg;
+const units::degree_t PreferencesWrist::ANGLE_TOLERANCE_AUTO = 1.5_deg;
 const units::degree_t PreferencesWrist::ANGLE_TOLERANCE_OOO_CONTINUE = 7_deg; // Order of operations
 const units::degree_t PreferencesWrist::LOWEST_ANGLE = -35_deg;
 

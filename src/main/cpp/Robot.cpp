@@ -67,12 +67,13 @@ void Robot::RobotInit() {
 		auto_->autoSelectorInit();
 	}
 
-	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_EMPTY);
-	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_EMPTY);
+	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_APRILTAGS);
+	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_APRILTAGS);
 	
 	auto cam = frc::CameraServer::StartAutomaticCapture();
+	cam.SetFPS(10);
 	if (!cam.IsConnected()) {
-		frc::CameraServer::RemoveCamera(cam.GetName());
+		// frc::CameraServer::RemoveCamera(cam.GetName());
 		cam.SetConnectVerbose(0);
 	}
 }
@@ -119,8 +120,8 @@ void Robot::DisabledInit() {
 
 	ThunderLogger::StopLogging();
 
-	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_EMPTY);
-	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_EMPTY);
+	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_APRILTAGS);
+	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_APRILTAGS);
 }
 void Robot::DisabledPeriodic() {
 	#ifdef ENABLE_BLINKY_BLINKY

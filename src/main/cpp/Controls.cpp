@@ -221,7 +221,7 @@ void Controls::process() {
 
     // MARK: Hang
 
-    if (hang != nullptr && auxController.IsConnected() && !auxDisable && !hangDisable && !manualMode) { // No hang in manual mode
+    if (hang != nullptr && auxController.IsConnected() && !auxDisable && /*!hangDisable &&*/ !manualMode) { // No hang in manual mode
         double hangPercent = -auxController.GetLeftY();
         double hangPercentFasty = -auxController.GetRightY();
 
@@ -297,7 +297,8 @@ void Controls::utilizeSwitchBoard() {
     gamepiece->elevatorDisable = switchBoard.GetRawButton(1);
     gamepiece->wristDisable = switchBoard.GetRawButton(2);
     manualMode = switchBoard.GetRawButton(3);
-    hangDisable = switchBoard.GetRawButton(4);
+    // hangDisable = switchBoard.GetRawButton(4);
+    hangDisable = false;
     driveDisable = switchBoard.GetRawButton(5);
     auxDisable = switchBoard.GetRawButton(6);
     fieldCentric = switchBoard.GetRawButton(7);
