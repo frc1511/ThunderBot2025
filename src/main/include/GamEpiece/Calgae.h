@@ -162,4 +162,6 @@ class Calgae : public Component {
 
     bool isAuto = false;
     frc::Timer intakeTimeout;
+
+    friend class Auto;
 };

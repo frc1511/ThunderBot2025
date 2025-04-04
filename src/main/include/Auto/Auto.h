@@ -121,6 +121,9 @@ private:
             if (!gamepiece->calgae->isAutoIntaking) {
                 gamepiece->calgae->autoIntake(gp,true);
             }
+            if (!gamepiece->calgae->intakeTimeout.IsRunning()) {
+                gamepiece->calgae->intakeTimeout.Restart();
+            }
             return gamepiece->calgae->hasGamepiece() ? Action::Result::DONE : Action::Result::WORKING;
         };
     };
