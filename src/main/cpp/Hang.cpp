@@ -126,7 +126,7 @@ bool Hang::isHung() {
     if (!deepHang) {
         return hangHungSensor.Get();
     }
-    if (hasDeployed && fabs(encoder.GetPosition() - PreferencesHang::RETRACT_POSITION) < PreferencesHang::POSITION_TOL) {
+    if (hasDeployed && (encoder.GetPosition() - PreferencesHang::RETRACT_POSITION) < PreferencesHang::RETRACT_POSITION_TOL) {
         return true;
     }
     return false;

@@ -658,6 +658,9 @@ frc::Pose2d Drive::calculateFinalLineupPose(int posId, LineupHorizontal lineupHo
     units::meter_t deltaY = 0_m;
     if (lineupHorizontal != LineupHorizontal::kCENTER) {
         units::meter_t moveMagnitude = PreferencesDrive::HORIZONTAL_REEF_MOVE;
+        if (lineupHorizontal == LineupHorizontal::kLEFT) {
+            moveMagnitude += 0.02_m;
+        }
         if (lineupHorizontal == LineupHorizontal::kRIGHT) {
             moveMagnitude *= -1; // Move + for left, - for right
         }

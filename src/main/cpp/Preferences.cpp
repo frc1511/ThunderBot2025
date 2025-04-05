@@ -20,7 +20,7 @@ const units::meters_per_second_t PreferencesDrive::MAX_LINEUP_VEL = 3.5_mps;
 const units::meters_per_second_squared_t PreferencesDrive::MAX_LINEUP_ACCEL = 2_mps_sq;
 
 const frc::Pose2d PreferencesDrive::REEF_POSE = {4.493839_m, 4.025221_m, frc::Rotation2d(0_deg)};
-const units::meter_t PreferencesDrive::HORIZONTAL_REEF_MOVE = 0.1685_m;
+const units::meter_t PreferencesDrive::HORIZONTAL_REEF_MOVE = 0.1785_m;
 const units::meter_t PreferencesDrive::VERTICAL_REEF_MOVE = 0.18_m;
 
 const PID_t PreferencesDrive::PID_XY = {
@@ -199,7 +199,7 @@ const int PreferencesBlinkyBlinky::ALGAE_STATUS_ID = 3;
 #define HANG_OVERSHOOT_COMPENSATION 4
 
 const double PreferencesHang::MAX_POSITION = -1;
-const double PreferencesHang::RETRACT_POSITION = 26.9;
+const double PreferencesHang::RETRACT_POSITION = 25.9;
 const double PreferencesHang::MAX_HANG_SPEED_UP = 1;
 const double PreferencesHang::MAX_HANG_SPEED_DOWN = -0.65;
 const double PreferencesHang::PIT_HANG_SPEED_DOWN = -0.30;
@@ -209,6 +209,7 @@ const double PreferencesHang::BACKTRACKING_DISTANCE = 1;
 const double PreferencesHang::MAX_DEPLOY_POSITION = 103 - HANG_OVERSHOOT_COMPENSATION;
 const units::second_t PreferencesHang::DISENGAGE_DURATION = 0.3_s;
 const double PreferencesHang::POSITION_TOL = 5;
+const double PreferencesHang::RETRACT_POSITION_TOL = 2.0;
 
 
 

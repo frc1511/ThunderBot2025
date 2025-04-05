@@ -191,6 +191,7 @@ struct PreferencesHang
     static const double MAX_DEPLOY_POSITION;
     static const units::second_t DISENGAGE_DURATION;
     static const double POSITION_TOL;
+    static const double RETRACT_POSITION_TOL;
 };
 
 
