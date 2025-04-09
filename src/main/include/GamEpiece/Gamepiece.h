@@ -6,10 +6,11 @@
 #include "Elevator.h"
 #include "Calgae.h"
 #include "Wrist.h"
+#include "Drive/Drive.h"
 
 class Gamepiece : public Component {
   public:
-    Gamepiece(Calgae* calgae_, Wrist* wrist_, Elevator* elevator_);
+    Gamepiece(Calgae* calgae_, Wrist* wrist_, Elevator* elevator_, Drive* drive_);
 
     void process();
     void doConfiguration(bool persist);
@@ -47,6 +48,7 @@ class Gamepiece : public Component {
     Calgae* calgae;
     Wrist* wrist;
     Elevator* elevator;
+    Drive* drive;
     
     bool elevatorDisable = false;
     bool wristDisable = false;

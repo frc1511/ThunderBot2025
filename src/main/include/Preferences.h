@@ -85,6 +85,23 @@ struct PreferencesDrive {
     static const double LINEUP_LIMELIGHT_DEADZONE;
 };
 
+
+enum class Branch {
+    kL2,
+    kL3,
+    kL4
+};
+
+enum class LineupHorizontal {
+    kLEFT,
+    kCENTER,
+    kRIGHT
+};
+
+typedef std::pair<uint8_t, LineupHorizontal> lineup_t;
+
+static const std::map<std::pair<uint8_t, LineupHorizontal>, std::map<Branch, units::turn_t>> ELEVATOR_BRANCH_OFFSETS;
+
 struct PreferencesDriveMotor
 {
     static const PID_t PID;

@@ -34,7 +34,7 @@ class Controls : public Component {
     frc::GenericHID switchBoard {2};
 
     bool isL4AutoAlign = false;
-    Drive::LineupHorizontal feedbackHorizontalAutoAlign = Drive::LineupHorizontal::kCENTER;
+    LineupHorizontal feedbackHorizontalAutoAlign = LineupHorizontal::kCENTER;
     
     bool lastShouldToggleStationPreset = false;
     bool controllerToggleStationPreset = false;

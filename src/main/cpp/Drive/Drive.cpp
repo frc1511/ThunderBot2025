@@ -133,6 +133,10 @@ void Drive::process() {
             orchestrate("homedepot.chrp");
             break;
     }
+
+    if (distToLineupPose() > 3) { // 3 meters
+        lineupTargetData = std::nullopt;
+    }
 }
 
 void Drive::doConfiguration(bool persist) {
@@ -723,6 +727,17 @@ void Drive::beginLineup(LineupHorizontal lineupHorizontal, bool L4) {
         if (currentLineupDist < lowestDist) {
             closestPose = currentLineupPose;
             lowestDist = currentLineupDist;
+
+            lineupTargetData = std::make_pair([&]() -> uint8_t {
+                if (auto ally = frc::DriverStation::GetAlliance()) {
+                    if (ally == frc::DriverStation::Alliance::kRed) {
+                        if (i == 5) return 6;
+                        return i + 7;
+                    }
+                }
+                const std::vector<uint8_t> l = {18, 17, 22, 21, 20, 19, 18};
+                return l[i];
+            }(), lineupHorizontal);
         }
     }
     frc::SmartDashboard::PutNumber("Lineup lowest distance", lowestDist);

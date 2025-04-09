@@ -111,6 +111,9 @@ class Elevator : public Component {
       frc::TrapezoidProfile<units::turns>::Constraints(PreferencesElevator::MAX_VEL, PreferencesElevator::MAX_ACCEL)
     };
 
+    void updateLineupTargetVariable(std::optional<lineup_t> newLineup);
+    std::optional<lineup_t> lineupTarget = std::nullopt;
+
     friend class Gamepiece;
     friend class Controls;
 };

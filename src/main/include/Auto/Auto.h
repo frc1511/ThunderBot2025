@@ -133,9 +133,9 @@ private:
 
     class AutoAlign : public Action {
       public:
-        AutoAlign(Drive *drive_, Drive::LineupHorizontal horizontalPos_, bool isL4_) : drive(drive_), horizontalPos(horizontalPos_), isL4(isL4_) {};
+        AutoAlign(Drive *drive_, LineupHorizontal horizontalPos_, bool isL4_) : drive(drive_), horizontalPos(horizontalPos_), isL4(isL4_) {};
         Drive *drive;
-        Drive::LineupHorizontal horizontalPos;
+        LineupHorizontal horizontalPos;
         bool isL4;
 
         Action::Result process() override {

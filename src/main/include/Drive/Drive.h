@@ -27,7 +27,7 @@
 
 #include "Basic/Component.h"
 #include "Basic/IOMap.h"
-#include "preferences.h"
+#include "Preferences.h"
 #include "swerveModule.h"
 #include "Drive/CSVTrajectory.h"
 #include "Auto/Action.h"
@@ -116,12 +116,6 @@ class Drive : public Component {
 
     void slowYourRoll();
     void unslowYourRoll();
-
-    enum class LineupHorizontal {
-        kLEFT,
-        kCENTER,
-        kRIGHT
-    };
 
     void beginLineup(LineupHorizontal lineupHorizontal, bool L4);
 
@@ -332,6 +326,7 @@ private:
     frc::HolonomicDriveController driveLineupController;
 
     frc::Pose2d lineupPose = {};
+    std::optional<lineup_t> lineupTargetData = std::nullopt;
 
     bool isAuto = false;
     bool lineUpDone = false;
@@ -347,4 +342,5 @@ private:
     void unOrchestrate();
 
     friend class Robot;
+    friend class Gamepiece;
 };

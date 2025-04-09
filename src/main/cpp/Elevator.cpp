@@ -100,23 +100,23 @@ void Elevator::sendFeedback() {
     
     //! REMOVE ME IN THE FUTURE, THIS BETTER NOT BE HERE AT BUCKEYE
     // These should be temporary
-    double kS = frc::SmartDashboard::GetNumber("Elevator kS", PreferencesElevator::PID.Ks);
-    double kG = frc::SmartDashboard::GetNumber("Elevator kG", PreferencesElevator::PID.Kg);
-    double kV = frc::SmartDashboard::GetNumber("Elevator kV", PreferencesElevator::PID.Kv_EVFF);
-    double kA = frc::SmartDashboard::GetNumber("Elevator kA", PreferencesElevator::PID.Ka_EVFF);
-    frc::SmartDashboard::PutNumber("Elevator kS", kS);
-    frc::SmartDashboard::PutNumber("Elevator kG", kG);
-    frc::SmartDashboard::PutNumber("Elevator kV", kV);
-    frc::SmartDashboard::PutNumber("Elevator kA", kA);
-    if (ffController.GetKv() != (units::unit_t<frc::ElevatorFeedforward::kv_unit>)kV || 
-        ffController.GetKa() != (units::unit_t<frc::ElevatorFeedforward::ka_unit>)kA) { // If Updated
-        pidController.Reset(getPosition());
-        pidController.SetGoal(10_tr);
-    }
-    ffController.SetKs((units::volt_t)kS);
-    ffController.SetKg((units::volt_t)kG);
-    ffController.SetKv((units::unit_t<frc::ElevatorFeedforward::kv_unit>)kV);
-    ffController.SetKa((units::unit_t<frc::ElevatorFeedforward::ka_unit>)kA);
+    // double kS = frc::SmartDashboard::GetNumber("Elevator kS", PreferencesElevator::PID.Ks);
+    // double kG = frc::SmartDashboard::GetNumber("Elevator kG", PreferencesElevator::PID.Kg);
+    // double kV = frc::SmartDashboard::GetNumber("Elevator kV", PreferencesElevator::PID.Kv_EVFF);
+    // double kA = frc::SmartDashboard::GetNumber("Elevator kA", PreferencesElevator::PID.Ka_EVFF);
+    // frc::SmartDashboard::PutNumber("Elevator kS", kS);
+    // frc::SmartDashboard::PutNumber("Elevator kG", kG);
+    // frc::SmartDashboard::PutNumber("Elevator kV", kV);
+    // frc::SmartDashboard::PutNumber("Elevator kA", kA);
+    // if (ffController.GetKv() != (units::unit_t<frc::ElevatorFeedforward::kv_unit>)kV || 
+    //     ffController.GetKa() != (units::unit_t<frc::ElevatorFeedforward::ka_unit>)kA) { // If Updated
+    //     pidController.Reset(getPosition());
+    //     pidController.SetGoal(10_tr);
+    // }
+    // ffController.SetKs((units::volt_t)kS);
+    // ffController.SetKg((units::volt_t)kG);
+    // ffController.SetKv((units::unit_t<frc::ElevatorFeedforward::kv_unit>)kV);
+    // ffController.SetKa((units::unit_t<frc::ElevatorFeedforward::ka_unit>)kA);
 }
 
 bool Elevator::atMaxHeight() {
@@ -174,6 +174,38 @@ void Elevator::goToPreset(Preset target) {
 
     targetPreset = target;
     manualControl = false;
+}
+
+void Elevator::updateLineupTargetVariable(std::optional<lineup_t> newLineup) {
+    if (lineupTarget != std::nullopt) {
+        if (lineupTarget != newLineup) {
+            if (newLineup != std::nullopt) {
+                if (ELEVATOR_BRANCH_OFFSETS.count(newLineup.value()) == 1) {
+                    auto val = ELEVATOR_BRANCH_OFFSETS.find(newLineup.value());
+                    auto branchOffsets = val->second;
+
+                    Branch yayBranch = Branch::kL2;
+                    if (targetPreset == Preset::kL2) {
+                        // Do Nothing, by not throwing the offset
+                    } else if (targetPreset == Preset::kL3) {
+                        yayBranch = Branch::kL3;
+                    } else if (targetPreset == Preset::kL4) {
+                        yayBranch = Branch::kL4;
+                    } else {
+                        // Not going to a Branch Position
+                        lineupTarget = newLineup;
+                        return;
+                    }
+
+                    if (branchOffsets.count(yayBranch) == 1) {
+                        units::turn_t target = branchOffsets.find(yayBranch)->second;
+                        pidController.SetGoal(target);
+                    }
+                }
+            }
+        }
+    }
+    lineupTarget = newLineup;
 }
 
 bool Elevator::atPreset() { //detects if at preset

@@ -74,25 +74,8 @@ const frc::Pose2d PreferencesDrive::MASTER_LINEUP_POSE = {
 const double PreferencesDrive::LINEUP_POSE_TOLERANCE = 0.05;
 const double PreferencesDrive::LINEUP_LIMELIGHT_DEADZONE= 0.01;
 
-enum class Branch {
-    kL2,
-    kL3,
-    kL4
-};
-
-std::map<uint8_t, std::map<Branch, units::turn_t>> lengths = {
-    {6, {{Branch::kL2, 10_tr}, {Branch::kL3, 25.35_tr}, {Branch::kL4, 58_tr}}},
-    {7, {{Branch::kL2, 10_tr}, {Branch::kL3, 25.35_tr}, {Branch::kL4, 58_tr}}},
-    {8, {{Branch::kL2, 10_tr}, {Branch::kL3, 25.35_tr}, {Branch::kL4, 58_tr}}},
-    {9, {{Branch::kL2, 10_tr}, {Branch::kL3, 25.35_tr}, {Branch::kL4, 58_tr}}},
-    {10, {{Branch::kL2, 10_tr}, {Branch::kL3, 25.35_tr}, {Branch::kL4, 58_tr}}},
-    {11, {{Branch::kL2, 10_tr}, {Branch::kL3, 25.35_tr}, {Branch::kL4, 58_tr}}},
-    {14, {{Branch::kL2, 10_tr}, {Branch::kL3, 25.35_tr}, {Branch::kL4, 58_tr}}},
-    {15, {{Branch::kL2, 10_tr}, {Branch::kL3, 25.35_tr}, {Branch::kL4, 58_tr}}},
-    {16, {{Branch::kL2, 10_tr}, {Branch::kL3, 25.35_tr}, {Branch::kL4, 58_tr}}},
-    {17, {{Branch::kL2, 10_tr}, {Branch::kL3, 25.35_tr}, {Branch::kL4, 58_tr}}},
-    {18, {{Branch::kL2, 10_tr}, {Branch::kL3, 25.35_tr}, {Branch::kL4, 58_tr}}},
-    {19, {{Branch::kL2, 10_tr}, {Branch::kL3, 25.35_tr}, {Branch::kL4, 58_tr}}},
+const std::map<std::pair<uint8_t, LineupHorizontal>, std::map<Branch, units::turn_t>> ELEVATOR_BRANCH_OFFSETS = {
+    {{6, LineupHorizontal::kLEFT}, {{Branch::kL2, 10_tr}, {Branch::kL3, 25.35_tr}, {Branch::kL4, 58_tr}}},
 };
 
 /***********************************************************/
