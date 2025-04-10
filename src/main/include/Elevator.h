@@ -113,6 +113,7 @@ class Elevator : public Component {
 
     void updateLineupTargetVariable(std::optional<lineup_t> newLineup);
     std::optional<lineup_t> lineupTarget = std::nullopt;
+    void applyLilOffset();
 
     friend class Gamepiece;
     friend class Controls;

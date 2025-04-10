@@ -100,7 +100,7 @@ enum class LineupHorizontal {
 
 typedef std::pair<uint8_t, LineupHorizontal> lineup_t;
 
-static const std::map<std::pair<uint8_t, LineupHorizontal>, std::map<Branch, units::turn_t>> ELEVATOR_BRANCH_OFFSETS;
+extern const std::map<std::pair<uint8_t, LineupHorizontal>, std::map<Branch, units::turn_t>> ELEVATOR_BRANCH_OFFSETS;
 
 struct PreferencesDriveMotor
 {

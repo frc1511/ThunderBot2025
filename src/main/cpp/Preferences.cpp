@@ -75,7 +75,7 @@ const double PreferencesDrive::LINEUP_POSE_TOLERANCE = 0.05;
 const double PreferencesDrive::LINEUP_LIMELIGHT_DEADZONE= 0.01;
 
 const std::map<std::pair<uint8_t, LineupHorizontal>, std::map<Branch, units::turn_t>> ELEVATOR_BRANCH_OFFSETS = {
-    {{6, LineupHorizontal::kLEFT}, {{Branch::kL2, 10_tr}, {Branch::kL3, 25.35_tr}, {Branch::kL4, 58_tr}}},
+    {{6, LineupHorizontal::kLEFT}, {{Branch::kL2, 5_tr}, {Branch::kL3, 25.35_tr}, {Branch::kL4, 58_tr}}},
 };
 
 /***********************************************************/

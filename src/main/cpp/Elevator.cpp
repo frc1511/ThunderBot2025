@@ -90,7 +90,7 @@ void Elevator::sendFeedback() {
     frc::SmartDashboard::PutNumber ("Elevator Right Motor Temperature C",        rightSparkMax.GetMotorTemperature());
     frc::SmartDashboard::PutNumber ("Elevator Right Motor Current",              rightSparkMax.GetOutputCurrent());
     frc::SmartDashboard::PutBoolean("Elevator At Target Preset",                 atPreset());
-    frc::SmartDashboard::PutNumber ("Elevator Target Position (rotations)",      Position[targetPreset].value());
+    frc::SmartDashboard::PutNumber ("Elevator Target Position (rotations)",      pidController.GetGoal().position.value());
     frc::SmartDashboard::PutBoolean("Elevator Lower Limit tripping",             getLowerLimit());
     frc::SmartDashboard::PutBoolean("Elevator Upper Limit tripping",             getUpperLimit());
     frc::SmartDashboard::PutNumber ("Elevator Manual Movement Speed",            manualMovementSpeed);
@@ -167,8 +167,9 @@ units::turn_t Elevator::getPosition() {
 
 void Elevator::goToPreset(Preset target) {
     if (targetPreset != target) { // If we have a new preset
+        targetPreset = target;
         pidController.Reset(getPosition());
-        pidController.SetGoal(Position[target]);
+        applyLilOffset();
         startDownPosition = getPosition().value();
     }
 
@@ -180,32 +181,39 @@ void Elevator::updateLineupTargetVariable(std::optional<lineup_t> newLineup) {
     if (lineupTarget != std::nullopt) {
         if (lineupTarget != newLineup) {
             if (newLineup != std::nullopt) {
-                if (ELEVATOR_BRANCH_OFFSETS.count(newLineup.value()) == 1) {
-                    auto val = ELEVATOR_BRANCH_OFFSETS.find(newLineup.value());
-                    auto branchOffsets = val->second;
-
-                    Branch yayBranch = Branch::kL2;
-                    if (targetPreset == Preset::kL2) {
-                        // Do Nothing, by not throwing the offset
-                    } else if (targetPreset == Preset::kL3) {
-                        yayBranch = Branch::kL3;
-                    } else if (targetPreset == Preset::kL4) {
-                        yayBranch = Branch::kL4;
-                    } else {
-                        // Not going to a Branch Position
-                        lineupTarget = newLineup;
-                        return;
-                    }
-
-                    if (branchOffsets.count(yayBranch) == 1) {
-                        units::turn_t target = branchOffsets.find(yayBranch)->second;
-                        pidController.SetGoal(target);
-                    }
-                }
+                lineupTarget = newLineup;
+                applyLilOffset();
             }
         }
+    } else {
+        lineupTarget = newLineup;
     }
-    lineupTarget = newLineup;
+}
+
+void Elevator::applyLilOffset() {
+    pidController.SetGoal(Position[targetPreset]);
+    if (lineupTarget == std::nullopt) return;
+    if (ELEVATOR_BRANCH_OFFSETS.count(lineupTarget.value()) == 1) {
+        auto val = ELEVATOR_BRANCH_OFFSETS.find(lineupTarget.value());
+        auto branchOffsets = val->second;
+
+        Branch yayBranch = Branch::kL2;
+        if (targetPreset == Preset::kL2) {
+            // Do Nothing, by not throwing the offset
+        } else if (targetPreset == Preset::kL3) {
+            yayBranch = Branch::kL3;
+        } else if (targetPreset == Preset::kL4) {
+            yayBranch = Branch::kL4;
+        } else {
+            // Not going to a Branch Position
+            return;
+        }
+
+        if (branchOffsets.count(yayBranch) == 1) {
+            units::turn_t target = branchOffsets.find(yayBranch)->second;
+            pidController.SetGoal(target);
+        }
+    }
 }
 
 bool Elevator::atPreset() { //detects if at preset
