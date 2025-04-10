@@ -74,8 +74,14 @@ const frc::Pose2d PreferencesDrive::MASTER_LINEUP_POSE = {
 const double PreferencesDrive::LINEUP_POSE_TOLERANCE = 0.05;
 const double PreferencesDrive::LINEUP_LIMELIGHT_DEADZONE= 0.01;
 
+// {(APRIL_TAG, BRANCH): {BRANCH: OFFSET}}
 const std::map<std::pair<uint8_t, LineupHorizontal>, std::map<Branch, units::turn_t>> ELEVATOR_BRANCH_OFFSETS = {
-    {{6, LineupHorizontal::kLEFT}, {{Branch::kL2, 5_tr}, {Branch::kL3, 25.35_tr}, {Branch::kL4, 58_tr}}},
+    //! TESTING ONLY {{6, LineupHorizontal::kLEFT}, {{Branch::kL2, 5_tr}, {Branch::kL3, 25.35_tr}, {Branch::kL4, 58_tr}}},
+};
+
+// {(APRIL_TAG, BRANCH): (HORIZONTAL, L4_BACK)} | 0_m = No Offset Applied | Offsets overrite the normal offset, they do NOT accumulate. | All offsets should be positive
+const std::map<lineup_t, std::tuple<units::meter_t, units::meter_t>> DRIVE_BRANCH_OFFSETS = {
+    //! TESTING ONLY {{6, LineupHorizontal::kLEFT},  {0.5_m, 0.5_m}},
 };
 
 /***********************************************************/
