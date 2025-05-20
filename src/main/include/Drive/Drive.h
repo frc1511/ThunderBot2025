@@ -27,7 +27,7 @@
 
 #include "Basic/Component.h"
 #include "Basic/IOMap.h"
-#include "preferences.h"
+#include "Preferences.h"
 #include "swerveModule.h"
 #include "Drive/CSVTrajectory.h"
 #include "Auto/Action.h"
@@ -116,12 +116,6 @@ class Drive : public Component {
 
     void slowYourRoll();
     void unslowYourRoll();
-
-    enum class LineupHorizontal {
-        kLEFT,
-        kCENTER,
-        kRIGHT
-    };
 
     void beginLineup(LineupHorizontal lineupHorizontal, bool L4);
 
@@ -332,11 +326,23 @@ private:
     frc::HolonomicDriveController driveLineupController;
 
     frc::Pose2d lineupPose = {};
+    std::optional<lineup_t> lineupTargetData = std::nullopt;
 
     bool isAuto = false;
     bool lineUpDone = false;
 
     double distToLineupPose();
+    
+    uint8_t inline const static poseIDToAprilTag(int id) {
+        if (auto ally = frc::DriverStation::GetAlliance()) {
+            if (ally == frc::DriverStation::Alliance::kRed) {
+                if (id == 5) return 6;
+                return id + 7;
+            }
+        }
+        const std::vector<uint8_t> l = {18, 17, 22, 21, 20, 19, 18};
+        return l[id];
+    }
 
     // MARK: Orchestra
 
@@ -347,4 +353,5 @@ private:
     void unOrchestrate();
 
     friend class Robot;
+    friend class Gamepiece;
 };

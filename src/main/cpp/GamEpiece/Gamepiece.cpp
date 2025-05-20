@@ -1,9 +1,10 @@
 #include "GamEpiece/Gamepiece.h"
 
-Gamepiece::Gamepiece(Calgae *calgae_, Wrist *wrist_, Elevator *elevator_)
+Gamepiece::Gamepiece(Calgae *calgae_, Wrist *wrist_, Elevator *elevator_, Drive *drive_)
 : calgae(calgae_),
   wrist(wrist_),
-  elevator(elevator_)
+  elevator(elevator_),
+  drive(drive_)
 {
     elevator->wristExists = (wrist != nullptr);
 }
@@ -11,6 +12,12 @@ Gamepiece::Gamepiece(Calgae *calgae_, Wrist *wrist_, Elevator *elevator_)
 void Gamepiece::process() {
     if (wrist != nullptr)
         elevator->wristIsUnsafe = wrist->wristIsUnsafe();
+    if (elevator != nullptr) {
+        if (drive != nullptr) {
+            elevator->updateLineupTargetVariable(drive->lineupTargetData);
+        }
+    }
+        
     moveToTarget();
 }
 

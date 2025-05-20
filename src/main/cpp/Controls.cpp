@@ -88,15 +88,15 @@ void Controls::process() {
         if (flags == 0 && xPercent == 0 && yPercent == 0 && rotPercent == 0 && !robotCentricFromController && isLiningUp) {
             isL4AutoAlign = driveController.GetXButtonPressed() ? !isL4AutoAlign : isL4AutoAlign;   // Toggle if start pressed, else retain state
 
-            Drive::LineupHorizontal lineUpHoriz = Drive::LineupHorizontal::kCENTER;
+            LineupHorizontal lineUpHoriz = LineupHorizontal::kCENTER;
             if (driveController.GetPOV() == 270) { // Left
-                lineUpHoriz = Drive::LineupHorizontal::kLEFT;
+                lineUpHoriz = LineupHorizontal::kLEFT;
             } else if (driveController.GetPOV() == 90) { // Right
-                lineUpHoriz = Drive::LineupHorizontal::kRIGHT;
+                lineUpHoriz = LineupHorizontal::kRIGHT;
             }
             feedbackHorizontalAutoAlign = lineUpHoriz;
 
-            bool finalL4Align = lineUpHoriz == Drive::LineupHorizontal::kCENTER ? false : isL4AutoAlign; // Don't obay L4 auto align if we are doing the center (algae) only for the branches
+            bool finalL4Align = lineUpHoriz == LineupHorizontal::kCENTER ? false : isL4AutoAlign; // Don't obay L4 auto align if we are doing the center (algae) only for the branches
 
             drive->beginLineup(lineUpHoriz, finalL4Align);
         } else {
@@ -278,9 +278,9 @@ void Controls::sendFeedback() {
     frc::SmartDashboard::PutNumber("Controls current Station State", (int)currentStationState);
 
     frc::SmartDashboard::PutString ("Controls AutoAlign Horizontal", [&]() -> std::string {
-        if (feedbackHorizontalAutoAlign == Drive::LineupHorizontal::kCENTER) return "Center";
-        if (feedbackHorizontalAutoAlign == Drive::LineupHorizontal::kLEFT)   return "Left";
-        if (feedbackHorizontalAutoAlign == Drive::LineupHorizontal::kRIGHT)  return "Right";
+        if (feedbackHorizontalAutoAlign == LineupHorizontal::kCENTER) return "Center";
+        if (feedbackHorizontalAutoAlign == LineupHorizontal::kLEFT)   return "Left";
+        if (feedbackHorizontalAutoAlign == LineupHorizontal::kRIGHT)  return "Right";
         return "Unknown";
     }());
     frc::SmartDashboard::PutBoolean("Controls AutoAlign in L4 mode",   isL4AutoAlign);

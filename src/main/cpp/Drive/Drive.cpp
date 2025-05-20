@@ -133,6 +133,10 @@ void Drive::process() {
             orchestrate("homedepot.chrp");
             break;
     }
+
+    if (distToLineupPose() > 3) { // 3 meters
+        lineupTargetData = std::nullopt;
+    }
 }
 
 void Drive::doConfiguration(bool persist) {
@@ -278,6 +282,10 @@ void Drive::sendFeedback() {
     frc::SmartDashboard::PutBoolean("Drive_LockY",                  controlData.flags & ControlFlag::LOCK_Y);
     frc::SmartDashboard::PutBoolean("Drive_LockRot",                controlData.flags & ControlFlag::LOCK_ROT);
     frc::SmartDashboard::PutNumber("Drive_Mode_Enum_Index",         (int)driveMode);
+    frc::SmartDashboard::PutNumber("Drive_Lineup_AprilTag",         [&]() -> double {
+        if (lineupTargetData == std::nullopt) return -1511;
+        return lineupTargetData.value().first;
+    }());
 
     // Nyoom
 
@@ -653,20 +661,36 @@ frc::Pose2d Drive::calculateFinalLineupPose(int posId, LineupHorizontal lineupHo
     units::meter_t rotatedX = reefRelXPrime + PreferencesDrive::REEF_POSE.X();
     units::meter_t rotatedY = reefRelYPrime + PreferencesDrive::REEF_POSE.Y();
 
+    //------------------------- Individual Offsets Time
+    units::meter_t moveHorizMagnitude = PreferencesDrive::HORIZONTAL_REEF_MOVE;
+    units::meter_t moveBackMagnitude = PreferencesDrive::VERTICAL_REEF_MOVE;
+
+    lineup_t thisLineupPose = std::make_pair(poseIDToAprilTag(posId), lineupHorizontal);
+    if (DRIVE_BRANCH_OFFSETS.count(thisLineupPose)) {
+        auto offsetsPair = *DRIVE_BRANCH_OFFSETS.find(thisLineupPose);
+        auto offsets = offsetsPair.second;
+        units::meter_t horizMoveOffset = std::get<DRIVE_BRANCH_OFFSET_HORIZONTAL_INDEX>(offsets);
+        units::meter_t backMoveOffset = std::get<DRIVE_BRANCH_OFFSET_L4_INDEX>(offsets);
+
+        if (horizMoveOffset != 0_m) {
+            moveHorizMagnitude = horizMoveOffset;
+        } 
+        if (backMoveOffset != 0_m) {
+            moveBackMagnitude = backMoveOffset;
+        }
+    }
+
     //------------------------- Translate for branch
     units::meter_t deltaX = 0_m;
     units::meter_t deltaY = 0_m;
+
     if (lineupHorizontal != LineupHorizontal::kCENTER) {
-        units::meter_t moveMagnitude = PreferencesDrive::HORIZONTAL_REEF_MOVE;
-        if (lineupHorizontal == LineupHorizontal::kLEFT) {
-            moveMagnitude += 0.02_m;
-        }
         if (lineupHorizontal == LineupHorizontal::kRIGHT) {
-            moveMagnitude *= -1; // Move + for left, - for right
+            moveHorizMagnitude *= -1; // Move + for left, - for right
         }
 
-        deltaX = cosf((double)(newRot + 90_deg)) * moveMagnitude;
-        deltaY = sinf((double)(newRot + 90_deg)) * moveMagnitude;
+        deltaX = cosf((double)(newRot + 90_deg)) * moveHorizMagnitude;
+        deltaY = sinf((double)(newRot + 90_deg)) * moveHorizMagnitude;
     }
 
 
@@ -677,7 +701,6 @@ frc::Pose2d Drive::calculateFinalLineupPose(int posId, LineupHorizontal lineupHo
     //------------------------- Translate for L4
     // Move back for L4
     if (isL4) {
-        units::meter_t moveBackMagnitude = PreferencesDrive::VERTICAL_REEF_MOVE;
         units::meter_t deltaX = -cosf(double(newRot)) * moveBackMagnitude;
         units::meter_t deltaY = -sinf(double(newRot)) * moveBackMagnitude;
 
@@ -723,6 +746,8 @@ void Drive::beginLineup(LineupHorizontal lineupHorizontal, bool L4) {
         if (currentLineupDist < lowestDist) {
             closestPose = currentLineupPose;
             lowestDist = currentLineupDist;
+
+            lineupTargetData = std::make_pair(poseIDToAprilTag(i), lineupHorizontal);
         }
     }
     frc::SmartDashboard::PutNumber("Lineup lowest distance", lowestDist);

@@ -35,7 +35,7 @@ Robot::Robot() :
 	allComponents.push_back(elevator);
 #endif
 
-	gamepiece = new Gamepiece(calgae, wrist, elevator);
+	gamepiece = new Gamepiece(calgae, wrist, elevator, drive);
 	allComponents.push_back(gamepiece);
 
 #ifdef ENABLE_AUTO
