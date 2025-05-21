@@ -3,49 +3,53 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 std::optional<std::map<bool, LimelightHelpers::PoseEstimate>> Limelight::getEstimatedBotPose() {
-    if (!isFunctioning) {
-        // If it's not functioning, don't use it's values!
-        LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_EMPTY);
-        LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_EMPTY);
-        return std::nullopt;
-    }
+    return std::nullopt;
 
-	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_APRILTAGS);
-	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_APRILTAGS);
+    // if (!isFunctioning) {
+    //     // If it's not functioning, don't use it's values!
+    //     LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_EMPTY);
+    //     LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_EMPTY);
+    //     return std::nullopt;
+    // }
 
-    std::map<bool, LimelightHelpers::PoseEstimate> poses = {
-        getLimelightPose(PreferencesLimelight::LIMELIGHT_BACK),
-        getLimelightPose(PreferencesLimelight::LIMELIGHT_FRONT), 
-    };
+	// LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_APRILTAGS);
+	// LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_APRILTAGS);
 
-    return poses;
+    // std::map<bool, LimelightHelpers::PoseEstimate> poses = {
+    //     getLimelightPose(PreferencesLimelight::LIMELIGHT_BACK),
+    //     getLimelightPose(PreferencesLimelight::LIMELIGHT_FRONT), 
+    // };
+
+    // return poses;
 }
 
 std::pair<bool,LimelightHelpers::PoseEstimate> Limelight::getLimelightPose(std::string name) {
-    LimelightHelpers::PoseEstimate mt1 = LimelightHelpers::getBotPoseEstimate_wpiBlue(name);
+    return std::make_pair(false, LimelightHelpers::PoseEstimate());
 
-    bool shouldUpdate = true;
-    if (mt1.tagCount == 0) {
-        shouldUpdate = false;
-    }
+    // LimelightHelpers::PoseEstimate mt1 = LimelightHelpers::getBotPoseEstimate_wpiBlue(name);
 
-    if (mt1.tagCount == 1 && mt1.rawFiducials.size() == 1) {
-        if (mt1.rawFiducials[0].ambiguity > .4) {
-            shouldUpdate = false;
-        }
+    // bool shouldUpdate = true;
+    // if (mt1.tagCount == 0) {
+    //     shouldUpdate = false;
+    // }
 
-        if (mt1.rawFiducials[0].distToCamera > 3) { // distToCamera is in meters
-            shouldUpdate = false;
-        }
-    }
+    // if (mt1.tagCount == 1 && mt1.rawFiducials.size() == 1) {
+    //     if (mt1.rawFiducials[0].ambiguity > .4) {
+    //         shouldUpdate = false;
+    //     }
 
-    for (auto fiducial : mt1.rawFiducials) {
-        // if (fiducial.ambiguity > .5) {
-        //     shouldUpdate = false;
-        // }
-    }
+    //     if (mt1.rawFiducials[0].distToCamera > 3) { // distToCamera is in meters
+    //         shouldUpdate = false;
+    //     }
+    // }
 
-    return std::make_pair(shouldUpdate, mt1);
+    // for (auto fiducial : mt1.rawFiducials) {
+    //     // if (fiducial.ambiguity > .5) {
+    //     //     shouldUpdate = false;
+    //     // }
+    // }
+
+    // return std::make_pair(shouldUpdate, mt1);
 }
 
 void Limelight::setFunctioningState(bool isFunctioning_) {

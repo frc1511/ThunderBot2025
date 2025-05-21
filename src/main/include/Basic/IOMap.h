@@ -24,7 +24,7 @@
 
 // Auto requires drive at present
 #ifdef ENABLE_DRIVE
-    #define ENABLE_AUTO
+    // #define ENABLE_AUTO
 #endif
 
 // Real robot or testboard?

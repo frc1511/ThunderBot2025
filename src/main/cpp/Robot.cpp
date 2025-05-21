@@ -67,13 +67,12 @@ void Robot::RobotInit() {
 		auto_->autoSelectorInit();
 	}
 
-	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_APRILTAGS);
-	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_APRILTAGS);
+	// LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_APRILTAGS);
+	// LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_APRILTAGS);
 	
 	auto cam = frc::CameraServer::StartAutomaticCapture();
 	cam.SetFPS(10);
 	if (!cam.IsConnected()) {
-		// frc::CameraServer::RemoveCamera(cam.GetName());
 		cam.SetConnectVerbose(0);
 	}
 }
@@ -89,10 +88,10 @@ void Robot::RobotPeriodic() {
 void Robot::AutonomousInit() {
     reset(Component::MatchMode::AUTO);
 
-	ThunderLogger::StartLogging();
+	// ThunderLogger::StartLogging();
 
-	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_APRILTAGS);
-	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_APRILTAGS);
+	// LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_APRILTAGS);
+	// LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_APRILTAGS);
 }
 void Robot::AutonomousPeriodic() {
 	for (Component* component : allComponents)
@@ -102,10 +101,10 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
     reset(Component::MatchMode::TELEOP);
 
-	ThunderLogger::StartLogging();
+	// ThunderLogger::StartLogging();
 
-	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_APRILTAGS);
-	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_APRILTAGS);
+	// LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_APRILTAGS);
+	// LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_APRILTAGS);
 }
 void Robot::TeleopPeriodic() {
 	controls->process();
@@ -118,7 +117,7 @@ void Robot::TeleopPeriodic() {
 void Robot::DisabledInit() {
     reset(Component::MatchMode::DISABLED);
 
-	ThunderLogger::StopLogging();
+	// ThunderLogger::StopLogging();
 
 	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_FRONT, PreferencesLimelight::PIPELINE_APRILTAGS);
 	LimelightHelpers::setPipelineIndex(PreferencesLimelight::LIMELIGHT_BACK, PreferencesLimelight::PIPELINE_APRILTAGS);

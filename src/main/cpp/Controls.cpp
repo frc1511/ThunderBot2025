@@ -302,13 +302,13 @@ void Controls::utilizeSwitchBoard() {
     driveDisable = switchBoard.GetRawButton(5);
     auxDisable = switchBoard.GetRawButton(6);
     fieldCentric = switchBoard.GetRawButton(7);
-    bool disableLimelight = switchBoard.GetRawButton(8);
+    // bool disableLimelight = switchBoard.GetRawButton(8);
 
     if (gamepiece->wrist != nullptr)
         gamepiece->wrist->setEncoderBroken(gamepiece->wristDisable);
 
-    if (limelight != nullptr)
-        limelight->setFunctioningState(!disableLimelight);
+    // if (limelight != nullptr)
+    //     limelight->setFunctioningState(!disableLimelight);
 
     if (switchBoard.GetRawButton(9)) { // LED Disable
         if (blinkyBlinky != nullptr) {

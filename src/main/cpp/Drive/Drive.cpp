@@ -124,13 +124,22 @@ void Drive::process() {
             executeVelocityData();
             break;
         case DriveMode::TRAJECTORY:
-            execTrajectory();
+            driveMode = DriveMode::STOPPED;
+            stop();
+            printf("[NOT IMPLEMENTED] Auto Trajectory Drive Code\n");
+            // execTrajectory();
             break;
         case DriveMode::LINEUP:
-            execLineup();
+            driveMode = DriveMode::STOPPED;
+            stop();
+            printf("[NOT IMPLEMENTED] Line Up Drive Code\n");
+            // execLineup();
             break;
         case DriveMode::ORCHESTRA:
-            orchestrate("homedepot.chrp");
+            driveMode = DriveMode::STOPPED;
+            stop();
+            printf("[NOT IMPLEMENTED] Orchestra Drive Code\n");
+            // orchestrate("homedepot.chrp");
             break;
     }
 
@@ -370,29 +379,30 @@ void Drive::updateOdometry() {
      */
     poseEstimator.Update(getRotation(), getModulePositions());
 
-    LimelightHelpers::SetRobotOrientation(PreferencesLimelight::LIMELIGHT_FRONT, pigeon.GetYaw().GetValue().value(),
-                                                                                 pigeon.GetAngularVelocityZWorld().GetValue().value(),
-                                                                                 pigeon.GetPitch().GetValue().value(),
-                                                                                 pigeon.GetAngularVelocityYWorld().GetValue().value(),
-                                                                                 pigeon.GetRoll().GetValue().value(),
-                                                                                 pigeon.GetAngularVelocityXWorld().GetValue().value());
-    LimelightHelpers::SetRobotOrientation(PreferencesLimelight::LIMELIGHT_BACK, pigeon.GetYaw().GetValue().value(), 0.0, 0.0, 0.0, 0.0, 0.0);
-    auto estimatedBotPose = limelight->getEstimatedBotPose();
-    if (estimatedBotPose) {
-        for (auto pose : *estimatedBotPose) {
-            limelightReliable = pose.first;
-            LimelightHelpers::PoseEstimate mt1 = pose.second;
+    return; // No Limelight
+    // LimelightHelpers::SetRobotOrientation(PreferencesLimelight::LIMELIGHT_FRONT, pigeon.GetYaw().GetValue().value(),
+    //                                                                              pigeon.GetAngularVelocityZWorld().GetValue().value(),
+    //                                                                              pigeon.GetPitch().GetValue().value(),
+    //                                                                              pigeon.GetAngularVelocityYWorld().GetValue().value(),
+    //                                                                              pigeon.GetRoll().GetValue().value(),
+    //                                                                              pigeon.GetAngularVelocityXWorld().GetValue().value());
+    // LimelightHelpers::SetRobotOrientation(PreferencesLimelight::LIMELIGHT_BACK, pigeon.GetYaw().GetValue().value(), 0.0, 0.0, 0.0, 0.0, 0.0);
+    // auto estimatedBotPose = limelight->getEstimatedBotPose();
+    // if (estimatedBotPose) {
+    //     for (auto pose : *estimatedBotPose) {
+    //         limelightReliable = pose.first;
+    //         LimelightHelpers::PoseEstimate mt1 = pose.second;
 
-            if (!limelightReliable) continue;
-            if (distToLineupPose() < PreferencesDrive::LINEUP_LIMELIGHT_DEADZONE) {
-                continue;
-            }
-            poseEstimator.AddVisionMeasurement(
-                mt1.pose,
-                mt1.timestampSeconds
-            );
-        }
-    }
+    //         if (!limelightReliable) continue;
+    //         if (distToLineupPose() < PreferencesDrive::LINEUP_LIMELIGHT_DEADZONE) {
+    //             continue;
+    //         }
+    //         poseEstimator.AddVisionMeasurement(
+    //             mt1.pose,
+    //             mt1.timestampSeconds
+    //         );
+    //     }
+    // }
 }
 
 wpi::array<frc::SwerveModuleState, 4> Drive::getModuleStates() {
